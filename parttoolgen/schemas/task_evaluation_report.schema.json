@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "parttoolgen.task_evaluation_report.v0",
+  "title": "PartToolGen Task Evaluation Report",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "report_id",
+    "task_id",
+    "family",
+    "passed",
+    "tracking_passed",
+    "task_success",
+    "predicate_results",
+    "metrics",
+    "artifact_refs"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": "parttoolgen_task_evaluation_report_v0"},
+    "report_id": {"type": "string", "minLength": 1},
+    "task_id": {"type": "string", "minLength": 1},
+    "family": {"type": "string", "minLength": 1},
+    "passed": {"type": "boolean"},
+    "tracking_passed": {"type": "boolean"},
+    "task_success": {"type": "boolean"},
+    "failure_category": {"type": ["string", "null"]},
+    "predicate_results": {"type": "array", "items": {"type": "object"}},
+    "metrics": {"type": "object"},
+    "artifact_refs": {"type": "object"},
+    "metadata": {"type": "object"}
+  }
+}

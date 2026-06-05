@@ -1,0 +1,315 @@
+% Traditional advisor-facing RA-L paper outline for ToolFrame 6.4.
+\documentclass[journal]{IEEEtran}
+
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{xcolor}
+
+\newcommand{\todo}[1]{\textcolor{red}{TODO: #1}}
+\newcommand{\method}{ToolFrame}
+
+\title{\method{}: Let the Tool Define the Frame for Dexterous Manipulation}
+\author{Author~Names}
+
+\begin{document}
+\maketitle
+
+\section*{Title Candidates}
+\begin{enumerate}
+  \item \method{}: Let the Tool Define the Frame for Dexterous Manipulation
+  \item \method{}: Tool-First Visual Grounding for Dexterous Manipulation
+  \item \method{}: Tool-Centric Visual Grounding for Dexterous Tool Use
+  \item \method{}: Compiling Tool-Centric Visual Evidence into Dexterous Manipulation Subgoals
+  \item Planning Dexterous Tool Use Around Functional Tool Geometry
+\end{enumerate}
+
+\section*{Core Thesis}
+\method{} makes the tool, rather than the hand, the organizing frame for
+dexterous manipulation. The VLM selects sparse public scene references and
+functional tool references; a geometry-constrained compiler turns them into
+whole-tool $SE(3)$ subgoals; a SimToolReal fixed-goal policy makes the hand
+follow those tool-centric goals; task contracts evaluate final success and
+attribute failures.
+
+\section*{Abstract Skeleton}
+\begin{enumerate}
+  \item Problem: dexterous tool use is defined by the tool: which part contacts
+  the scene, which axis aligns with the action, and where the whole tool should
+  move.
+  \item Gap: directly asking VLMs for robot trajectories entangles semantic
+  grounding, metric geometry, controller feasibility, and hidden benchmark
+  assumptions.
+  \item Method: \method{} lets the tool define the planning frame by restricting
+  VLM outputs to sparse public references: tool.contact\_point,
+  tool.motion\_axis, start/end/path scene refs, and scene.direction.
+  \item Compiler: lifted RGB-D scene refs and tool refs are compiled into
+  whole-tool $SE(3)$ subgoals.
+  \item Evaluation: SimToolReal fixed-goal rollout is scored with task
+  contracts and module-level failure attribution.
+  \item Results: \todo{fill final N, task success rates, and failure
+  attribution only from frozen launcher\_summary files.}
+\end{enumerate}
+
+\section{Introduction}
+\subsection{Motivation}
+\begin{itemize}
+  \item Dexterous tool use is tool-centric: the task is defined by functional
+  tool geometry before it is defined by hand motion.
+  \item The robot must know which tool part should contact the scene and how
+  the whole tool should be oriented.
+  \item Examples: brush sweep, eraser wipe, hammer strike, screwdriver insert,
+  marker trace.
+\end{itemize}
+
+\subsection{Problem}
+\begin{itemize}
+  \item VLMs can identify task-relevant visual evidence but should not be
+  trusted to produce metric robot trajectories.
+  \item Trajectory-style VLM planning can hide unsupported target axes, contact
+  locations, task-family defaults, or simulator state.
+\end{itemize}
+
+\subsection{Key Idea}
+\begin{itemize}
+  \item Use VLMs only for sparse, auditable tool and scene references.
+  \item Use RGB-D lifting and geometric compilation for metric whole-tool
+  subgoals.
+  \item Let the hand follow tool-centric subgoals instead of asking the VLM to
+  generate hand trajectories.
+  \item Use task contracts for final success and failure attribution.
+\end{itemize}
+
+\subsection{Contributions}
+\begin{enumerate}
+  \item An auditable VLM interface for tool use: sparse scene refs and
+  functional tool refs, not robot trajectories.
+  \item A geometry-constrained compiler that binds tool.contact\_point and
+  tool.motion\_axis to lifted RGB-D scene refs and emits whole-tool $SE(3)$
+  subgoals.
+  \item A task-contract benchmark protocol that separates headline tasks from
+  candidate, diagnostic, and draft tasks, and reports module-level failure
+  attribution.
+\end{enumerate}
+
+\section{Related Work}
+\subsection{VLMs and Language-Conditioned Robot Planning}
+\begin{itemize}
+  \item LLM/VLM planners, code-as-policies systems, image-conditioned action
+  proposal, affordance prompting.
+  \item Positioning: \method{} uses VLMs for reference grounding, not trajectory
+  generation.
+\end{itemize}
+
+\subsection{Tool-Use Affordances and Functional Part Grounding}
+\begin{itemize}
+  \item Tool affordance learning, part segmentation, contact-point prediction,
+  functional region prediction.
+  \item Positioning: \method{} converts public tool-part evidence into
+  tool.contact\_point and tool.motion\_axis.
+\end{itemize}
+
+\subsection{Constraint-Based Manipulation and Subgoal Planning}
+\begin{itemize}
+  \item Task-space constraints, contact-aware manipulation, keyframe/subgoal
+  planning, $SE(3)$ optimization.
+  \item Positioning: sweep/strike/wipe/insert are task language, not compiler
+  primitives.
+\end{itemize}
+
+\subsection{Robotic Manipulation Benchmarks}
+\begin{itemize}
+  \item Manipulation benchmarks, tool-use benchmarks, success metrics.
+  \item Positioning: \method{} uses task contracts to report final success and
+  first-failure attribution.
+\end{itemize}
+
+\section{Problem Formulation and Evidence Boundary}
+\subsection{Allowed Method Inputs}
+\begin{itemize}
+  \item Natural task language.
+  \item Public RGB-D scene evidence and camera calibration.
+  \item Public tool meshes and reviewed-or-pending tool-part evidence.
+  \item Optional robot/gripper state needed for execution.
+\end{itemize}
+
+\subsection{Forbidden Method Inputs}
+\begin{itemize}
+  \item Hidden evaluator target refs, oracle target axes, oracle trajectories.
+  \item Simulator target centers used to snap VLM refs.
+  \item Tool-family or task-family fallback.
+  \item Primitive fallback, repair-loop fallback, seed-specific shortcuts.
+\end{itemize}
+
+\subsection{Reference Representation}
+\begin{align}
+\mathcal{R}_{tool} &= \{p^{contact}_{tool}, a^{motion}_{tool}\}, \\
+\mathcal{R}_{scene} &= \{p^{start}_{scene}, p^{path}_{scene},
+p^{end}_{scene}, a^{direction}_{scene}\}.
+\end{align}
+
+\section{Method: ToolFrame}
+\subsection{A. Tool-Centric Prior Extraction}
+\begin{itemize}
+  \item Input: tool mesh, P3SAM/SAMPart3D part evidence, task language.
+  \item VLM selects a functional part from segmented evidence.
+  \item Contact point and motion axis are selected only on the chosen part.
+  \item Output: tool.contact\_point and tool.motion\_axis.
+\end{itemize}
+
+\subsection{B. Scene Key-Points Grounding}
+\begin{itemize}
+  \item Input: public RGB-D image, depth, camera calibration, task language.
+  \item VLM marks start\_point, optional path\_points, end\_point, and
+  scene.direction.
+  \item RGB-D lifting converts 2D refs into 3D scene refs.
+  \item No hidden simulator target centers or oracle axes are used.
+\end{itemize}
+
+\subsection{C. Geometry-Constrained Optimizer}
+\begin{itemize}
+  \item Inputs: lifted scene refs, tool.contact\_point, tool.motion\_axis.
+  \item Stages: grasp/lift, align, approach, action.
+  \item Constraint vocabulary: point\_match, point\_offset, axis\_align,
+  move\_along, orientation\_offset\_about\_axis, clearance.
+  \item Output: whole-tool $SE(3)$ subgoals and simtoolreal\_fixed\_goals.json.
+\end{itemize}
+
+\subsection{D. Policy Rollout and Evaluation}
+\begin{itemize}
+  \item SimToolReal fixed-goal policy executes compiled subgoals.
+  \item Task contracts score final success after rollout.
+  \item Failure attribution labels: functional grounding, scene grounding,
+  subgoal validity, policy execution, task success, needs\_review.
+\end{itemize}
+
+\section{Task-Contract Benchmark}
+\subsection{Task Tiers}
+\begin{table}[h]
+\centering
+\caption{Task tiers for reporting.}
+\begin{tabular}{p{0.20\columnwidth}p{0.68\columnwidth}}
+\toprule
+Tier & Tasks \\
+\midrule
+Headline & brush\_sweep/forward; eraser\_wipe/tabletop\_wipe \\
+Candidate & brush\_sweep/left; hammer\_strike/down; screwdriver\_insert/wide\_socket; marker\_trace/write\_l,c \\
+Diagnostic & screwdriver\_insert/deep\_socket; dense screwdriver variants \\
+Draft & side-board eraser, hammer, screwdriver tasks \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Task Contracts}
+\begin{itemize}
+  \item brush\_sweep/red\_zone: final target-block occupancy inside the visible
+  red outline zone; directional displacement is diagnostic.
+  \item eraser\_wipe/tabletop\_wipe: diagnostic path gate, lifted refs on visible HDU
+  sticker, flat-eraser contact coverage $\geq 30\%$ of target long-axis extent;
+  reviewed/current.
+  \item hammer\_strike/down: provisional semantic contact and strike-direction
+  gate.
+  \item screwdriver\_insert/wide\_socket: provisional tip radial alignment and
+  insertion-depth gate.
+  \item marker\_trace/write\_l,c: provisional hard side-board task judged by
+  produced marker-tip ink.
+\end{itemize}
+
+\subsection{Metrics}
+\begin{table*}[t]
+\centering
+\caption{Headline result table template. Fill only from frozen
+launcher\_summary files and matching per-task summary.json files.}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{p{0.17\textwidth}p{0.10\textwidth}p{0.22\textwidth}cccccc}
+\toprule
+Task & Status & Review note & N & Func. & Scene & Subgoal & Policy & Success \\
+\midrule
+brush\_sweep/forward & provisional & success predicate reviewed; red-brush labels pending & \todo{} & \todo{} & \todo{} & \todo{} & \todo{} & \todo{} \\
+eraser\_wipe/tabletop\_wipe & reviewed & current contract; flat-eraser labels approved & \todo{} & \todo{} & \todo{} & \todo{} & \todo{} & \todo{} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\section{Experiments}
+\subsection{Main Questions}
+\begin{enumerate}
+  \item Can public image-grounded evidence produce valid whole-tool subgoals
+  without hidden evaluator refs?
+  \item Which stage limits end-to-end task success?
+  \item How do headline tasks differ from candidate and diagnostic tasks?
+  \item What failures become attributable when VLM grounding, compilation,
+  policy execution, and task-effect evaluation are separated?
+\end{enumerate}
+
+\subsection{Main Results}
+\begin{itemize}
+  \item Report headline task success rates only after final frozen rerun.
+  \item Do not use reports/mainline\_6.4/ as final success statistics.
+  \item Candidate and diagnostic tasks are reported separately as stress or
+  readiness evidence.
+\end{itemize}
+
+\subsection{Ablations and Diagnostics}
+\begin{table}[h]
+\centering
+\caption{Boundary-preserving ablations and diagnostics.}
+\begin{tabular}{p{0.35\columnwidth}p{0.55\columnwidth}}
+\toprule
+Diagnostic & Purpose \\
+\midrule
+Public human-clicked scene refs & Upper-bound scene grounding diagnostic; no hidden evaluator refs. \\
+Tool-reference sensitivity & Measure sensitivity to contact point and motion-axis choices. \\
+Remove tool motion axis & Should fail preflight/compile; verifies no family-axis guessing. \\
+Remove selected contact point & Tests need for explicit functional point. \\
+No RGB-D lifting & Tests metric scene grounding dependence. \\
+Strict tracking diagnostic & Measures tracking/effect disagreement; does not replace task contract. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Figures and Tables}
+\begin{itemize}
+  \item Fig. 1: Overview pipeline: tool refs, scene refs, compiler, rollout,
+  evaluator.
+  \item Fig. 2: Tool-reference evidence: selected part, contact point, motion
+  axis.
+  \item Fig. 3: Scene grounding overlays and lifted RGB-D refs.
+  \item Fig. 4: Compiled whole-tool $SE(3)$ subgoals during rollout.
+  \item Fig. 5: Failure attribution stacked bar by task.
+  \item Table I: Task tiers and review status.
+  \item Table II: Headline benchmark results.
+  \item Table III: Candidate/diagnostic task readiness.
+  \item Table IV: Ablations and diagnostics.
+\end{itemize}
+
+\section{Limitations}
+\begin{itemize}
+  \item Requires visible RGB-D evidence and reliable lifting.
+  \item Requires public tool-part evidence and human review for final labels.
+  \item Fixed-goal policy can fail even with valid compiled subgoals.
+  \item Candidate tasks such as insertion and marker tracing need additional
+  contract review before headline reporting.
+  \item No online repair-loop fallback or seed-specific shortcuts.
+\end{itemize}
+
+\section{Conclusion}
+\begin{itemize}
+  \item Reiterate: VLMs select auditable evidence; the compiler solves
+  whole-tool geometry; task contracts evaluate executed effects.
+  \item Main takeaway after final rerun:
+  \todo{insert final quantitative conclusion and main bottleneck.}
+\end{itemize}
+
+\section*{Appendix Checklist}
+\begin{itemize}
+  \item Full task contracts and thresholds.
+  \item Tool-ref evidence manifests.
+  \item Scene grounding prompts and overlay examples.
+  \item Constraint program examples.
+  \item Frozen launcher\_summary files and per-task summary.json files.
+  \item Failure attribution examples.
+  \item Asset and license statement.
+\end{itemize}
+
+\end{document}

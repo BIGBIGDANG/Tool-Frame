@@ -1,0 +1,123 @@
+{
+  "schema_version": "parttoolgen_tool_use_task_v0",
+  "task_id": "staples_marker_trace_blank_whiteboard_vlm_waypoints_preview_seed_000",
+  "family": "image_grounded_marker_trace",
+  "split": "preview",
+  "instruction": "Draw a continuous path on the blank whiteboard with the marker tip, using VLM-selected start, waypoint, and end scene refs.",
+  "tool": {
+    "tool_id": "staples_marker",
+    "tool_prior_dir": "artifacts/tool_prior/p3sam/staples_marker/tool_prior/"
+  },
+  "execution": {
+    "simtoolreal_category": "marker",
+    "simtoolreal_table_asset": "urdf/parttoolgen_benchmark/tabletop_polyhaven_wood_table/tabletop_polyhaven_wood_table.urdf",
+    "simtoolreal_tool_mesh": "simtoolreal/assets/urdf/dextoolbench/marker/staples_marker/staples_marker.obj",
+    "simtoolreal_start_pose_trajectory": "simtoolreal/dextoolbench/trajectories/marker/staples_marker/write_c.json",
+    "start_pose_policy": "preview_no_overlap_start_pose_from_dextoolbench_staples_write_c_shifted_near_robot_hand",
+    "simtoolreal_start_pose": [
+      0.1,
+      0.095,
+      0.5502337025286513,
+      0.49365024769128735,
+      -0.009175904697824588,
+      -0.011065671444839017,
+      0.8695417106975272
+    ],
+    "state_bundle": {
+      "table_pose_xyzw": [
+        0.0,
+        0.0,
+        0.38,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "table_asset": "urdf/parttoolgen_benchmark/tabletop_polyhaven_wood_table/tabletop_polyhaven_wood_table.urdf",
+      "table_z": 0.38,
+      "object_name": "staples_marker",
+      "object_category": "marker",
+      "task_name": "marker_trace_blank_whiteboard_vlm_waypoints_preview",
+      "target_collision_role": "blank_writable_whiteboard_surface",
+      "min_tool_table_clearance_m": 0.0003,
+      "parttoolgen_benchmark_extra_actors": [
+        {
+          "name": "marker_trace_whiteboard",
+          "asset_file": "urdf/parttoolgen_benchmark/marker_trace_whiteboard/left_side_vertical_whiteboard_002x0475x101.urdf",
+          "pose_xyzw": [
+            0.38,
+            0.0,
+            0.505,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "color_rgb": [
+            0.96,
+            0.98,
+            0.96
+          ],
+          "disable_gravity": true,
+          "fix_base_link": true,
+          "friction": 0.8
+        }
+      ]
+    }
+  },
+  "public_scene": {
+    "provider": "simtoolreal_rgbd_image_grounding",
+    "target_selection_mode": "vlm_select_start_waypoint_end_refs_on_blank_whiteboard",
+    "scene_evidence": [],
+    "method_inputs": [
+      "task language",
+      "SimToolReal RGB-D render of blank whiteboard",
+      "VLM-marked public start/waypoint/end scene refs",
+      "public staples_marker tool refs from P3SAM/VLM part-face grounding"
+    ],
+    "forbidden_method_inputs": [
+      "private_eval.target_geometry",
+      "pre-rendered target trace or guide path",
+      "oracle trajectory",
+      "direct robot trajectory from VLM",
+      "tool_family",
+      "task_family",
+      "primitive fallback"
+    ]
+  },
+  "metadata": {
+    "seed": 0,
+    "benchmark_role": "marker_trace_blank_whiteboard_vlm_waypoints_scene_preview",
+    "start_pose_note": "Marker is on the tabletop while the blank whiteboard is a left-side vertical wall rising from the floor with no initial overlap.",
+    "target_kind": "left_side_vertical_blank_writable_whiteboard_surface",
+    "whiteboard_center_world": [
+      0.38,
+      0.0,
+      0.505
+    ],
+    "trace_path_kind": "vlm_selected_start_waypoint_end_refs_no_preexisting_path",
+    "public_whiteboard_surface_normal_world": [
+      -1.0,
+      0.0,
+      0.0
+    ],
+    "tool_grounding_contract": {
+      "schema_version": "toolframe_tool_grounding_contract_v1",
+      "task_type": "marker_trace",
+      "tool_id": "staples_marker",
+      "label_source": "manual_review_required",
+      "manual_review_status": "pending",
+      "review_file": "artifacts/tool_use_benchmark/tool_label_review/marker_trace__staples_marker.json"
+    },
+    "public_support_surface_point_world": [
+      0.37,
+      0.0,
+      0.505
+    ],
+    "public_support_surface_normal_world": [
+      -1.0,
+      0.0,
+      0.0
+    ]
+  }
+}

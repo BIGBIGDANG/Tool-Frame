@@ -1,0 +1,217 @@
+{
+  "schema_version": "toolframe_benchmark_launcher_summary_v1",
+  "run_id": "paper_headline_clean_20260604_205355",
+  "task_count": 2,
+  "records": [
+    {
+      "task": "brush_sweep/forward",
+      "status": "completed",
+      "returncode": 0,
+      "output_root": "artifacts/image_grounded/brush_sweep/forward_paper_headline_clean_20260604_205355",
+      "command": [
+        "/data5/cmz_data/project_5.10/ToolFrame_5.21/.venv_parttoolgen_py38/bin/python",
+        "/data5/cmz_data/project_5.10/ToolFrame_6.4/parttoolgen/src/parttoolgen/cli/runners/run_image_grounded_brush_seed_eval.py",
+        "--benchmark-config",
+        "/data5/cmz_data/project_5.10/ToolFrame_6.4/artifacts/tool_use_benchmark/brush_sweep/forward/benchmark_config.json",
+        "--output-root",
+        "artifacts/image_grounded/brush_sweep/forward_paper_headline_clean_20260604_205355",
+        "--tool-refs-dir",
+        "configs/tool_refs/red_brush",
+        "--seed-start",
+        "0",
+        "--trials",
+        "20",
+        "--device",
+        "cuda:0",
+        "--rollout-max-steps",
+        "1500",
+        "--rollout-max-tracking-error-m",
+        "0.012",
+        "--capture-video-every",
+        "1",
+        "--initial-grasp-lift-m",
+        "0.08",
+        "--initial-grasp-lift-steps",
+        "3",
+        "--initial-grasp-hold-steps",
+        "0",
+        "--grasp-observation-offset-m",
+        "0.0",
+        "--block-asset",
+        "urdf/parttoolgen_benchmark/brush_sweep_block/sweep_block_045_feather.urdf",
+        "--block-friction",
+        "0.1",
+        "--block-position-mode",
+        "random",
+        "--line-x-min",
+        "0.16",
+        "--line-x-max",
+        "0.32",
+        "--line-y",
+        "-0.13",
+        "--sweep-direction",
+        "forward",
+        "--start-orientation-mode",
+        "fixed"
+      ],
+      "preflight": {
+        "task": "brush_sweep/forward",
+        "runnable": true,
+        "status": "fixed/current",
+        "passed": true,
+        "checks": [
+          {
+            "name": "benchmark_config",
+            "path": "/data5/cmz_data/project_5.10/ToolFrame_6.4/artifacts/tool_use_benchmark/brush_sweep/forward/benchmark_config.json",
+            "required": true,
+            "exists": true,
+            "passed": true
+          },
+          {
+            "name": "runner",
+            "path": "/data5/cmz_data/project_5.10/ToolFrame_6.4/parttoolgen/src/parttoolgen/cli/runners/run_image_grounded_brush_seed_eval.py",
+            "required": true,
+            "exists": true,
+            "passed": true
+          },
+          {
+            "name": "config.runner_args.block_asset",
+            "path": "/data5/cmz_data/project_5.10/ToolFrame_6.4/simtoolreal/assets/urdf/parttoolgen_benchmark/brush_sweep_block/sweep_block_045_feather.urdf",
+            "required": true,
+            "exists": true,
+            "passed": true
+          },
+          {
+            "name": "config.runner_args.tool_refs_dir",
+            "path": "/data5/cmz_data/project_5.10/ToolFrame_6.4/configs/tool_refs/red_brush",
+            "required": true,
+            "exists": true,
+            "passed": true
+          },
+          {
+            "name": "config.scene_initialization.table_asset",
+            "path": "/data5/cmz_data/project_5.10/ToolFrame_6.4/simtoolreal/assets/urdf/parttoolgen_benchmark/tabletop_polyhaven_wood_table/tabletop_polyhaven_wood_table.urdf",
+            "required": true,
+            "exists": true,
+            "passed": true
+          }
+        ]
+      },
+      "summary": {
+        "summary_path": "artifacts/image_grounded/brush_sweep/forward_paper_headline_clean_20260604_205355/summary.json",
+        "summary_exists": true,
+        "trial_count": 20,
+        "pass_rate": 0.0,
+        "successes": null,
+        "success_metric": null
+      }
+    },
+    {
+      "task": "eraser_wipe/tabletop_wipe",
+      "status": "completed",
+      "returncode": 0,
+      "output_root": "artifacts/image_grounded/eraser_wipe/tabletop_wipe_paper_headline_clean_20260604_205355",
+      "command": [
+        "/data5/cmz_data/project_5.10/ToolFrame_5.21/.venv_parttoolgen_py38/bin/python",
+        "/data5/cmz_data/project_5.10/ToolFrame_6.4/parttoolgen/src/parttoolgen/cli/runners/run_image_grounded_eraser_wipe_eval.py",
+        "--benchmark-config",
+        "/data5/cmz_data/project_5.10/ToolFrame_6.4/artifacts/tool_use_benchmark/eraser_wipe/tabletop_wipe/benchmark_config.json",
+        "--output-root",
+        "artifacts/image_grounded/eraser_wipe/tabletop_wipe_paper_headline_clean_20260604_205355",
+        "--tool-refs-dir",
+        "configs/tool_refs/flat_eraser",
+        "--seed-start",
+        "0",
+        "--trials",
+        "20",
+        "--device",
+        "cuda:0",
+        "--rollout-max-steps",
+        "1500",
+        "--rollout-max-tracking-error-m",
+        "0.018",
+        "--capture-video-every",
+        "1",
+        "--approach-offset-m",
+        "0.03",
+        "--max-translation-step-m",
+        "0.035",
+        "--max-rotation-step-rad",
+        "0.3",
+        "--target-approach-axis-source",
+        "opposite_scene_direction",
+        "--initial-grasp-lift-m",
+        "0.08",
+        "--initial-grasp-lift-steps",
+        "3",
+        "--initial-grasp-hold-steps",
+        "0"
+      ],
+      "preflight": {
+        "task": "eraser_wipe/tabletop_wipe",
+        "runnable": true,
+        "status": "fixed/current",
+        "passed": true,
+        "checks": [
+          {
+            "name": "benchmark_config",
+            "path": "/data5/cmz_data/project_5.10/ToolFrame_6.4/artifacts/tool_use_benchmark/eraser_wipe/tabletop_wipe/benchmark_config.json",
+            "required": true,
+            "exists": true,
+            "passed": true
+          },
+          {
+            "name": "runner",
+            "path": "/data5/cmz_data/project_5.10/ToolFrame_6.4/parttoolgen/src/parttoolgen/cli/runners/run_image_grounded_eraser_wipe_eval.py",
+            "required": true,
+            "exists": true,
+            "passed": true
+          },
+          {
+            "name": "config.acceptance.tool_grounding_contract.review_file",
+            "path": "/data5/cmz_data/project_5.10/ToolFrame_6.4/artifacts/tool_use_benchmark/tool_label_review/eraser_wipe__flat_eraser.json",
+            "required": true,
+            "exists": true,
+            "passed": true
+          },
+          {
+            "name": "config.runner_args.tool_refs_dir",
+            "path": "/data5/cmz_data/project_5.10/ToolFrame_6.4/configs/tool_refs/flat_eraser",
+            "required": true,
+            "exists": true,
+            "passed": true
+          },
+          {
+            "name": "config.scene_initialization.table_asset",
+            "path": "/data5/cmz_data/project_5.10/ToolFrame_6.4/simtoolreal/assets/urdf/parttoolgen_benchmark/tabletop_polyhaven_wood_table/tabletop_polyhaven_wood_table.urdf",
+            "required": true,
+            "exists": true,
+            "passed": true
+          },
+          {
+            "name": "config.scene_initialization.target.asset",
+            "path": "/data5/cmz_data/project_5.10/ToolFrame_6.4/simtoolreal/assets/urdf/parttoolgen_benchmark/eraser_wipe_tabletop_hdu_sticker/tabletop_hdu_sticker_018x011x0007.urdf",
+            "required": true,
+            "exists": true,
+            "passed": true
+          },
+          {
+            "name": "config.scene_initialization.tool_mesh",
+            "path": "/data5/cmz_data/project_5.10/ToolFrame_6.4/simtoolreal/assets/urdf/dextoolbench/eraser/flat_eraser/flat_eraser.obj",
+            "required": true,
+            "exists": true,
+            "passed": true
+          }
+        ]
+      },
+      "summary": {
+        "summary_path": "artifacts/image_grounded/eraser_wipe/tabletop_wipe_paper_headline_clean_20260604_205355/summary.json",
+        "summary_exists": true,
+        "trial_count": 20,
+        "pass_rate": 0.0,
+        "successes": null,
+        "success_metric": null
+      }
+    }
+  ]
+}

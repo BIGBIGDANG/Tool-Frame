@@ -1,0 +1,15 @@
+{
+  "source_mesh": "simtoolreal/assets/urdf/dextoolbench/spatula/flat_spatula/flat_spatula.obj",
+  "face_labels": "artifacts/tool_prior/p3sam/flat_spatula/face_labels/p3sam_face_labels.npy",
+  "p3sam_output_dir": "artifacts/tool_prior/p3sam/flat_spatula/p3sam_raw",
+  "face_count": 2366,
+  "processed_face_count": 2366,
+  "unique_labels": [
+    0,
+    11
+  ],
+  "label_count": 2,
+  "ckpt_path": "/data5/cmz_data/project_5.10/PartCentricAffordanceProgram_5.15/artifacts/models/Hunyuan3D-Part/P3-SAM/weights/p3sam/p3sam.safetensors",
+  "sonata_ckpt_path": "/data5/cmz_data/project_5.10/PartCentricAffordanceProgram_5.15/artifacts/hf_cache/sonata/sonata.pth",
+  "note": "Reconstructed after initial conversion failed on missing p3sam segmentation_mode validator enum."
+}

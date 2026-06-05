@@ -1,0 +1,116 @@
+{
+  "schema_version": "toolframe_brush_sweep_benchmark_config_v1",
+  "benchmark": "brush_sweep",
+  "variant": "red_zone",
+  "description": "Current semantic brush sweep: use a brush to move a stable blue block into a red outline target zone. The red zone is visual-only/no-collision and task success is final target-region occupancy.",
+  "runner": "parttoolgen/src/parttoolgen/cli/runners/run_image_grounded_brush_seed_eval.py",
+  "runner_args": {
+    "output_root": "artifacts/image_grounded/brush_sweep/red_zone_mainline",
+    "tool_refs_dir": "configs/tool_refs/red_brush",
+    "seed_start": 0,
+    "trials": 5,
+    "device": "cuda:0",
+    "rollout_max_steps": 1500,
+    "rollout_max_tracking_error_m": 0.012,
+    "capture_video_every": 1,
+    "initial_grasp_lift_m": 0.08,
+    "initial_grasp_lift_steps": 3,
+    "initial_grasp_hold_steps": 0,
+    "grasp_observation_offset_m": 0.0,
+    "approach_offset_m": 0.12,
+    "target_mode": "red_zone",
+    "target_zone_asset": "urdf/parttoolgen_benchmark/brush_sweep_target_zone/red_target_zone_014x010.urdf",
+    "target_zone_center_xy": [
+      0.24,
+      -0.205
+    ],
+    "target_zone_size_xy": [
+      0.14,
+      0.10
+    ],
+    "target_zone_z": 0.5315,
+    "block_asset": "urdf/parttoolgen_benchmark/brush_sweep_block/sweep_block_045.urdf",
+    "block_friction": 0.8,
+    "block_position_mode": "line_x",
+    "line_x_min": 0.24,
+    "line_x_max": 0.24,
+    "line_y": -0.13,
+    "sweep_direction": "forward",
+    "start_orientation_mode": "fixed"
+  },
+  "scene_initialization": {
+    "table_asset": "urdf/parttoolgen_benchmark/tabletop_polyhaven_wood_table/tabletop_polyhaven_wood_table.urdf",
+    "fixed_grasp_ready_start_pose_xyzw": [
+      0.02,
+      0.135,
+      0.5833139980938841,
+      0.7035186228215238,
+      0.021312152321177134,
+      0.016647372965644915,
+      0.7101620973271443
+    ],
+    "start_pose_policy": "runtime mesh-table-contact projection keeps the red_brush mesh on the tabletop with 3 mm clearance",
+    "block_xy": [
+      0.24,
+      -0.13
+    ],
+    "block_physics": {
+      "asset": "urdf/parttoolgen_benchmark/brush_sweep_block/sweep_block_045.urdf",
+      "mass_kg": 0.05,
+      "friction": 0.8,
+      "policy": "stable target block to avoid success/failure being dominated by lightweight block flight"
+    },
+    "red_target_zone_center_xy": [
+      0.24,
+      -0.205
+    ],
+    "red_target_zone_size_xy_m": [
+      0.14,
+      0.10
+    ],
+    "red_target_zone_collision_policy": "visual_only_no_collision",
+    "approach_offset_m": 0.12
+  },
+  "mainline_params": {
+    "depth_sample_policy": "nearest",
+    "action_direction_z_policy": "anchor_height",
+    "end_point_policy": "required_vlm_end_point_for_tool_contact_path",
+    "tool_motion_axis_ref": "tool.motion_axis",
+    "tool_motion_axis_target_ref": "scene.direction",
+    "tool_motion_axis_relation": "parallel",
+    "approach_offset_m": 0.12,
+    "max_translation_step_m": 0.035,
+    "max_rotation_step_rad": 0.3,
+    "initial_grasp_lift_m": 0.08,
+    "initial_grasp_lift_steps": 3,
+    "initial_grasp_hold_steps": 0,
+    "rollout_max_tracking_error_m": 0.012,
+    "rollout_max_rotation_error_rad": 0.28,
+    "min_clearance_m": 0.003,
+    "swept_min_clearance_m": 0.006,
+    "allowed_contact_penetration_m": 0.006
+  },
+  "acceptance": {
+    "success_policy": "brush_sweep_target_zone_occupancy: a seed succeeds when the dynamic blue block final xy center lies inside the red outline target zone. The compiler uses align -> approach -> action; approach starts behind the first contact point along the negative VLM motion direction by approach_offset_m. Policy-goal, contact-point semantic gate, and tracking are diagnostics only.",
+    "requires_tracking_execution_passed": false,
+    "requires_semantic_execution_passed": false,
+    "target_region": {
+      "shape": "axis_aligned_rectangle",
+      "center_xy_world": [
+        0.24,
+        -0.205
+      ],
+      "size_xy_m": [
+        0.14,
+        0.10
+      ]
+    }
+  },
+  "contract_status": {
+    "environment_id": "tabletop_wood_table",
+    "benchmark_status": "fixed/current",
+    "success_check_status": "reviewed_task_predicate",
+    "large_statistics_status": "allowed_after_smoke",
+    "notes": "This is the preferred brush-sweep benchmark for paper reporting because the final state is more semantically grounded and directly measurable than pure directional displacement."
+  }
+}

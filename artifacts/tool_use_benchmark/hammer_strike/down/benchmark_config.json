@@ -1,0 +1,97 @@
+{
+  "schema_version": "toolframe_hammer_down_strike_benchmark_config_v1",
+  "benchmark": "hammer_strike",
+  "variant": "down",
+  "description": "Image-grounded claw-hammer strike smoke: SimToolReal RGB-D scene, VLM-marked start point and motion direction, public claw-hammer tool refs, whole-tool SE(3) fixed-goal rollout.",
+  "runner": "parttoolgen/src/parttoolgen/cli/runners/run_image_grounded_hammer_strike_eval.py",
+  "runner_args": {
+    "output_root": "artifacts/image_grounded/hammer_strike/down_original_rgb_smoke",
+    "seed_start": 0,
+    "trials": 1,
+    "device": "cuda:0",
+    "rollout_max_steps": 1500,
+    "rollout_max_tracking_error_m": 0.018,
+    "capture_video_every": 1,
+    "initial_grasp_lift_m": 0.08,
+    "initial_grasp_lift_steps": 3,
+    "initial_grasp_hold_steps": 0,
+    "target_kind": "dynamic_visible_nail",
+    "start_pose_mode": "dextoolbench_swing_down_start",
+    "tool_refs_dir": "configs/tool_refs/claw_hammer"
+  },
+  "scene_initialization": {
+    "table_asset": "urdf/parttoolgen_benchmark/tabletop_polyhaven_wood_table/tabletop_polyhaven_wood_table.urdf",
+    "tool_mesh": "simtoolreal/assets/urdf/dextoolbench/hammer/claw_hammer/claw_hammer.obj",
+    "target_asset": "urdf/parttoolgen_benchmark/hammer_strike_nail/strike_nail_035.urdf",
+    "target_pose_xyzw": [
+      0.0,
+      -0.09,
+      0.545,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "fixed_start_pose_xyzw": [
+      0.09076502773615436,
+      0.08070982635558854,
+      0.5445560591074204,
+      0.07781270573992773,
+      -0.9964358547253277,
+      -0.025800699064297956,
+      0.019876975902544947
+    ],
+    "start_pose_policy": "runtime mesh-table-contact projection keeps the claw_hammer mesh on the tabletop with 3 mm clearance before the explicit grasp-lift stage.",
+    "target_grounding_policy": "The shared VLM scene-ref interface applies: natural task language and public top-down RGB-D evidence provide start_point on the visible nail top and scene.direction for the strike. Support-surface normals are projection/diagnostic evidence only.",
+    "action_axis_policy": "Lift uses the VLM-grounded scene.direction for this point-action task.",
+    "endpoint_policy": "Contact-only execution may reuse start_point as the executable end point while VLM scene.direction supplies the strike direction.",
+    "approach_offset_m": 0.08
+  },
+  "mainline_params": {
+    "depth_sample_policy": "nearest",
+    "direction_source": "vlm_point_refs",
+    "end_point_policy": "start_equals_end_contact_only",
+    "tool_motion_axis_ref": "tool.motion_axis",
+    "tool_motion_axis_target_ref": "scene.direction",
+    "tool_motion_axis_relation": "parallel",
+    "max_translation_step_m": 0.035,
+    "max_rotation_step_rad": 0.3,
+    "initial_grasp_lift_m": 0.08,
+    "initial_grasp_lift_steps": 3,
+    "initial_grasp_hold_steps": 0,
+    "rollout_max_tracking_error_m": 0.018,
+    "rollout_max_rotation_error_rad": 0.28,
+    "min_clearance_m": 0.003,
+    "swept_min_clearance_m": 0.006,
+    "allowed_contact_penetration_m": 0.006,
+    "table_clearance_rule": "all tool-part OBB corners must stay above the table plane",
+    "end_surface_policy": "anchor_contact_plane"
+  },
+  "acceptance": {
+    "success_policy": "hammer_down_semantic_contact: a hammer down strike is successful when the VLM strike direction, diagnostic path gate, and rollout semantic contact/use-stage completion pass. Target displacement is diagnostic only because some targets are fixed.",
+    "requires_target_displacement": false,
+    "requires_tracking_execution_passed": false,
+    "tool_grounding_contract": {
+      "schema_version": "toolframe_tool_grounding_contract_v1",
+      "task_type": "hammer_down_strike",
+      "tool_id": "claw_hammer",
+      "label_source": "manual_review_required",
+      "manual_review_status": "pending",
+      "notes": "Evaluator-side audit labels only; not used for method selection, compiler constraints, or task success. Strike semantic/contact evidence is the required success metric for this smoke."
+    },
+    "first_smoke": [
+      "VLM overlay is present",
+      "lifted refs record the VLM start point and scene.direction",
+      "constraint program uses public claw_hammer tool refs",
+      "fixed goals compile without hidden target geometry",
+      "rollout video and rollout_summary are written when rollout is enabled"
+    ]
+  },
+  "contract_status": {
+    "environment_id": "tabletop_wood_table",
+    "benchmark_status": "current/provisional",
+    "success_check_status": "provisional_pending_hammer_label_review",
+    "large_statistics_status": "pending_human_review",
+    "notes": "Semantic contact/strike-direction success; target displacement is diagnostic."
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "schema_version": "toolframe_tool_selection_decision_summary_v1",
+  "task_family": "marker_trace",
+  "split": "write_l",
+  "tool_id": "staples_marker",
+  "tool_refs_dir": "/data5/cmz_data/project_5.10/ToolFrame_5.21/configs/tool_refs/staples_marker",
+  "selected_part": {
+    "marker": "2",
+    "part_ref": "tool.parts.part_001"
+  },
+  "selected_contact_point": {
+    "marker": "F2",
+    "point_ref": "candidate.points.part_001_x_positive_endpoint",
+    "surface_ref": "candidate.surfaces.part_001_x_positive_endpoint",
+    "patch_id": "x_positive_endpoint",
+    "row": {
+      "tool_id": "staples_marker",
+      "part_marker": "2",
+      "part_id": "part_001",
+      "part_ref": "tool.parts.part_001",
+      "point_ref": "candidate.points.part_001_x_positive_endpoint",
+      "surface_ref": "candidate.surfaces.part_001_x_positive_endpoint",
+      "polarity": "positive",
+      "patch_id": "x_positive_endpoint",
+      "role": null,
+      "xyz_tool": [
+        0.11126841037761323,
+        -1.6131017863484365e-05,
+        -0.00012902267681940018
+      ],
+      "normal_tool": [
+        0.9954549577606813,
+        -0.01544895201857923,
+        -0.09397210730428575
+      ],
+      "face_marker": "F2",
+      "contact_marker": "F2",
+      "selection_semantics": "contact_point_bbox_face",
+      "derived_point_ref": "candidate.points.part_001_x_positive_endpoint",
+      "source_surface_ref": "candidate.surfaces.part_001_x_positive_endpoint"
+    }
+  },
+  "selected_motion_axis": {
+    "marker": "F3",
+    "surface_ref": "candidate.surfaces.part_001_y_negative_contact",
+    "patch_id": "y_negative_contact",
+    "row": {
+      "tool_id": "staples_marker",
+      "part_marker": "2",
+      "part_id": "part_001",
+      "part_ref": "tool.parts.part_001",
+      "point_ref": "candidate.points.part_001_y_negative_contact",
+      "surface_ref": "candidate.surfaces.part_001_y_negative_contact",
+      "polarity": "negative",
+      "patch_id": "y_negative_contact",
+      "role": null,
+      "xyz_tool": [
+        0.09971189509717208,
+        -0.0019621422197635984,
+        -2.105662721597312e-05
+      ],
+      "normal_tool": [
+        0.08125769217434267,
+        -0.9966658637905998,
+        -0.007371798765388733
+      ],
+      "face_marker": "F3",
+      "contact_marker": "F3",
+      "selection_semantics": "contact_point_bbox_face",
+      "derived_point_ref": "candidate.points.part_001_y_negative_contact",
+      "source_surface_ref": "candidate.surfaces.part_001_y_negative_contact"
+    }
+  },
+  "selected_markers": {
+    "part": "2",
+    "contact_point_face": "F2",
+    "motion_axis_face": "F3"
+  },
+  "rationale": {
+    "part_selection": {
+      "selection_source": "reference",
+      "raw_response": {
+        "selected_marker": "2",
+        "confidence": 1.0,
+        "reason": "reference P3SAM part selection"
+      }
+    },
+    "contact_point_selection": {
+      "confidence": 1.0,
+      "reason": "reference P3SAM contact-point and motion-axis selection",
+      "raw_response": {
+        "part": {
+          "selected_marker": "2",
+          "confidence": 1.0,
+          "reason": "reference P3SAM part selection"
+        },
+        "contact_point_motion_axis": {
+          "selected_contact_point_marker": "F2",
+          "candidate_contact_point_markers": [
+            "F2"
+          ],
+          "selected_motion_axis_marker": "F3",
+          "confidence": 1.0,
+          "reason": "reference P3SAM contact-point and motion-axis selection"
+        }
+      }
+    },
+    "axis_binding": {
+      "confidence": 1.0,
+      "reason": "reference P3SAM contact-point and motion-axis selection",
+      "raw_response": {
+        "part": {
+          "selected_marker": "2",
+          "confidence": 1.0,
+          "reason": "reference P3SAM part selection"
+        },
+        "contact_point_motion_axis": {
+          "selected_contact_point_marker": "F2",
+          "candidate_contact_point_markers": [
+            "F2"
+          ],
+          "selected_motion_axis_marker": "F3",
+          "confidence": 1.0,
+          "reason": "reference P3SAM contact-point and motion-axis selection"
+        }
+      }
+    }
+  }
+}

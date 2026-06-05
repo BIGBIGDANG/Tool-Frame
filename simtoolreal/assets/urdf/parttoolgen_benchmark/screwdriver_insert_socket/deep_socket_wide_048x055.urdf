@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<robot name="parttoolgen_screwdriver_insert_wide_guide_socket">
+  <link name="wide_guide_socket">
+    <!-- Public tabletop insertion target: a small visual base plus a wider
+         thin-wall guide sleeve. The guide hole is 24 mm across for a first
+         loosened insertion benchmark variant. -->
+    <visual>
+      <material name="guide_socket_gray">
+        <color rgba="0.50 0.50 0.50 1.0"/>
+      </material>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="wide_guide_socket_048x055.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin xyz="0.0135 0 0.0275"/>
+      <geometry>
+        <box size="0.003 0.030 0.055"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.0135 0 0.0275"/>
+      <geometry>
+        <box size="0.003 0.030 0.055"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 0.0135 0.0275"/>
+      <geometry>
+        <box size="0.024 0.003 0.055"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 -0.0135 0.0275"/>
+      <geometry>
+        <box size="0.024 0.003 0.055"/>
+      </geometry>
+    </collision>
+
+    <inertial>
+      <mass value="0.08"/>
+      <inertia ixx="0.00003" ixy="0.0" ixz="0.0" iyy="0.00003" iyz="0.0" izz="0.00003"/>
+    </inertial>
+  </link>
+</robot>

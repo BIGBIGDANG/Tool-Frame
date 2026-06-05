@@ -1,0 +1,53 @@
+{
+  "schema_version": "parttoolgen_p3sam_part_selection_v0",
+  "tool_id": "claw_hammer",
+  "task_id": "hammer_down_strike_nail_smoke",
+  "task_instruction": "Use the claw hammer to strike the visible nail straight downward.",
+  "selection_source": "vlm",
+  "selected_marker": "2",
+  "selected_function_marker": "2",
+  "selected_part": {
+    "marker": "2",
+    "part_ref": "tool.parts.part_001"
+  },
+  "selected_function_part_ref": "tool.parts.part_001",
+  "selected_part_row": {
+    "tool_id": "claw_hammer",
+    "marker": "2",
+    "part_id": "part_001",
+    "part_ref": "tool.parts.part_001",
+    "source_label": "sampart3d_segment_1",
+    "point_count": 1401,
+    "role_candidates": [
+      "tool_part_candidate",
+      "functional_candidate",
+      "contact_patch"
+    ],
+    "part_label": 1
+  },
+  "visual_evidence": "configs/tool_refs/claw_hammer/evidence/01_part_selection/visual_evidence.json",
+  "raw_response": {
+    "selected_marker": "2",
+    "confidence": 0.94,
+    "reason": "Hammer head/striking face is the task-facing part for hitting the nail straight downward.",
+    "_raw_response": {
+      "raw_text": "{\"selected_marker\":\"2\",\"confidence\":0.94,\"reason\":\"Hammer head/striking face is the task-facing part for hitting the nail straight downward.\"}",
+      "metadata": {
+        "client": "openai_compatible",
+        "endpoint": "chat/completions",
+        "model": "gpt-5.5",
+        "base_url": "https://xcode.best/v1",
+        "image_paths": [
+          "configs/tool_refs/claw_hammer/evidence/01_part_selection/claw_hammer/overview/claw_hammer_whole_mesh_part_choice_overview.png"
+        ],
+        "latency_s": 5.946,
+        "max_new_tokens": 768,
+        "context_id": "claw_hammer:p3sam_part_selection"
+      }
+    }
+  },
+  "metadata": {
+    "created_by": "parttoolgen.cli.tool_prior.select_p3sam_tool_refs",
+    "created_unix_s": 1780556883.9795408
+  }
+}

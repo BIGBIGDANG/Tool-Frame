@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<robot name="parttoolgen_eraser_wipe_patch_016x003x0006">
+  <link name="wipe_patch">
+    <visual>
+      <material name="wipe_patch_blue">
+        <color rgba="0.08 0.32 0.95 1.0"/>
+      </material>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <box size="0.160 0.030 0.006"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.0000008" ixy="0.0" ixz="0.0" iyy="0.0000214" iyz="0.0" izz="0.0000222"/>
+    </inertial>
+  </link>
+</robot>

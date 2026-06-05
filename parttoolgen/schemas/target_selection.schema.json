@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "parttoolgen.target_selection.v0",
+  "title": "PartToolGen Target Selection",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "task_id",
+    "instruction",
+    "selected_marker",
+    "selected_target_marker",
+    "selected_target_ref",
+    "candidate_marker_table",
+    "visual_evidence"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": "parttoolgen_target_selection_v0"},
+    "artifact_id": {"type": "string", "minLength": 1},
+    "task_id": {"type": "string", "minLength": 1},
+    "instruction": {"type": "string", "minLength": 1},
+    "selected_marker": {"type": "string", "pattern": "^T[0-9]+$"},
+    "selected_target_marker": {"type": "string", "pattern": "^T[0-9]+$"},
+    "selected_target_ref": {"type": "string", "minLength": 1},
+    "selected_target_contact_refs": {"type": "array", "items": {"type": "string"}},
+    "selected_target_axis_refs": {"type": "array", "items": {"type": "string"}},
+    "selected_target_pre_contact_refs": {"type": "array", "items": {"type": "string"}},
+    "confidence": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+    "reason": {"type": "string"},
+    "candidate_marker_table": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["marker", "target_ref"],
+        "additionalProperties": true,
+        "properties": {
+          "marker": {"type": "string", "pattern": "^T[0-9]+$"},
+          "target_ref": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "visual_evidence": {"type": "object"},
+    "raw_response": {"type": "string"},
+    "metadata": {"type": "object"}
+  }
+}

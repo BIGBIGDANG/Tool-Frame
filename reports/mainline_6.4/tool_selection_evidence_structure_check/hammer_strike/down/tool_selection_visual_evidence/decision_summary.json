@@ -1,0 +1,220 @@
+{
+  "schema_version": "toolframe_tool_selection_decision_summary_v1",
+  "task_family": "hammer_strike",
+  "split": "down",
+  "tool_id": "claw_hammer",
+  "tool_refs_dir": "/data5/cmz_data/project_5.10/ToolFrame_5.21/configs/tool_refs/claw_hammer",
+  "selected_part": {
+    "marker": "2",
+    "part_ref": "tool.parts.part_001"
+  },
+  "selected_contact_point": {
+    "marker": "F3",
+    "point_ref": "candidate.points.part_001_y_negative_endpoint",
+    "surface_ref": "candidate.surfaces.part_001_y_negative_endpoint",
+    "patch_id": "y_negative_endpoint",
+    "row": {
+      "tool_id": "claw_hammer",
+      "part_marker": "2",
+      "part_id": "part_001",
+      "part_ref": "tool.parts.part_001",
+      "point_ref": "candidate.points.part_001_y_negative_endpoint",
+      "surface_ref": "candidate.surfaces.part_001_y_negative_endpoint",
+      "polarity": "negative",
+      "patch_id": "y_negative_endpoint",
+      "role": null,
+      "xyz_tool": [
+        0.1258244669346304,
+        -0.03686607782189973,
+        -0.0003722973759538833
+      ],
+      "normal_tool": [
+        -0.013480043899764321,
+        -0.9999039161978975,
+        -0.003232149218134701
+      ],
+      "face_marker": "F3",
+      "contact_marker": "F3",
+      "selection_semantics": "contact_point_bbox_face",
+      "derived_point_ref": "candidate.points.part_001_y_negative_endpoint",
+      "source_surface_ref": "candidate.surfaces.part_001_y_negative_endpoint"
+    }
+  },
+  "selected_motion_axis": {
+    "marker": "F3",
+    "surface_ref": "candidate.surfaces.part_001_y_negative_endpoint",
+    "patch_id": "y_negative_endpoint",
+    "row": {
+      "tool_id": "claw_hammer",
+      "part_marker": "2",
+      "part_id": "part_001",
+      "part_ref": "tool.parts.part_001",
+      "point_ref": "candidate.points.part_001_y_negative_endpoint",
+      "surface_ref": "candidate.surfaces.part_001_y_negative_endpoint",
+      "polarity": "negative",
+      "patch_id": "y_negative_endpoint",
+      "role": null,
+      "xyz_tool": [
+        0.1258244669346304,
+        -0.03686607782189973,
+        -0.0003722973759538833
+      ],
+      "normal_tool": [
+        -0.013480043899764321,
+        -0.9999039161978975,
+        -0.003232149218134701
+      ],
+      "face_marker": "F3",
+      "contact_marker": "F3",
+      "selection_semantics": "contact_point_bbox_face",
+      "derived_point_ref": "candidate.points.part_001_y_negative_endpoint",
+      "source_surface_ref": "candidate.surfaces.part_001_y_negative_endpoint"
+    }
+  },
+  "selected_markers": {
+    "part": "2",
+    "contact_point_face": "F3",
+    "motion_axis_face": "F3"
+  },
+  "rationale": {
+    "part_selection": {
+      "selection_source": "vlm",
+      "raw_response": {
+        "selected_marker": "2",
+        "confidence": 0.94,
+        "reason": "Hammer head/striking face is the task-facing part for hitting the nail straight downward.",
+        "_raw_response": {
+          "raw_text": "{\"selected_marker\":\"2\",\"confidence\":0.94,\"reason\":\"Hammer head/striking face is the task-facing part for hitting the nail straight downward.\"}",
+          "metadata": {
+            "client": "openai_compatible",
+            "endpoint": "chat/completions",
+            "model": "gpt-5.5",
+            "base_url": "https://xcode.best/v1",
+            "image_paths": [
+              "configs/tool_refs/claw_hammer/evidence/01_part_selection/claw_hammer/overview/claw_hammer_whole_mesh_part_choice_overview.png"
+            ],
+            "latency_s": 5.946,
+            "max_new_tokens": 768,
+            "context_id": "claw_hammer:p3sam_part_selection"
+          }
+        }
+      }
+    },
+    "contact_point_selection": {
+      "confidence": 0.88,
+      "reason": "For striking a nail straight downward, the active tool reference is the hammer head's striking face. Visually F3 marks the lower/end striking face with its normal along the downward impact direction, while the other faces are side or claw/head surfaces not intended for nail impact.",
+      "raw_response": {
+        "part": {
+          "selected_marker": "2",
+          "confidence": 0.94,
+          "reason": "Hammer head/striking face is the task-facing part for hitting the nail straight downward.",
+          "_raw_response": {
+            "raw_text": "{\"selected_marker\":\"2\",\"confidence\":0.94,\"reason\":\"Hammer head/striking face is the task-facing part for hitting the nail straight downward.\"}",
+            "metadata": {
+              "client": "openai_compatible",
+              "endpoint": "chat/completions",
+              "model": "gpt-5.5",
+              "base_url": "https://xcode.best/v1",
+              "image_paths": [
+                "configs/tool_refs/claw_hammer/evidence/01_part_selection/claw_hammer/overview/claw_hammer_whole_mesh_part_choice_overview.png"
+              ],
+              "latency_s": 5.946,
+              "max_new_tokens": 768,
+              "context_id": "claw_hammer:p3sam_part_selection"
+            }
+          }
+        },
+        "contact_point_motion_axis": {
+          "selected_contact_point_marker": "F3",
+          "candidate_contact_point_markers": [
+            "F3"
+          ],
+          "selected_motion_axis_marker": "F3",
+          "confidence": 0.88,
+          "reason": "For striking a nail straight downward, the active tool reference is the hammer head's striking face. Visually F3 marks the lower/end striking face with its normal along the downward impact direction, while the other faces are side or claw/head surfaces not intended for nail impact.",
+          "_raw_response": {
+            "raw_text": "{\"selected_contact_point_marker\":\"F3\",\"candidate_contact_point_markers\":[\"F3\"],\"selected_motion_axis_marker\":\"F3\",\"confidence\":0.88,\"reason\":\"For striking a nail straight downward, the active tool reference is the hammer head's striking face. Visually F3 marks the lower/end striking face with its normal along the downward impact direction, while the other faces are side or claw/head surfaces not intended for nail impact.\"}",
+            "metadata": {
+              "client": "openai_compatible",
+              "endpoint": "chat/completions",
+              "model": "gpt-5.5",
+              "base_url": "https://xcode.best/v1",
+              "image_paths": [
+                "configs/tool_refs/claw_hammer/evidence/02_contact_marker_selection/claw_hammer/overview/claw_hammer_whole_mesh_part_choice_overview.png",
+                "configs/tool_refs/claw_hammer/evidence/02_contact_marker_selection/claw_hammer/part_cards/candidate_002_card.png",
+                "configs/tool_refs/claw_hammer/evidence/02_contact_marker_selection/claw_hammer/selected_part_bbox_overview/candidate_002_bbox_overview.png",
+                "configs/tool_refs/claw_hammer/evidence/02_contact_marker_selection/claw_hammer/selected_part_face_highlights/candidate_002_face_F1_highlight.png",
+                "configs/tool_refs/claw_hammer/evidence/02_contact_marker_selection/claw_hammer/selected_part_face_highlights/candidate_002_face_F2_highlight.png",
+                "configs/tool_refs/claw_hammer/evidence/02_contact_marker_selection/claw_hammer/selected_part_face_highlights/candidate_002_face_F3_highlight.png",
+                "configs/tool_refs/claw_hammer/evidence/02_contact_marker_selection/claw_hammer/selected_part_face_highlights/candidate_002_face_F4_highlight.png",
+                "configs/tool_refs/claw_hammer/evidence/02_contact_marker_selection/claw_hammer/selected_part_face_highlights/candidate_002_face_F5_highlight.png",
+                "configs/tool_refs/claw_hammer/evidence/02_contact_marker_selection/claw_hammer/selected_part_face_highlights/candidate_002_face_F6_highlight.png"
+              ],
+              "latency_s": 13.418,
+              "max_new_tokens": 768,
+              "context_id": "claw_hammer:p3sam_contact_selection"
+            }
+          }
+        }
+      }
+    },
+    "axis_binding": {
+      "confidence": 0.88,
+      "reason": "For striking a nail straight downward, the active tool reference is the hammer head's striking face. Visually F3 marks the lower/end striking face with its normal along the downward impact direction, while the other faces are side or claw/head surfaces not intended for nail impact.",
+      "raw_response": {
+        "part": {
+          "selected_marker": "2",
+          "confidence": 0.94,
+          "reason": "Hammer head/striking face is the task-facing part for hitting the nail straight downward.",
+          "_raw_response": {
+            "raw_text": "{\"selected_marker\":\"2\",\"confidence\":0.94,\"reason\":\"Hammer head/striking face is the task-facing part for hitting the nail straight downward.\"}",
+            "metadata": {
+              "client": "openai_compatible",
+              "endpoint": "chat/completions",
+              "model": "gpt-5.5",
+              "base_url": "https://xcode.best/v1",
+              "image_paths": [
+                "configs/tool_refs/claw_hammer/evidence/01_part_selection/claw_hammer/overview/claw_hammer_whole_mesh_part_choice_overview.png"
+              ],
+              "latency_s": 5.946,
+              "max_new_tokens": 768,
+              "context_id": "claw_hammer:p3sam_part_selection"
+            }
+          }
+        },
+        "contact_point_motion_axis": {
+          "selected_contact_point_marker": "F3",
+          "candidate_contact_point_markers": [
+            "F3"
+          ],
+          "selected_motion_axis_marker": "F3",
+          "confidence": 0.88,
+          "reason": "For striking a nail straight downward, the active tool reference is the hammer head's striking face. Visually F3 marks the lower/end striking face with its normal along the downward impact direction, while the other faces are side or claw/head surfaces not intended for nail impact.",
+          "_raw_response": {
+            "raw_text": "{\"selected_contact_point_marker\":\"F3\",\"candidate_contact_point_markers\":[\"F3\"],\"selected_motion_axis_marker\":\"F3\",\"confidence\":0.88,\"reason\":\"For striking a nail straight downward, the active tool reference is the hammer head's striking face. Visually F3 marks the lower/end striking face with its normal along the downward impact direction, while the other faces are side or claw/head surfaces not intended for nail impact.\"}",
+            "metadata": {
+              "client": "openai_compatible",
+              "endpoint": "chat/completions",
+              "model": "gpt-5.5",
+              "base_url": "https://xcode.best/v1",
+              "image_paths": [
+                "configs/tool_refs/claw_hammer/evidence/02_contact_marker_selection/claw_hammer/overview/claw_hammer_whole_mesh_part_choice_overview.png",
+                "configs/tool_refs/claw_hammer/evidence/02_contact_marker_selection/claw_hammer/part_cards/candidate_002_card.png",
+                "configs/tool_refs/claw_hammer/evidence/02_contact_marker_selection/claw_hammer/selected_part_bbox_overview/candidate_002_bbox_overview.png",
+                "configs/tool_refs/claw_hammer/evidence/02_contact_marker_selection/claw_hammer/selected_part_face_highlights/candidate_002_face_F1_highlight.png",
+                "configs/tool_refs/claw_hammer/evidence/02_contact_marker_selection/claw_hammer/selected_part_face_highlights/candidate_002_face_F2_highlight.png",
+                "configs/tool_refs/claw_hammer/evidence/02_contact_marker_selection/claw_hammer/selected_part_face_highlights/candidate_002_face_F3_highlight.png",
+                "configs/tool_refs/claw_hammer/evidence/02_contact_marker_selection/claw_hammer/selected_part_face_highlights/candidate_002_face_F4_highlight.png",
+                "configs/tool_refs/claw_hammer/evidence/02_contact_marker_selection/claw_hammer/selected_part_face_highlights/candidate_002_face_F5_highlight.png",
+                "configs/tool_refs/claw_hammer/evidence/02_contact_marker_selection/claw_hammer/selected_part_face_highlights/candidate_002_face_F6_highlight.png"
+              ],
+              "latency_s": 13.418,
+              "max_new_tokens": 768,
+              "context_id": "claw_hammer:p3sam_contact_selection"
+            }
+          }
+        }
+      }
+    }
+  }
+}

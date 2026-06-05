@@ -1,0 +1,45 @@
+{
+  "schema_version": "parttoolgen_p3sam_part_selection_v0",
+  "tool_id": "staples_marker",
+  "task_id": "marker_trace_draw_c",
+  "task_instruction": "Use the writing tip of the marker to draw a continuous C-shaped path on a whiteboard.",
+  "selection_source": "vlm",
+  "selected_contact_point_part_marker": "2",
+  "selected_contact_point_part_ref": "tool.parts.part_001",
+  "selected_part_row": {
+    "tool_id": "staples_marker",
+    "marker": "2",
+    "part_id": "part_001",
+    "part_ref": "tool.parts.part_001",
+    "source_label": "p3sam_segment_86",
+    "point_count": 208,
+    "role_candidates": [
+      "tool_part_candidate",
+      "functional_candidate",
+      "grasp_candidate",
+      "contact_patch"
+    ],
+    "part_label": 86
+  },
+  "visual_evidence": "artifacts/image_grounded/tool_ref_grounding/staples_marker/marker_trace_path_tool_refs_visualizations/marker_trace_draw_c_part_overview/visual_evidence.json",
+  "raw_response": {
+    "selected_marker": "2",
+    "confidence": 0.98,
+    "reason": "marker 2 is the exposed writing tip at the end used to contact the whiteboard and draw",
+    "_raw_response": {
+      "raw_text": "{\"selected_marker\":\"2\",\"confidence\":0.98,\"reason\":\"marker 2 is the exposed writing tip at the end used to contact the whiteboard and draw\"}",
+      "metadata": {
+        "client": "openai_compatible",
+        "endpoint": "chat/completions",
+        "model": "gpt-5.4",
+        "base_url": "https://xcode.best/v1",
+        "image_paths": [
+          "artifacts/image_grounded/tool_ref_grounding/staples_marker/marker_trace_path_tool_refs_visualizations/marker_trace_draw_c_part_overview/staples_marker/overview/staples_marker_whole_mesh_part_choice_overview.png"
+        ],
+        "latency_s": 3.722,
+        "max_new_tokens": 512,
+        "context_id": "staples_marker:p3sam_part_selection"
+      }
+    }
+  }
+}

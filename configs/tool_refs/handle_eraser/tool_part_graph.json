@@ -1,0 +1,411 @@
+{
+  "schema_version": "v0.1",
+  "tool_id": "handle_eraser",
+  "tool_frame": "tool",
+  "parts": {
+    "part_000": {
+      "label": "p3sam_segment_0",
+      "role_candidates": [
+        "tool_part_candidate",
+        "functional_candidate",
+        "grasp_candidate",
+        "contact_patch"
+      ],
+      "mask_ref": "p3sam:face_label:0",
+      "point_count": 2416,
+      "face_count": 3901,
+      "original_face_count": 3901,
+      "connected_component_count": 19,
+      "removed_disconnected_face_count": 0,
+      "centroid_xyz_tool": [
+        -0.002900907649006621,
+        0.00017030021937086733,
+        -0.02634032824503309
+      ],
+      "obb": {
+        "center_xyz_tool": [
+          -0.004993865,
+          -6.27500000000003e-05,
+          -0.01989448
+        ],
+        "extent_xyz": [
+          0.16535907,
+          0.06579946,
+          0.053032220000000005
+        ],
+        "axes_tool": {
+          "x": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "y": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "z": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        }
+      },
+      "surface_patches": {
+        "x_negative_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            -0.07442494360452094,
+            0.00019765117817762708,
+            -0.027209310625744346
+          ],
+          "normal_tool": [
+            -0.8996959621019543,
+            0.0019796524412558467,
+            0.4365126077831549
+          ],
+          "support_faces": 596,
+          "confidence": 0.6745901701424515,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "handle_eraser_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/handle_eraser/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "x_positive_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            0.0671703990909105,
+            0.001171979249331818,
+            -0.02917446363813252
+          ],
+          "normal_tool": [
+            0.8923231849441331,
+            -0.0017899194634829769,
+            0.45139354204449206
+          ],
+          "support_faces": 706,
+          "confidence": 0.6745901701424515,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "handle_eraser_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/handle_eraser/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            -0.000905592833195562,
+            -0.027891773633092195,
+            -0.0394102951227862
+          ],
+          "normal_tool": [
+            0.0064671264073724085,
+            -0.9819089887439252,
+            0.189243002776624
+          ],
+          "support_faces": 425,
+          "confidence": 0.6745901701424515,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "handle_eraser_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/handle_eraser/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.0014228978732753138,
+            0.028497014471845775,
+            -0.03956652963935844
+          ],
+          "normal_tool": [
+            0.004289553181019737,
+            0.9816406039817346,
+            0.19069169973515548
+          ],
+          "support_faces": 399,
+          "confidence": 0.6745901701424515,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "handle_eraser_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/handle_eraser/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            -0.00255305798920107,
+            0.00152888674579652,
+            -0.044345503857191375
+          ],
+          "normal_tool": [
+            0.012659119429717145,
+            -0.006343531782628373,
+            -0.9998997481246742
+          ],
+          "support_faces": 1031,
+          "confidence": 0.6745901701424515,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "handle_eraser_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/handle_eraser/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            -0.006781741079255676,
+            0.0004631208934997164,
+            0.002925339081742942
+          ],
+          "normal_tool": [
+            -0.010020484809383822,
+            -0.012134604987742,
+            0.9998761629551812
+          ],
+          "support_faces": 481,
+          "confidence": 0.6745901701424515,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "handle_eraser_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/handle_eraser/face_labels/p3sam_face_labels.npy"
+          }
+        }
+      },
+      "confidence": 0.6745901701424515,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "handle_eraser_p3sam_auto_mask_20260525",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/handle_eraser/face_labels/p3sam_face_labels.npy",
+        "part_label": 0,
+        "connected_component_index": 0,
+        "connected_component_count": 19,
+        "original_face_count": 3901,
+        "kept_face_count": 3901,
+        "removed_disconnected_face_count": 0,
+        "component_filter": "keep_dominant_spatial_cluster_per_p3sam_label"
+      }
+    },
+    "part_001": {
+      "label": "p3sam_segment_131",
+      "role_candidates": [
+        "tool_part_candidate",
+        "functional_candidate",
+        "grasp_candidate",
+        "contact_patch"
+      ],
+      "mask_ref": "p3sam:face_label:131",
+      "point_count": 12751,
+      "face_count": 15661,
+      "original_face_count": 15661,
+      "connected_component_count": 573,
+      "removed_disconnected_face_count": 0,
+      "centroid_xyz_tool": [
+        -0.005069897607246474,
+        -0.0011261664536114844,
+        -0.06547341125637206
+      ],
+      "obb": {
+        "center_xyz_tool": [
+          -0.0027883549999999993,
+          -0.0014157700000000002,
+          -0.05956074
+        ],
+        "extent_xyz": [
+          0.16897847,
+          0.06480204,
+          0.03241194
+        ],
+        "axes_tool": {
+          "x": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "y": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "z": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        }
+      },
+      "surface_patches": {
+        "x_negative_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            -0.07497247998623265,
+            -0.0022226716325701406,
+            -0.06186686445624655
+          ],
+          "normal_tool": [
+            -0.9969413410050315,
+            -0.04606686784537728,
+            0.06313324228966902
+          ],
+          "support_faces": 1948,
+          "confidence": 0.9,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "handle_eraser_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/handle_eraser/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "x_positive_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            0.06974949740127595,
+            0.0015312997184699436,
+            -0.06134505950826156
+          ],
+          "normal_tool": [
+            0.9975253871323719,
+            0.06268938248067701,
+            0.031829912827452386
+          ],
+          "support_faces": 1761,
+          "confidence": 0.9,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "handle_eraser_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/handle_eraser/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            -0.01332098907075586,
+            -0.02575699441520302,
+            -0.06096644395524663
+          ],
+          "normal_tool": [
+            -0.08956903286584324,
+            -0.9775743937138693,
+            0.19059300382343103
+          ],
+          "support_faces": 2498,
+          "confidence": 0.9,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "handle_eraser_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/handle_eraser/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            -0.00033898461149313805,
+            0.023247285791833425,
+            -0.060232697699986244
+          ],
+          "normal_tool": [
+            -0.004969260284185185,
+            0.9901483133760304,
+            0.13993435593459638
+          ],
+          "support_faces": 3421,
+          "confidence": 0.9,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "handle_eraser_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/handle_eraser/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            -0.003294815579477083,
+            0.006400835522270834,
+            -0.07113621527595293
+          ],
+          "normal_tool": [
+            -0.008182422056723244,
+            -0.016811983039837372,
+            -0.99982518731804
+          ],
+          "support_faces": 3610,
+          "confidence": 0.9,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "handle_eraser_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/handle_eraser/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            -0.01512455973550766,
+            -0.002199516525409961,
+            -0.04723292364461273
+          ],
+          "normal_tool": [
+            -0.5966909575255243,
+            -0.19482396375062389,
+            0.7784622819095146
+          ],
+          "support_faces": 648,
+          "confidence": 0.9,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "handle_eraser_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/handle_eraser/face_labels/p3sam_face_labels.npy"
+          }
+        }
+      },
+      "confidence": 0.9,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "handle_eraser_p3sam_auto_mask_20260525",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/handle_eraser/face_labels/p3sam_face_labels.npy",
+        "part_label": 131,
+        "connected_component_index": 0,
+        "connected_component_count": 573,
+        "original_face_count": 15661,
+        "kept_face_count": 15661,
+        "removed_disconnected_face_count": 0,
+        "component_filter": "keep_dominant_spatial_cluster_per_p3sam_label"
+      }
+    }
+  },
+  "relations": [
+    {
+      "type": "part_of",
+      "subject": "tool.parts.part_000",
+      "object": "tool.handle_eraser",
+      "confidence": 0.6745901701424515,
+      "source": "p3sam_tool_prior"
+    },
+    {
+      "type": "part_of",
+      "subject": "tool.parts.part_001",
+      "object": "tool.handle_eraser",
+      "confidence": 0.9,
+      "source": "p3sam_tool_prior"
+    }
+  ],
+  "metadata": {
+    "created_by": "parttoolgen.providers.tool_prior.sampart3d_mesh_candidates",
+    "geometry_mode": "prior",
+    "segmentation_mode": "p3sam",
+    "notes": "p3sam face labels are converted in the stable SimToolReal tool/asset frame."
+  }
+}

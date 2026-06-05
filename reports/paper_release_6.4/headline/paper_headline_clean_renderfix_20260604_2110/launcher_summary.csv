@@ -1,0 +1,3 @@
+task,status,returncode,output_root,summary_path,trial_count,pass_rate,success_metric,error
+brush_sweep/forward,completed,0,artifacts/image_grounded/brush_sweep/forward_paper_headline_clean_renderfix_20260604_2110,artifacts/image_grounded/brush_sweep/forward_paper_headline_clean_renderfix_20260604_2110/summary.json,20,0.05,,
+eraser_wipe/tabletop_wipe,completed,0,artifacts/image_grounded/eraser_wipe/tabletop_wipe_paper_headline_clean_renderfix_20260604_2110,artifacts/image_grounded/eraser_wipe/tabletop_wipe_paper_headline_clean_renderfix_20260604_2110/summary.json,20,0.15,,

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sanity_report.schema.json",
+  "title": "SanityReport",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["passed", "failures", "warnings", "num_goals"],
+  "properties": {
+    "schema_version": { "const": "v0.1" },
+    "passed": { "type": "boolean" },
+    "failures": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "warnings": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "num_goals": { "type": "integer", "minimum": 0 },
+    "table_top_z": { "type": ["number", "null"] },
+    "min_root_table_clearance_m": { "type": "number", "minimum": 0 },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

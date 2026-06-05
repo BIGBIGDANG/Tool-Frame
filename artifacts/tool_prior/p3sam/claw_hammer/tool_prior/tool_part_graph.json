@@ -1,0 +1,411 @@
+{
+  "schema_version": "v0.1",
+  "tool_id": "claw_hammer",
+  "tool_frame": "tool",
+  "parts": {
+    "part_000": {
+      "label": "p3sam_segment_0",
+      "role_candidates": [
+        "tool_part_candidate",
+        "functional_candidate",
+        "grasp_candidate",
+        "contact_patch"
+      ],
+      "mask_ref": "p3sam:face_label:0",
+      "point_count": 703,
+      "face_count": 1183,
+      "original_face_count": 1183,
+      "connected_component_count": 7,
+      "removed_disconnected_face_count": 0,
+      "centroid_xyz_tool": [
+        0.031675721337126636,
+        -0.0007930809103840678,
+        0.0001616975533428177
+      ],
+      "obb": {
+        "center_xyz_tool": [
+          0.031731054999999994,
+          -0.0007922649999999995,
+          0.0003237750000000001
+        ],
+        "extent_xyz": [
+          0.16821051,
+          0.02335165,
+          0.01891529
+        ],
+        "axes_tool": {
+          "x": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "y": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "z": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        }
+      },
+      "surface_patches": {
+        "x_negative_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            -0.04247193875050669,
+            -0.0007184017854048861,
+            0.00027765987922951345
+          ],
+          "normal_tool": [
+            -0.9999498043523046,
+            -0.0020110779000844887,
+            -0.009815515343955673
+          ],
+          "support_faces": 273,
+          "confidence": 0.8000511471579524,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "claw_hammer_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/claw_hammer/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "x_positive_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            0.10054013074882266,
+            -0.0010306316627796662,
+            -0.00027657535432623305
+          ],
+          "normal_tool": [
+            -0.3852753728969895,
+            -0.9178475265833942,
+            0.0954924341706241
+          ],
+          "support_faces": 177,
+          "confidence": 0.8000511471579524,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "claw_hammer_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/claw_hammer/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.026009432256978587,
+            -0.010650428404067441,
+            -5.305634877339893e-05
+          ],
+          "normal_tool": [
+            0.004558248040739348,
+            -0.9999785250551497,
+            -0.00470869443969234
+          ],
+          "support_faces": 337,
+          "confidence": 0.8000511471579524,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "claw_hammer_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/claw_hammer/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.025894018171162367,
+            0.008937347593087218,
+            0.00021500600872511287
+          ],
+          "normal_tool": [
+            0.008495863291673893,
+            0.9999057351892819,
+            0.010786150495463023
+          ],
+          "support_faces": 341,
+          "confidence": 0.8000511471579524,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "claw_hammer_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/claw_hammer/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.027584350334675423,
+            -0.000906474574212977,
+            -0.0076250085172883866
+          ],
+          "normal_tool": [
+            -0.00036617204886296094,
+            -0.006185539195281369,
+            -0.9999808023271718
+          ],
+          "support_faces": 358,
+          "confidence": 0.8000511471579524,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "claw_hammer_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/claw_hammer/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.023750679850713226,
+            -0.000682040120104274,
+            0.008056501480709164
+          ],
+          "normal_tool": [
+            0.007512585627926484,
+            -0.011670348104368117,
+            0.999903677377129
+          ],
+          "support_faces": 322,
+          "confidence": 0.8000511471579524,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "claw_hammer_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/claw_hammer/face_labels/p3sam_face_labels.npy"
+          }
+        }
+      },
+      "confidence": 0.8000511471579524,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "claw_hammer_p3sam_auto_mask_20260525",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/claw_hammer/face_labels/p3sam_face_labels.npy",
+        "part_label": 0,
+        "connected_component_index": 0,
+        "connected_component_count": 7,
+        "original_face_count": 1183,
+        "kept_face_count": 1183,
+        "removed_disconnected_face_count": 0,
+        "component_filter": "keep_dominant_spatial_cluster_per_p3sam_label"
+      }
+    },
+    "part_001": {
+      "label": "p3sam_segment_216",
+      "role_candidates": [
+        "tool_part_candidate",
+        "functional_candidate",
+        "grasp_candidate",
+        "contact_patch"
+      ],
+      "mask_ref": "p3sam:face_label:216",
+      "point_count": 1327,
+      "face_count": 1955,
+      "original_face_count": 1955,
+      "connected_component_count": 22,
+      "removed_disconnected_face_count": 0,
+      "centroid_xyz_tool": [
+        0.12401015374529,
+        0.0002240491936699311,
+        7.813036925380633e-07
+      ],
+      "obb": {
+        "center_xyz_tool": [
+          0.125129485,
+          0.0045972700000000005,
+          -0.00044979500000000023
+        ],
+        "extent_xyz": [
+          0.03499089000000001,
+          0.08562382,
+          0.02797715
+        ],
+        "axes_tool": {
+          "x": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "y": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "z": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        }
+      },
+      "surface_patches": {
+        "x_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.11146887704613262,
+            0.004410489329860702,
+            -0.0003549812430618494
+          ],
+          "normal_tool": [
+            -0.9991010440156582,
+            -0.03909251844270666,
+            -0.01639752568616477
+          ],
+          "support_faces": 247,
+          "confidence": 0.9,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "claw_hammer_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/claw_hammer/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "x_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.14075932849385533,
+            -0.006742373054874837,
+            -3.2681227661382646e-05
+          ],
+          "normal_tool": [
+            0.9999866987017177,
+            -0.005133046102126424,
+            -0.0005042393811221705
+          ],
+          "support_faces": 306,
+          "confidence": 0.9,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "claw_hammer_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/claw_hammer/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_negative_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            0.1258244669346304,
+            -0.03686607782189973,
+            -0.0003722973759538833
+          ],
+          "normal_tool": [
+            -0.013480043899764321,
+            -0.9999039161978975,
+            -0.003232149218134701
+          ],
+          "support_faces": 334,
+          "confidence": 0.9,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "claw_hammer_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/claw_hammer/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_positive_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            0.11869294653333884,
+            0.04007512793348565,
+            0.0001715507801125413
+          ],
+          "normal_tool": [
+            0.4535414902267817,
+            0.8911907874563757,
+            -0.008893649181012682
+          ],
+          "support_faces": 243,
+          "confidence": 0.9,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "claw_hammer_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/claw_hammer/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.12636603612785433,
+            0.0018851673969572358,
+            -0.012643557113210378
+          ],
+          "normal_tool": [
+            -0.01460232476678085,
+            -0.015146899713050898,
+            -0.9997786472717289
+          ],
+          "support_faces": 482,
+          "confidence": 0.9,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "claw_hammer_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/claw_hammer/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.1265247545050359,
+            0.0018156288785894147,
+            0.012269176364164053
+          ],
+          "normal_tool": [
+            -0.012192557252246201,
+            -0.012472145321846567,
+            0.9998478819994177
+          ],
+          "support_faces": 488,
+          "confidence": 0.9,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "claw_hammer_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/claw_hammer/face_labels/p3sam_face_labels.npy"
+          }
+        }
+      },
+      "confidence": 0.9,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "claw_hammer_p3sam_auto_mask_20260525",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/claw_hammer/face_labels/p3sam_face_labels.npy",
+        "part_label": 216,
+        "connected_component_index": 0,
+        "connected_component_count": 22,
+        "original_face_count": 1955,
+        "kept_face_count": 1955,
+        "removed_disconnected_face_count": 0,
+        "component_filter": "keep_dominant_spatial_cluster_per_p3sam_label"
+      }
+    }
+  },
+  "relations": [
+    {
+      "type": "part_of",
+      "subject": "tool.parts.part_000",
+      "object": "tool.claw_hammer",
+      "confidence": 0.8000511471579524,
+      "source": "p3sam_tool_prior"
+    },
+    {
+      "type": "part_of",
+      "subject": "tool.parts.part_001",
+      "object": "tool.claw_hammer",
+      "confidence": 0.9,
+      "source": "p3sam_tool_prior"
+    }
+  ],
+  "metadata": {
+    "created_by": "parttoolgen.providers.tool_prior.sampart3d_mesh_candidates",
+    "geometry_mode": "prior",
+    "segmentation_mode": "p3sam",
+    "notes": "p3sam face labels are converted in the stable SimToolReal tool/asset frame."
+  }
+}

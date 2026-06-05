@@ -1,0 +1,849 @@
+{
+  "schema_version": "v0.1",
+  "evidence_id": "red_brush_p3sam_tool_ref_evidence",
+  "items": [
+    {
+      "id": "red_brush_whole_mesh_part_choice_overview",
+      "kind": "whole_mesh_part_choice_overview",
+      "media_type": "image",
+      "path": "artifacts/visualizations/p3sam_red_brush_tool_ref_evidence_rebuilt_20260524/red_brush/overview/red_brush_whole_mesh_part_choice_overview.png",
+      "description": "Multi-view P3SAM part candidates for red_brush; markers name selectable tool parts.",
+      "provider_id": "p3sam_tool_ref_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "red_brush_part_candidate_1_card",
+      "kind": "isolated_part_card",
+      "media_type": "image",
+      "path": "artifacts/visualizations/p3sam_red_brush_tool_ref_evidence_rebuilt_20260524/red_brush/part_cards/candidate_001_card.png",
+      "description": "Isolated P3SAM part candidate 1 for red_brush.",
+      "part_marker": "1",
+      "provider_id": "p3sam_tool_ref_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "red_brush_part_candidate_1_function_face_F1",
+      "kind": "function_face_candidate_card",
+      "media_type": "image",
+      "path": "artifacts/visualizations/p3sam_red_brush_tool_ref_evidence_rebuilt_20260524/red_brush/function_contact_choices/candidate_001_F1_face.png",
+      "description": "Multi-view bbox-face evidence for red_brush part candidate 1, face F1.",
+      "part_marker": "1",
+      "face_marker": "F1",
+      "point_ref": "candidate.points.part_000_x_negative_endpoint",
+      "surface_ref": "candidate.surfaces.part_000_x_negative_endpoint",
+      "patch_id": "x_negative_endpoint",
+      "provider_id": "p3sam_tool_ref_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "red_brush_part_candidate_1_function_face_F2",
+      "kind": "function_face_candidate_card",
+      "media_type": "image",
+      "path": "artifacts/visualizations/p3sam_red_brush_tool_ref_evidence_rebuilt_20260524/red_brush/function_contact_choices/candidate_001_F2_face.png",
+      "description": "Multi-view bbox-face evidence for red_brush part candidate 1, face F2.",
+      "part_marker": "1",
+      "face_marker": "F2",
+      "point_ref": "candidate.points.part_000_x_positive_endpoint",
+      "surface_ref": "candidate.surfaces.part_000_x_positive_endpoint",
+      "patch_id": "x_positive_endpoint",
+      "provider_id": "p3sam_tool_ref_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "red_brush_part_candidate_1_function_face_F3",
+      "kind": "function_face_candidate_card",
+      "media_type": "image",
+      "path": "artifacts/visualizations/p3sam_red_brush_tool_ref_evidence_rebuilt_20260524/red_brush/function_contact_choices/candidate_001_F3_face.png",
+      "description": "Multi-view bbox-face evidence for red_brush part candidate 1, face F3.",
+      "part_marker": "1",
+      "face_marker": "F3",
+      "point_ref": "candidate.points.part_000_y_negative_contact",
+      "surface_ref": "candidate.surfaces.part_000_y_negative_contact",
+      "patch_id": "y_negative_contact",
+      "provider_id": "p3sam_tool_ref_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "red_brush_part_candidate_1_function_face_F4",
+      "kind": "function_face_candidate_card",
+      "media_type": "image",
+      "path": "artifacts/visualizations/p3sam_red_brush_tool_ref_evidence_rebuilt_20260524/red_brush/function_contact_choices/candidate_001_F4_face.png",
+      "description": "Multi-view bbox-face evidence for red_brush part candidate 1, face F4.",
+      "part_marker": "1",
+      "face_marker": "F4",
+      "point_ref": "candidate.points.part_000_y_positive_contact",
+      "surface_ref": "candidate.surfaces.part_000_y_positive_contact",
+      "patch_id": "y_positive_contact",
+      "provider_id": "p3sam_tool_ref_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "red_brush_part_candidate_1_function_face_F5",
+      "kind": "function_face_candidate_card",
+      "media_type": "image",
+      "path": "artifacts/visualizations/p3sam_red_brush_tool_ref_evidence_rebuilt_20260524/red_brush/function_contact_choices/candidate_001_F5_face.png",
+      "description": "Multi-view bbox-face evidence for red_brush part candidate 1, face F5.",
+      "part_marker": "1",
+      "face_marker": "F5",
+      "point_ref": "candidate.points.part_000_z_negative_contact",
+      "surface_ref": "candidate.surfaces.part_000_z_negative_contact",
+      "patch_id": "z_negative_contact",
+      "provider_id": "p3sam_tool_ref_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "red_brush_part_candidate_1_function_face_F6",
+      "kind": "function_face_candidate_card",
+      "media_type": "image",
+      "path": "artifacts/visualizations/p3sam_red_brush_tool_ref_evidence_rebuilt_20260524/red_brush/function_contact_choices/candidate_001_F6_face.png",
+      "description": "Multi-view bbox-face evidence for red_brush part candidate 1, face F6.",
+      "part_marker": "1",
+      "face_marker": "F6",
+      "point_ref": "candidate.points.part_000_z_positive_contact",
+      "surface_ref": "candidate.surfaces.part_000_z_positive_contact",
+      "patch_id": "z_positive_contact",
+      "provider_id": "p3sam_tool_ref_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "red_brush_part_candidate_2_card",
+      "kind": "isolated_part_card",
+      "media_type": "image",
+      "path": "artifacts/visualizations/p3sam_red_brush_tool_ref_evidence_rebuilt_20260524/red_brush/part_cards/candidate_002_card.png",
+      "description": "Isolated P3SAM part candidate 2 for red_brush.",
+      "part_marker": "2",
+      "provider_id": "p3sam_tool_ref_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "red_brush_part_candidate_2_function_face_F1",
+      "kind": "function_face_candidate_card",
+      "media_type": "image",
+      "path": "artifacts/visualizations/p3sam_red_brush_tool_ref_evidence_rebuilt_20260524/red_brush/function_contact_choices/candidate_002_F1_face.png",
+      "description": "Multi-view bbox-face evidence for red_brush part candidate 2, face F1.",
+      "part_marker": "2",
+      "face_marker": "F1",
+      "point_ref": "candidate.points.part_001_x_negative_endpoint",
+      "surface_ref": "candidate.surfaces.part_001_x_negative_endpoint",
+      "patch_id": "x_negative_endpoint",
+      "provider_id": "p3sam_tool_ref_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "red_brush_part_candidate_2_function_face_F2",
+      "kind": "function_face_candidate_card",
+      "media_type": "image",
+      "path": "artifacts/visualizations/p3sam_red_brush_tool_ref_evidence_rebuilt_20260524/red_brush/function_contact_choices/candidate_002_F2_face.png",
+      "description": "Multi-view bbox-face evidence for red_brush part candidate 2, face F2.",
+      "part_marker": "2",
+      "face_marker": "F2",
+      "point_ref": "candidate.points.part_001_x_positive_endpoint",
+      "surface_ref": "candidate.surfaces.part_001_x_positive_endpoint",
+      "patch_id": "x_positive_endpoint",
+      "provider_id": "p3sam_tool_ref_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "red_brush_part_candidate_2_function_face_F3",
+      "kind": "function_face_candidate_card",
+      "media_type": "image",
+      "path": "artifacts/visualizations/p3sam_red_brush_tool_ref_evidence_rebuilt_20260524/red_brush/function_contact_choices/candidate_002_F3_face.png",
+      "description": "Multi-view bbox-face evidence for red_brush part candidate 2, face F3.",
+      "part_marker": "2",
+      "face_marker": "F3",
+      "point_ref": "candidate.points.part_001_y_negative_contact",
+      "surface_ref": "candidate.surfaces.part_001_y_negative_contact",
+      "patch_id": "y_negative_contact",
+      "provider_id": "p3sam_tool_ref_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "red_brush_part_candidate_2_function_face_F4",
+      "kind": "function_face_candidate_card",
+      "media_type": "image",
+      "path": "artifacts/visualizations/p3sam_red_brush_tool_ref_evidence_rebuilt_20260524/red_brush/function_contact_choices/candidate_002_F4_face.png",
+      "description": "Multi-view bbox-face evidence for red_brush part candidate 2, face F4.",
+      "part_marker": "2",
+      "face_marker": "F4",
+      "point_ref": "candidate.points.part_001_y_positive_contact",
+      "surface_ref": "candidate.surfaces.part_001_y_positive_contact",
+      "patch_id": "y_positive_contact",
+      "provider_id": "p3sam_tool_ref_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "red_brush_part_candidate_2_function_face_F5",
+      "kind": "function_face_candidate_card",
+      "media_type": "image",
+      "path": "artifacts/visualizations/p3sam_red_brush_tool_ref_evidence_rebuilt_20260524/red_brush/function_contact_choices/candidate_002_F5_face.png",
+      "description": "Multi-view bbox-face evidence for red_brush part candidate 2, face F5.",
+      "part_marker": "2",
+      "face_marker": "F5",
+      "point_ref": "candidate.points.part_001_z_negative_contact",
+      "surface_ref": "candidate.surfaces.part_001_z_negative_contact",
+      "patch_id": "z_negative_contact",
+      "provider_id": "p3sam_tool_ref_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "red_brush_part_candidate_2_function_face_F6",
+      "kind": "function_face_candidate_card",
+      "media_type": "image",
+      "path": "artifacts/visualizations/p3sam_red_brush_tool_ref_evidence_rebuilt_20260524/red_brush/function_contact_choices/candidate_002_F6_face.png",
+      "description": "Multi-view bbox-face evidence for red_brush part candidate 2, face F6.",
+      "part_marker": "2",
+      "face_marker": "F6",
+      "point_ref": "candidate.points.part_001_z_positive_contact",
+      "surface_ref": "candidate.surfaces.part_001_z_positive_contact",
+      "patch_id": "z_positive_contact",
+      "provider_id": "p3sam_tool_ref_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "red_brush_part_candidate_3_card",
+      "kind": "isolated_part_card",
+      "media_type": "image",
+      "path": "artifacts/visualizations/p3sam_red_brush_tool_ref_evidence_rebuilt_20260524/red_brush/part_cards/candidate_003_card.png",
+      "description": "Isolated P3SAM part candidate 3 for red_brush.",
+      "part_marker": "3",
+      "provider_id": "p3sam_tool_ref_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "red_brush_part_candidate_3_function_face_F1",
+      "kind": "function_face_candidate_card",
+      "media_type": "image",
+      "path": "artifacts/visualizations/p3sam_red_brush_tool_ref_evidence_rebuilt_20260524/red_brush/function_contact_choices/candidate_003_F1_face.png",
+      "description": "Multi-view bbox-face evidence for red_brush part candidate 3, face F1.",
+      "part_marker": "3",
+      "face_marker": "F1",
+      "point_ref": "candidate.points.part_002_x_negative_endpoint",
+      "surface_ref": "candidate.surfaces.part_002_x_negative_endpoint",
+      "patch_id": "x_negative_endpoint",
+      "provider_id": "p3sam_tool_ref_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "red_brush_part_candidate_3_function_face_F2",
+      "kind": "function_face_candidate_card",
+      "media_type": "image",
+      "path": "artifacts/visualizations/p3sam_red_brush_tool_ref_evidence_rebuilt_20260524/red_brush/function_contact_choices/candidate_003_F2_face.png",
+      "description": "Multi-view bbox-face evidence for red_brush part candidate 3, face F2.",
+      "part_marker": "3",
+      "face_marker": "F2",
+      "point_ref": "candidate.points.part_002_x_positive_endpoint",
+      "surface_ref": "candidate.surfaces.part_002_x_positive_endpoint",
+      "patch_id": "x_positive_endpoint",
+      "provider_id": "p3sam_tool_ref_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "red_brush_part_candidate_3_function_face_F3",
+      "kind": "function_face_candidate_card",
+      "media_type": "image",
+      "path": "artifacts/visualizations/p3sam_red_brush_tool_ref_evidence_rebuilt_20260524/red_brush/function_contact_choices/candidate_003_F3_face.png",
+      "description": "Multi-view bbox-face evidence for red_brush part candidate 3, face F3.",
+      "part_marker": "3",
+      "face_marker": "F3",
+      "point_ref": "candidate.points.part_002_y_negative_contact",
+      "surface_ref": "candidate.surfaces.part_002_y_negative_contact",
+      "patch_id": "y_negative_contact",
+      "provider_id": "p3sam_tool_ref_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "red_brush_part_candidate_3_function_face_F4",
+      "kind": "function_face_candidate_card",
+      "media_type": "image",
+      "path": "artifacts/visualizations/p3sam_red_brush_tool_ref_evidence_rebuilt_20260524/red_brush/function_contact_choices/candidate_003_F4_face.png",
+      "description": "Multi-view bbox-face evidence for red_brush part candidate 3, face F4.",
+      "part_marker": "3",
+      "face_marker": "F4",
+      "point_ref": "candidate.points.part_002_y_positive_contact",
+      "surface_ref": "candidate.surfaces.part_002_y_positive_contact",
+      "patch_id": "y_positive_contact",
+      "provider_id": "p3sam_tool_ref_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "red_brush_part_candidate_3_function_face_F5",
+      "kind": "function_face_candidate_card",
+      "media_type": "image",
+      "path": "artifacts/visualizations/p3sam_red_brush_tool_ref_evidence_rebuilt_20260524/red_brush/function_contact_choices/candidate_003_F5_face.png",
+      "description": "Multi-view bbox-face evidence for red_brush part candidate 3, face F5.",
+      "part_marker": "3",
+      "face_marker": "F5",
+      "point_ref": "candidate.points.part_002_z_negative_contact",
+      "surface_ref": "candidate.surfaces.part_002_z_negative_contact",
+      "patch_id": "z_negative_contact",
+      "provider_id": "p3sam_tool_ref_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "red_brush_part_candidate_3_function_face_F6",
+      "kind": "function_face_candidate_card",
+      "media_type": "image",
+      "path": "artifacts/visualizations/p3sam_red_brush_tool_ref_evidence_rebuilt_20260524/red_brush/function_contact_choices/candidate_003_F6_face.png",
+      "description": "Multi-view bbox-face evidence for red_brush part candidate 3, face F6.",
+      "part_marker": "3",
+      "face_marker": "F6",
+      "point_ref": "candidate.points.part_002_z_positive_contact",
+      "surface_ref": "candidate.surfaces.part_002_z_positive_contact",
+      "patch_id": "z_positive_contact",
+      "provider_id": "p3sam_tool_ref_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    }
+  ],
+  "metadata": {
+    "evidence_kind": "p3sam_part_role_and_contact_direction_cards",
+    "contact_marker_table_scope": "all_parts",
+    "selected_function_markers_by_tool": {
+      "red_brush": [
+        "1",
+        "2",
+        "3"
+      ]
+    },
+    "selected_function_markers_default": [],
+    "part_role_selection_path": null,
+    "region_marker_table": [
+      {
+        "tool_id": "red_brush",
+        "marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "source_label": "p3sam_segment_0",
+        "point_count": 830,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 0
+      },
+      {
+        "tool_id": "red_brush",
+        "marker": "2",
+        "part_id": "part_001",
+        "part_ref": "tool.parts.part_001",
+        "source_label": "p3sam_segment_13",
+        "point_count": 384,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "fine_feature_candidate",
+          "contact_patch"
+        ],
+        "part_label": 13
+      },
+      {
+        "tool_id": "red_brush",
+        "marker": "3",
+        "part_id": "part_002",
+        "part_ref": "tool.parts.part_002",
+        "source_label": "p3sam_segment_58",
+        "point_count": 10909,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "contact_patch"
+        ],
+        "part_label": 58
+      }
+    ],
+    "contact_marker_table": [
+      {
+        "tool_id": "red_brush",
+        "part_marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "point_ref": "candidate.points.part_000_x_negative_endpoint",
+        "surface_ref": "candidate.surfaces.part_000_x_negative_endpoint",
+        "polarity": "negative",
+        "patch_id": "x_negative_endpoint",
+        "role": null,
+        "xyz_tool": [
+          0.06931730656948237,
+          0.0014520604075497897,
+          0.007948156740625061
+        ],
+        "normal_tool": [
+          -0.36980488770701564,
+          0.11892455468470281,
+          -0.9214669257879237
+        ],
+        "face_marker": "F1",
+        "contact_marker": "F1",
+        "selection_semantics": "functional_bbox_face",
+        "derived_point_ref": "candidate.points.part_000_x_negative_endpoint",
+        "derived_normal_ref": "tool.functional_parts.part_000_x_negative_endpoint.normal"
+      },
+      {
+        "tool_id": "red_brush",
+        "part_marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "point_ref": "candidate.points.part_000_x_positive_endpoint",
+        "surface_ref": "candidate.surfaces.part_000_x_positive_endpoint",
+        "polarity": "positive",
+        "patch_id": "x_positive_endpoint",
+        "role": null,
+        "xyz_tool": [
+          0.21711207677919445,
+          0.004888029135903651,
+          -0.0022308244128372203
+        ],
+        "normal_tool": [
+          0.9929662111895585,
+          -0.06864911185617048,
+          -0.09646451615600428
+        ],
+        "face_marker": "F2",
+        "contact_marker": "F2",
+        "selection_semantics": "functional_bbox_face",
+        "derived_point_ref": "candidate.points.part_000_x_positive_endpoint",
+        "derived_normal_ref": "tool.functional_parts.part_000_x_positive_endpoint.normal"
+      },
+      {
+        "tool_id": "red_brush",
+        "part_marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "point_ref": "candidate.points.part_000_y_negative_contact",
+        "surface_ref": "candidate.surfaces.part_000_y_negative_contact",
+        "polarity": "negative",
+        "patch_id": "y_negative_contact",
+        "role": null,
+        "xyz_tool": [
+          0.16525143893311486,
+          -0.023140106811599163,
+          0.0012980062348957621
+        ],
+        "normal_tool": [
+          0.002747089274000538,
+          -0.9938806514702551,
+          -0.11042510644587145
+        ],
+        "face_marker": "F3",
+        "contact_marker": "F3",
+        "selection_semantics": "functional_bbox_face",
+        "derived_point_ref": "candidate.points.part_000_y_negative_contact",
+        "derived_normal_ref": "tool.functional_parts.part_000_y_negative_contact.normal"
+      },
+      {
+        "tool_id": "red_brush",
+        "part_marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "point_ref": "candidate.points.part_000_y_positive_contact",
+        "surface_ref": "candidate.surfaces.part_000_y_positive_contact",
+        "polarity": "positive",
+        "patch_id": "y_positive_contact",
+        "role": null,
+        "xyz_tool": [
+          0.16523349025612444,
+          0.028891017045918527,
+          0.0009715481514925609
+        ],
+        "normal_tool": [
+          0.018842588257975582,
+          0.9966634772686555,
+          -0.0794158041355295
+        ],
+        "face_marker": "F4",
+        "contact_marker": "F4",
+        "selection_semantics": "functional_bbox_face",
+        "derived_point_ref": "candidate.points.part_000_y_positive_contact",
+        "derived_normal_ref": "tool.functional_parts.part_000_y_positive_contact.normal"
+      },
+      {
+        "tool_id": "red_brush",
+        "part_marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "point_ref": "candidate.points.part_000_z_negative_contact",
+        "surface_ref": "candidate.surfaces.part_000_z_negative_contact",
+        "polarity": "negative",
+        "patch_id": "z_negative_contact",
+        "role": null,
+        "xyz_tool": [
+          0.18263865923899317,
+          0.0037567932366122164,
+          -0.005881706457384727
+        ],
+        "normal_tool": [
+          -0.023033901860003845,
+          -0.010034068687279503,
+          -0.9996843285911222
+        ],
+        "face_marker": "F5",
+        "contact_marker": "F5",
+        "selection_semantics": "functional_bbox_face",
+        "derived_point_ref": "candidate.points.part_000_z_negative_contact",
+        "derived_normal_ref": "tool.functional_parts.part_000_z_negative_contact.normal"
+      },
+      {
+        "tool_id": "red_brush",
+        "part_marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "point_ref": "candidate.points.part_000_z_positive_contact",
+        "surface_ref": "candidate.surfaces.part_000_z_positive_contact",
+        "polarity": "positive",
+        "patch_id": "z_positive_contact",
+        "role": null,
+        "xyz_tool": [
+          0.05248825575467473,
+          -2.943945256214361e-06,
+          0.017945262727826566
+        ],
+        "normal_tool": [
+          0.313705858698733,
+          -0.004546887665971794,
+          0.9495093259313695
+        ],
+        "face_marker": "F6",
+        "contact_marker": "F6",
+        "selection_semantics": "functional_bbox_face",
+        "derived_point_ref": "candidate.points.part_000_z_positive_contact",
+        "derived_normal_ref": "tool.functional_parts.part_000_z_positive_contact.normal"
+      },
+      {
+        "tool_id": "red_brush",
+        "part_marker": "2",
+        "part_id": "part_001",
+        "part_ref": "tool.parts.part_001",
+        "point_ref": "candidate.points.part_001_x_negative_endpoint",
+        "surface_ref": "candidate.surfaces.part_001_x_negative_endpoint",
+        "polarity": "negative",
+        "patch_id": "x_negative_endpoint",
+        "role": null,
+        "xyz_tool": [
+          -0.05703872959823233,
+          -0.0010112982844283716,
+          0.00019074505876187224
+        ],
+        "normal_tool": [
+          -0.9804759539911598,
+          0.01805706622408273,
+          -0.19580818676578432
+        ],
+        "face_marker": "F1",
+        "contact_marker": "F1",
+        "selection_semantics": "functional_bbox_face",
+        "derived_point_ref": "candidate.points.part_001_x_negative_endpoint",
+        "derived_normal_ref": "tool.functional_parts.part_001_x_negative_endpoint.normal"
+      },
+      {
+        "tool_id": "red_brush",
+        "part_marker": "2",
+        "part_id": "part_001",
+        "part_ref": "tool.parts.part_001",
+        "point_ref": "candidate.points.part_001_x_positive_endpoint",
+        "surface_ref": "candidate.surfaces.part_001_x_positive_endpoint",
+        "polarity": "positive",
+        "patch_id": "x_positive_endpoint",
+        "role": null,
+        "xyz_tool": [
+          0.04324442111165542,
+          -6.135815716106082e-05,
+          0.004486519165615018
+        ],
+        "normal_tool": [
+          0.8697578180284437,
+          -0.008557814753314396,
+          -0.4934046025170909
+        ],
+        "face_marker": "F2",
+        "contact_marker": "F2",
+        "selection_semantics": "functional_bbox_face",
+        "derived_point_ref": "candidate.points.part_001_x_positive_endpoint",
+        "derived_normal_ref": "tool.functional_parts.part_001_x_positive_endpoint.normal"
+      },
+      {
+        "tool_id": "red_brush",
+        "part_marker": "2",
+        "part_id": "part_001",
+        "part_ref": "tool.parts.part_001",
+        "point_ref": "candidate.points.part_001_y_negative_contact",
+        "surface_ref": "candidate.surfaces.part_001_y_negative_contact",
+        "polarity": "negative",
+        "patch_id": "y_negative_contact",
+        "role": null,
+        "xyz_tool": [
+          -0.015184103076955972,
+          -0.013986352691128528,
+          0.003233180011596405
+        ],
+        "normal_tool": [
+          0.007984643525410185,
+          -0.9998095629985312,
+          -0.017806830275434286
+        ],
+        "face_marker": "F3",
+        "contact_marker": "F3",
+        "selection_semantics": "functional_bbox_face",
+        "derived_point_ref": "candidate.points.part_001_y_negative_contact",
+        "derived_normal_ref": "tool.functional_parts.part_001_y_negative_contact.normal"
+      },
+      {
+        "tool_id": "red_brush",
+        "part_marker": "2",
+        "part_id": "part_001",
+        "part_ref": "tool.parts.part_001",
+        "point_ref": "candidate.points.part_001_y_positive_contact",
+        "surface_ref": "candidate.surfaces.part_001_y_positive_contact",
+        "polarity": "positive",
+        "patch_id": "y_positive_contact",
+        "role": null,
+        "xyz_tool": [
+          -0.010935020987396628,
+          0.013156647386291668,
+          0.002670880062738344
+        ],
+        "normal_tool": [
+          -0.009112449625054034,
+          0.9999343563155371,
+          -0.006945957217226105
+        ],
+        "face_marker": "F4",
+        "contact_marker": "F4",
+        "selection_semantics": "functional_bbox_face",
+        "derived_point_ref": "candidate.points.part_001_y_positive_contact",
+        "derived_normal_ref": "tool.functional_parts.part_001_y_positive_contact.normal"
+      },
+      {
+        "tool_id": "red_brush",
+        "part_marker": "2",
+        "part_id": "part_001",
+        "part_ref": "tool.parts.part_001",
+        "point_ref": "candidate.points.part_001_z_negative_contact",
+        "surface_ref": "candidate.surfaces.part_001_z_negative_contact",
+        "polarity": "negative",
+        "patch_id": "z_negative_contact",
+        "role": null,
+        "xyz_tool": [
+          -0.021576157918507116,
+          0.00022216697857515967,
+          -0.010611504078004368
+        ],
+        "normal_tool": [
+          0.01418849167051701,
+          0.006674741620951981,
+          -0.9998770597070468
+        ],
+        "face_marker": "F5",
+        "contact_marker": "F5",
+        "selection_semantics": "functional_bbox_face",
+        "derived_point_ref": "candidate.points.part_001_z_negative_contact",
+        "derived_normal_ref": "tool.functional_parts.part_001_z_negative_contact.normal"
+      },
+      {
+        "tool_id": "red_brush",
+        "part_marker": "2",
+        "part_id": "part_001",
+        "part_ref": "tool.parts.part_001",
+        "point_ref": "candidate.points.part_001_z_positive_contact",
+        "surface_ref": "candidate.surfaces.part_001_z_positive_contact",
+        "polarity": "positive",
+        "patch_id": "z_positive_contact",
+        "role": null,
+        "xyz_tool": [
+          0.012849635250720819,
+          -0.0010542397103936064,
+          0.01718617730565528
+        ],
+        "normal_tool": [
+          -0.07662246195400205,
+          0.005227009374798569,
+          0.9970464766986058
+        ],
+        "face_marker": "F6",
+        "contact_marker": "F6",
+        "selection_semantics": "functional_bbox_face",
+        "derived_point_ref": "candidate.points.part_001_z_positive_contact",
+        "derived_normal_ref": "tool.functional_parts.part_001_z_positive_contact.normal"
+      },
+      {
+        "tool_id": "red_brush",
+        "part_marker": "3",
+        "part_id": "part_002",
+        "part_ref": "tool.parts.part_002",
+        "point_ref": "candidate.points.part_002_x_negative_endpoint",
+        "surface_ref": "candidate.surfaces.part_002_x_negative_endpoint",
+        "polarity": "negative",
+        "patch_id": "x_negative_endpoint",
+        "role": null,
+        "xyz_tool": [
+          0.09761214808856829,
+          0.003980343821371873,
+          0.04539587160629104
+        ],
+        "normal_tool": [
+          -0.9994859831628831,
+          -0.03144979641129438,
+          0.0062193059591467165
+        ],
+        "face_marker": "F1",
+        "contact_marker": "F1",
+        "selection_semantics": "functional_bbox_face",
+        "derived_point_ref": "candidate.points.part_002_x_negative_endpoint",
+        "derived_normal_ref": "tool.functional_parts.part_002_x_negative_endpoint.normal"
+      },
+      {
+        "tool_id": "red_brush",
+        "part_marker": "3",
+        "part_id": "part_002",
+        "part_ref": "tool.parts.part_002",
+        "point_ref": "candidate.points.part_002_x_positive_endpoint",
+        "surface_ref": "candidate.surfaces.part_002_x_positive_endpoint",
+        "polarity": "positive",
+        "patch_id": "x_positive_endpoint",
+        "role": null,
+        "xyz_tool": [
+          0.23487746898379114,
+          -0.002225867230594092,
+          0.044599751963206306
+        ],
+        "normal_tool": [
+          0.9552304055222522,
+          0.0037821463626831007,
+          -0.2958387529291667
+        ],
+        "face_marker": "F2",
+        "contact_marker": "F2",
+        "selection_semantics": "functional_bbox_face",
+        "derived_point_ref": "candidate.points.part_002_x_positive_endpoint",
+        "derived_normal_ref": "tool.functional_parts.part_002_x_positive_endpoint.normal"
+      },
+      {
+        "tool_id": "red_brush",
+        "part_marker": "3",
+        "part_id": "part_002",
+        "part_ref": "tool.parts.part_002",
+        "point_ref": "candidate.points.part_002_y_negative_contact",
+        "surface_ref": "candidate.surfaces.part_002_y_negative_contact",
+        "polarity": "negative",
+        "patch_id": "y_negative_contact",
+        "role": null,
+        "xyz_tool": [
+          0.18396509852230847,
+          -0.03683701301047563,
+          0.056813286543359966
+        ],
+        "normal_tool": [
+          -0.0611034292580865,
+          -0.9430036352991981,
+          -0.32712461653840624
+        ],
+        "face_marker": "F3",
+        "contact_marker": "F3",
+        "selection_semantics": "functional_bbox_face",
+        "derived_point_ref": "candidate.points.part_002_y_negative_contact",
+        "derived_normal_ref": "tool.functional_parts.part_002_y_negative_contact.normal"
+      },
+      {
+        "tool_id": "red_brush",
+        "part_marker": "3",
+        "part_id": "part_002",
+        "part_ref": "tool.parts.part_002",
+        "point_ref": "candidate.points.part_002_y_positive_contact",
+        "surface_ref": "candidate.surfaces.part_002_y_positive_contact",
+        "polarity": "positive",
+        "patch_id": "y_positive_contact",
+        "role": null,
+        "xyz_tool": [
+          0.16621045182151986,
+          0.03317043655672021,
+          0.05116884335349644
+        ],
+        "normal_tool": [
+          0.11062908535097059,
+          0.9704888965341569,
+          -0.21427204012264855
+        ],
+        "face_marker": "F4",
+        "contact_marker": "F4",
+        "selection_semantics": "functional_bbox_face",
+        "derived_point_ref": "candidate.points.part_002_y_positive_contact",
+        "derived_normal_ref": "tool.functional_parts.part_002_y_positive_contact.normal"
+      },
+      {
+        "tool_id": "red_brush",
+        "part_marker": "3",
+        "part_id": "part_002",
+        "part_ref": "tool.parts.part_002",
+        "point_ref": "candidate.points.part_002_z_negative_contact",
+        "surface_ref": "candidate.surfaces.part_002_z_negative_contact",
+        "polarity": "negative",
+        "patch_id": "z_negative_contact",
+        "role": null,
+        "xyz_tool": [
+          0.17681989147358415,
+          0.0004928822050259705,
+          0.0086199545535174
+        ],
+        "normal_tool": [
+          0.31686870004791184,
+          -0.0037874483124207,
+          -0.9484618506641302
+        ],
+        "face_marker": "F5",
+        "contact_marker": "F5",
+        "selection_semantics": "functional_bbox_face",
+        "derived_point_ref": "candidate.points.part_002_z_negative_contact",
+        "derived_normal_ref": "tool.functional_parts.part_002_z_negative_contact.normal"
+      },
+      {
+        "tool_id": "red_brush",
+        "part_marker": "3",
+        "part_id": "part_002",
+        "part_ref": "tool.parts.part_002",
+        "point_ref": "candidate.points.part_002_z_positive_contact",
+        "surface_ref": "candidate.surfaces.part_002_z_positive_contact",
+        "polarity": "positive",
+        "patch_id": "z_positive_contact",
+        "role": null,
+        "xyz_tool": [
+          0.16040898392582548,
+          -0.004487901547216519,
+          0.06693168205510448
+        ],
+        "normal_tool": [
+          -0.06080726519325559,
+          0.249500373527809,
+          0.9664636775943527
+        ],
+        "face_marker": "F6",
+        "contact_marker": "F6",
+        "selection_semantics": "functional_bbox_face",
+        "derived_point_ref": "candidate.points.part_002_z_positive_contact",
+        "derived_normal_ref": "tool.functional_parts.part_002_z_positive_contact.normal"
+      }
+    ]
+  }
+}

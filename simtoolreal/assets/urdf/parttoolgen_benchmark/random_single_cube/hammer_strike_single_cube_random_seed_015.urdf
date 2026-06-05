@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<robot name="parttoolgen_hammer_single_cube">
+  <link name="table_with_target_cube">
+    <visual>
+      <material name="wood">
+        <color rgba="0.52 0.50 0.46 1.0"/>
+      </material>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <box size="0.55 0.45 0.04"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <box size="0.55 0.45 0.04"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <material name="target_cube">
+        <color rgba="0.72 0.72 0.68 1.0"/>
+      </material>
+      <origin xyz="0.11235327114146704 -0.09743596736572896 0.042499999999999996"/>
+      <geometry>
+        <box size="0.045 0.045 0.045"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.11235327114146704 -0.09743596736572896 0.042499999999999996"/>
+      <geometry>
+        <box size="0.045 0.045 0.045"/>
+      </geometry>
+    </collision>
+
+    <inertial>
+      <mass value="500"/>
+      <friction value="1.0"/>
+      <inertia ixx="1000.0" ixy="0.0" ixz="0.0" iyy="1000.0" iyz="0.0" izz="1000.0"/>
+    </inertial>
+  </link>
+</robot>

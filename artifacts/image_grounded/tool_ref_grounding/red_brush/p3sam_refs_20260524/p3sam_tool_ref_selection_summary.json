@@ -1,0 +1,23 @@
+{
+  "schema_version": "parttoolgen_p3sam_tool_ref_selection_v0",
+  "tool_id": "red_brush",
+  "task_id": "red_brush_sweep_block_seed_000_p3sam_rebuilt_20260524",
+  "selection_source": "reference",
+  "p3sam_prior_dir": "artifacts/tool_prior/p3sam/red_brush_rebuilt_20260524/tool_prior",
+  "visual_evidence": "artifacts/visualizations/p3sam_red_brush_tool_ref_evidence_rebuilt_20260524/visual_evidence.json",
+  "selected_contact_point_part_ref": "tool.parts.part_002",
+  "selected_contact_point_part_marker": "3",
+  "selected_contact_point_source_ref": "candidate.points.part_002_y_positive_contact",
+  "selected_contact_point_face_marker": "F4",
+  "selected_contact_surface_ref": "candidate.surfaces.part_002_y_positive_contact",
+  "outputs": {
+    "axis_binding": "artifacts/image_grounded/tool_ref_grounding/p3sam_tool_refs/red_brush_rebuilt_20260524/axis_binding.json",
+    "axis_mesh_overlay_report": "artifacts/image_grounded/tool_ref_grounding/p3sam_tool_refs/red_brush_rebuilt_20260524/axis_mesh_overlay_report.json",
+    "function_contact_selection": "artifacts/image_grounded/tool_ref_grounding/p3sam_tool_refs/red_brush_rebuilt_20260524/contact_point_selection.json",
+    "tool_part_graph": "artifacts/image_grounded/tool_ref_grounding/p3sam_tool_refs/red_brush_rebuilt_20260524/tool_part_graph.json"
+  },
+  "metadata": {
+    "created_by": "parttoolgen.cli.tool_prior.select_p3sam_tool_refs",
+    "created_unix_s": 1779613978.629741
+  }
+}

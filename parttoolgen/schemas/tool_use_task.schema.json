@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "parttoolgen.tool_use_task.v0",
+  "title": "PartToolGen Legacy Tool-Use Task",
+  "description": "Legacy private-eval V0 task shape retained for old evaluation-suite reports. The active 6.4 image-grounded runners use public RGB-D/VLM evidence tasks with execution/public_scene method-boundary fields instead.",
+  "$comment": "Do not use this schema as the contract for current brush/hammer/eraser image-grounded benchmark runners.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "task_id",
+    "family",
+    "split",
+    "instruction",
+    "tool",
+    "public_scene",
+    "private_eval"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": "parttoolgen_tool_use_task_v0"},
+    "task_id": {"type": "string", "minLength": 1},
+    "family": {"type": "string", "minLength": 1},
+    "split": {"type": "string", "enum": ["dev", "test", "clean", "hard"]},
+    "instruction": {"type": "string", "minLength": 1},
+    "tool": {
+      "type": "object",
+      "required": ["tool_id"],
+      "additionalProperties": true,
+      "properties": {
+        "tool_id": {"type": "string", "minLength": 1},
+        "tool_prior_dir": {"type": "string"},
+        "mesh": {"type": "string"}
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Private benchmark runner configuration for constructing SimToolReal/provider artifacts. This is not part of the method-facing public payload."
+    },
+    "public_scene": {
+      "type": "object",
+      "required": ["provider", "target_candidates"],
+      "additionalProperties": true,
+      "properties": {
+        "provider": {"type": "string", "minLength": 1},
+        "scene_evidence": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "target_candidates": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["marker", "target_ref"],
+            "additionalProperties": true,
+            "properties": {
+              "marker": {"type": "string", "pattern": "^T[0-9]+$"},
+              "target_ref": {"type": "string", "minLength": 1},
+              "contact_refs": {"type": "array", "items": {"type": "string"}},
+              "axis_refs": {"type": "array", "items": {"type": "string"}},
+              "pre_contact_refs": {"type": "array", "items": {"type": "string"}}
+            }
+          }
+        },
+        "allowed_primitives": {"type": "array", "items": {"type": "string"}},
+        "leakage_policy": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "forbidden_public_fields": {"type": "array", "items": {"type": "string"}},
+            "opaque_ref_prefix": {"type": "string"}
+          }
+        }
+      }
+    },
+    "private_eval": {
+      "type": "object",
+      "required": ["success_predicates"],
+      "additionalProperties": true,
+      "properties": {
+        "target_marker": {"type": "string"},
+        "target_ref": {"type": "string"},
+        "success_predicates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["kind"],
+            "additionalProperties": true,
+            "properties": {
+              "kind": {"type": "string", "minLength": 1}
+            }
+          }
+        }
+      }
+    },
+    "artifacts": {"type": "object"},
+    "metadata": {"type": "object"}
+  }
+}

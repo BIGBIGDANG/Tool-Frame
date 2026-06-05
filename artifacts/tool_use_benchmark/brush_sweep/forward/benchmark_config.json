@@ -1,0 +1,96 @@
+{
+  "schema_version": "toolframe_brush_sweep_benchmark_config_v1",
+  "benchmark": "brush_sweep",
+  "variant": "forward",
+  "description": "Diagnostic legacy forward brush sweep: fixed grasp-ready brush pose, randomized lightweight block, generic VLM scene-ref grounding from natural task language and public top-down RGB-D evidence, and rollout tracking diagnostics.",
+  "runner": "parttoolgen/src/parttoolgen/cli/runners/run_image_grounded_brush_seed_eval.py",
+  "runner_args": {
+    "output_root": "artifacts/image_grounded/brush_sweep/forward_original_rgb",
+    "tool_refs_dir": "configs/tool_refs/red_brush",
+    "seed_start": 0,
+    "trials": 5,
+    "device": "cuda:0",
+    "rollout_max_steps": 1500,
+    "rollout_max_tracking_error_m": 0.012,
+    "capture_video_every": 1,
+    "initial_grasp_lift_m": 0.08,
+    "initial_grasp_lift_steps": 3,
+    "initial_grasp_hold_steps": 0,
+    "grasp_observation_offset_m": 0.0,
+    "approach_offset_m": 0.12,
+    "block_asset": "urdf/parttoolgen_benchmark/brush_sweep_block/sweep_block_045_feather.urdf",
+    "block_friction": 0.1,
+    "block_position_mode": "random",
+    "line_x_min": 0.16,
+    "line_x_max": 0.32,
+    "line_y": -0.13,
+    "sweep_direction": "forward",
+    "start_orientation_mode": "fixed"
+  },
+  "scene_initialization": {
+    "table_asset": "urdf/parttoolgen_benchmark/tabletop_polyhaven_wood_table/tabletop_polyhaven_wood_table.urdf",
+    "fixed_grasp_ready_start_pose_xyzw": [
+      0.02,
+      0.135,
+      0.5833139980938841,
+      0.7035186228215238,
+      0.021312152321177134,
+      0.016647372965644915,
+      0.7101620973271443
+    ],
+    "start_pose_policy": "runtime mesh-table-contact projection keeps the red_brush mesh on the tabletop with 3 mm clearance; xy and yaw policy remain fixed unless start_orientation_mode changes.",
+    "base_block_xy": [
+      0.24,
+      -0.13
+    ],
+    "block_position_policy": "seed 0 uses base_block_xy; later seeds randomize block x by [-0.045, 0.035] and y by [-0.035, 0.045].",
+    "motion_axis_world": [
+      0.0,
+      -1.0,
+      0.0
+    ],
+    "end_point_policy": "The contract requires an executable end_point for this tool-contact path; the prompt remains generic and the runner treats a missing end_point as invalid for this benchmark.",
+    "approach_offset_m": 0.12
+  },
+  "mainline_params": {
+    "depth_sample_policy": "nearest",
+    "action_direction_z_policy": "anchor_height",
+    "end_point_policy": "required_vlm_end_point_for_tool_contact_path",
+    "tool_motion_axis_ref": "tool.motion_axis",
+    "tool_motion_axis_target_ref": "scene.direction",
+    "tool_motion_axis_relation": "parallel",
+    "max_translation_step_m": 0.035,
+    "max_rotation_step_rad": 0.3,
+    "initial_grasp_lift_m": 0.08,
+    "initial_grasp_lift_steps": 3,
+    "initial_grasp_hold_steps": 0,
+    "approach_offset_m": 0.12,
+    "rollout_max_tracking_error_m": 0.012,
+    "rollout_max_rotation_error_rad": 0.28,
+    "min_clearance_m": 0.003,
+    "swept_min_clearance_m": 0.006,
+    "allowed_contact_penetration_m": 0.006,
+    "table_clearance_rule": "all tool-part OBB corners must stay above the table plane"
+  },
+  "acceptance": {
+    "success_policy": "brush_sweep_directional_displacement: a brush sweep is successful when the target block moves far enough in the intended direction. Strict rollout tracking is diagnostic only.",
+    "requires_tracking_execution_passed": false,
+    "tool_grounding_contract": {
+      "schema_version": "toolframe_tool_grounding_contract_v1",
+      "task_type": "brush_sweep",
+      "tool_id": "red_brush",
+      "label_source": "manual_review_required",
+      "manual_review_status": "pending",
+      "notes": "Evaluator-side audit labels only; not used for method selection, compiler constraints, or task success. Directional block displacement is the required success metric."
+    },
+    "min_xy_displacement_m": 0.06,
+    "min_direction_cosine": 0.6
+  },
+  "contract_status": {
+    "environment_id": "tabletop_wood_table",
+    "benchmark_status": "diagnostic/legacy_directional_displacement",
+    "success_check_status": "diagnostic_only",
+    "large_statistics_status": "not_headline_statistics",
+    "notes": "Directional target displacement is retained for regression and attribution; red_zone is the headline brush-sweep predicate."
+  }
+}

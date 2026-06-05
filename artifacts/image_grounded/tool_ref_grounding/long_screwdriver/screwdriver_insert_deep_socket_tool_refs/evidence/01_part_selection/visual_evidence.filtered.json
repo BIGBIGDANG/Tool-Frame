@@ -1,0 +1,744 @@
+{
+  "schema_version": "v0.1",
+  "evidence_id": "all_simtoolreal_p3sam_segmented_tools_part_selection_20260525",
+  "items": [
+    {
+      "id": "long_screwdriver_whole_mesh_part_choice_overview",
+      "kind": "whole_mesh_part_choice_overview",
+      "media_type": "image",
+      "path": "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/long_screwdriver/overview/long_screwdriver_long_screwdriver_whole_mesh_part_choice_overview.png",
+      "description": "Multi-view whole-mesh P3SAM part candidates for long_screwdriver; each part is shown as a colored overlay on the mesh, with the same anonymous marker ID reused across views.",
+      "provider_id": "p3sam_part_selection_evidence",
+      "source_stage": "offline_p3sam_tool_part_visualization",
+      "allowed_use": "planning_context",
+      "tool_id": "long_screwdriver"
+    },
+    {
+      "id": "long_screwdriver_isolated_part_choice_overview",
+      "kind": "isolated_part_choice_overview",
+      "media_type": "image",
+      "path": "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/long_screwdriver/overview/long_screwdriver_long_screwdriver_isolated_part_choice_overview.png",
+      "description": "Isolated P3SAM part candidates for long_screwdriver; auxiliary debug view.",
+      "provider_id": "p3sam_part_selection_evidence",
+      "source_stage": "offline_p3sam_tool_part_visualization",
+      "allowed_use": "part_selection_context",
+      "tool_id": "long_screwdriver"
+    },
+    {
+      "id": "long_screwdriver_part_candidate_1_isolated_card",
+      "kind": "isolated_part_card",
+      "media_type": "image",
+      "path": "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/long_screwdriver/part_cards/long_screwdriver_candidate_001_card.png",
+      "description": "Isolated P3SAM part candidate 1 for long_screwdriver; auxiliary debug view.",
+      "provider_id": "p3sam_part_selection_evidence",
+      "source_stage": "offline_p3sam_tool_part_visualization",
+      "allowed_use": "part_selection_context",
+      "tool_id": "long_screwdriver",
+      "part_marker": "1"
+    },
+    {
+      "id": "long_screwdriver_part_candidate_2_isolated_card",
+      "kind": "isolated_part_card",
+      "media_type": "image",
+      "path": "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/long_screwdriver/part_cards/long_screwdriver_candidate_002_card.png",
+      "description": "Isolated P3SAM part candidate 2 for long_screwdriver; auxiliary debug view.",
+      "provider_id": "p3sam_part_selection_evidence",
+      "source_stage": "offline_p3sam_tool_part_visualization",
+      "allowed_use": "part_selection_context",
+      "tool_id": "long_screwdriver",
+      "part_marker": "2"
+    },
+    {
+      "id": "long_screwdriver_part_candidate_3_isolated_card",
+      "kind": "isolated_part_card",
+      "media_type": "image",
+      "path": "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/long_screwdriver/part_cards/long_screwdriver_candidate_003_card.png",
+      "description": "Isolated P3SAM part candidate 3 for long_screwdriver; auxiliary debug view.",
+      "provider_id": "p3sam_part_selection_evidence",
+      "source_stage": "offline_p3sam_tool_part_visualization",
+      "allowed_use": "part_selection_context",
+      "tool_id": "long_screwdriver",
+      "part_marker": "3"
+    },
+    {
+      "id": "long_screwdriver_part_candidate_4_isolated_card",
+      "kind": "isolated_part_card",
+      "media_type": "image",
+      "path": "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/long_screwdriver/part_cards/long_screwdriver_candidate_004_card.png",
+      "description": "Isolated P3SAM part candidate 4 for long_screwdriver; auxiliary debug view.",
+      "provider_id": "p3sam_part_selection_evidence",
+      "source_stage": "offline_p3sam_tool_part_visualization",
+      "allowed_use": "part_selection_context",
+      "tool_id": "long_screwdriver",
+      "part_marker": "4"
+    },
+    {
+      "id": "long_screwdriver_part_candidate_5_isolated_card",
+      "kind": "isolated_part_card",
+      "media_type": "image",
+      "path": "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/long_screwdriver/part_cards/long_screwdriver_candidate_005_card.png",
+      "description": "Isolated P3SAM part candidate 5 for long_screwdriver; auxiliary debug view.",
+      "provider_id": "p3sam_part_selection_evidence",
+      "source_stage": "offline_p3sam_tool_part_visualization",
+      "allowed_use": "part_selection_context",
+      "tool_id": "long_screwdriver",
+      "part_marker": "5"
+    }
+  ],
+  "metadata": {
+    "evidence_kind": "p3sam_segmented_tool_part_selection_cards",
+    "tool_scope": "simtoolreal_dextoolbench_all_tools",
+    "provider": "p3sam",
+    "source_visual_evidence": "artifacts/visualizations/p3sam_simtoolreal_alltools_part_overview_20260525/visual_evidence.json",
+    "region_marker_table": [
+      {
+        "tool_id": "blue_brush",
+        "marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "source_label": "p3sam_segment_0",
+        "point_count": 4847,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "contact_patch"
+        ],
+        "part_label": 0
+      },
+      {
+        "tool_id": "blue_brush",
+        "marker": "2",
+        "part_id": "part_231",
+        "part_ref": "tool.parts.part_231",
+        "source_label": "p3sam_segment_231",
+        "point_count": 542,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 231
+      },
+      {
+        "tool_id": "blue_brush",
+        "marker": "3",
+        "part_id": "part_234",
+        "part_ref": "tool.parts.part_234",
+        "source_label": "p3sam_segment_234",
+        "point_count": 657,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "contact_patch"
+        ],
+        "part_label": 234
+      },
+      {
+        "tool_id": "claw_hammer",
+        "marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "source_label": "p3sam_segment_0",
+        "point_count": 703,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 0
+      },
+      {
+        "tool_id": "claw_hammer",
+        "marker": "2",
+        "part_id": "part_001",
+        "part_ref": "tool.parts.part_001",
+        "source_label": "p3sam_segment_216",
+        "point_count": 1327,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 216
+      },
+      {
+        "tool_id": "flat_eraser",
+        "marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "source_label": "p3sam_segment_0",
+        "point_count": 3513,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 0
+      },
+      {
+        "tool_id": "flat_eraser",
+        "marker": "2",
+        "part_id": "part_114",
+        "part_ref": "tool.parts.part_114",
+        "source_label": "p3sam_segment_114",
+        "point_count": 1262,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 114
+      },
+      {
+        "tool_id": "flat_eraser",
+        "marker": "3",
+        "part_id": "part_243",
+        "part_ref": "tool.parts.part_243",
+        "source_label": "p3sam_segment_243",
+        "point_count": 523,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 243
+      },
+      {
+        "tool_id": "flat_eraser",
+        "marker": "4",
+        "part_id": "part_292",
+        "part_ref": "tool.parts.part_292",
+        "source_label": "p3sam_segment_292",
+        "point_count": 381,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 292
+      },
+      {
+        "tool_id": "flat_spatula",
+        "marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "source_label": "p3sam_segment_0",
+        "point_count": 797,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 0
+      },
+      {
+        "tool_id": "flat_spatula",
+        "marker": "2",
+        "part_id": "part_011",
+        "part_ref": "tool.parts.part_011",
+        "source_label": "p3sam_segment_11",
+        "point_count": 788,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "contact_patch"
+        ],
+        "part_label": 11
+      },
+      {
+        "tool_id": "handle_eraser",
+        "marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "source_label": "p3sam_segment_0",
+        "point_count": 2416,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 0
+      },
+      {
+        "tool_id": "handle_eraser",
+        "marker": "2",
+        "part_id": "part_001",
+        "part_ref": "tool.parts.part_001",
+        "source_label": "p3sam_segment_131",
+        "point_count": 12751,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 131
+      },
+      {
+        "tool_id": "long_screwdriver",
+        "marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "source_label": "p3sam_segment_0",
+        "point_count": 876,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 0
+      },
+      {
+        "tool_id": "long_screwdriver",
+        "marker": "2",
+        "part_id": "part_001",
+        "part_ref": "tool.parts.part_001",
+        "source_label": "p3sam_segment_9",
+        "point_count": 2552,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 9
+      },
+      {
+        "tool_id": "long_screwdriver",
+        "marker": "3",
+        "part_id": "part_002",
+        "part_ref": "tool.parts.part_002",
+        "source_label": "p3sam_segment_232",
+        "point_count": 496,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "contact_patch"
+        ],
+        "part_label": 232
+      },
+      {
+        "tool_id": "long_screwdriver",
+        "marker": "4",
+        "part_id": "part_003",
+        "part_ref": "tool.parts.part_003",
+        "source_label": "p3sam_segment_293",
+        "point_count": 1137,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "contact_patch"
+        ],
+        "part_label": 293
+      },
+      {
+        "tool_id": "long_screwdriver",
+        "marker": "5",
+        "part_id": "part_004",
+        "part_ref": "tool.parts.part_004",
+        "source_label": "p3sam_segment_354",
+        "point_count": 503,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "contact_patch"
+        ],
+        "part_label": 354
+      },
+      {
+        "tool_id": "mallet_hammer",
+        "marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "source_label": "p3sam_segment_0",
+        "point_count": 5031,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 0
+      },
+      {
+        "tool_id": "mallet_hammer",
+        "marker": "2",
+        "part_id": "part_078",
+        "part_ref": "tool.parts.part_078",
+        "source_label": "p3sam_segment_78",
+        "point_count": 3395,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "contact_patch"
+        ],
+        "part_label": 78
+      },
+      {
+        "tool_id": "mallet_hammer",
+        "marker": "3",
+        "part_id": "part_283",
+        "part_ref": "tool.parts.part_283",
+        "source_label": "p3sam_segment_283",
+        "point_count": 190,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "fine_feature_candidate",
+          "contact_patch"
+        ],
+        "part_label": 283
+      },
+      {
+        "tool_id": "mallet_hammer",
+        "marker": "4",
+        "part_id": "part_287",
+        "part_ref": "tool.parts.part_287",
+        "source_label": "p3sam_segment_287",
+        "point_count": 1091,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "contact_patch"
+        ],
+        "part_label": 287
+      },
+      {
+        "tool_id": "mallet_hammer",
+        "marker": "5",
+        "part_id": "part_290",
+        "part_ref": "tool.parts.part_290",
+        "source_label": "p3sam_segment_290",
+        "point_count": 438,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "contact_patch"
+        ],
+        "part_label": 290
+      },
+      {
+        "tool_id": "red_brush",
+        "marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "source_label": "p3sam_segment_0",
+        "point_count": 830,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 0
+      },
+      {
+        "tool_id": "red_brush",
+        "marker": "2",
+        "part_id": "part_001",
+        "part_ref": "tool.parts.part_001",
+        "source_label": "p3sam_segment_13",
+        "point_count": 384,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "fine_feature_candidate",
+          "contact_patch"
+        ],
+        "part_label": 13
+      },
+      {
+        "tool_id": "red_brush",
+        "marker": "3",
+        "part_id": "part_002",
+        "part_ref": "tool.parts.part_002",
+        "source_label": "p3sam_segment_58",
+        "point_count": 10909,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "contact_patch"
+        ],
+        "part_label": 58
+      },
+      {
+        "tool_id": "sharpie_marker",
+        "marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "source_label": "p3sam_segment_0",
+        "point_count": 431,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 0
+      },
+      {
+        "tool_id": "sharpie_marker",
+        "marker": "2",
+        "part_id": "part_018",
+        "part_ref": "tool.parts.part_018",
+        "source_label": "p3sam_segment_18",
+        "point_count": 1035,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 18
+      },
+      {
+        "tool_id": "sharpie_marker",
+        "marker": "3",
+        "part_id": "part_246",
+        "part_ref": "tool.parts.part_246",
+        "source_label": "p3sam_segment_246",
+        "point_count": 546,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 246
+      },
+      {
+        "tool_id": "sharpie_marker",
+        "marker": "4",
+        "part_id": "part_253",
+        "part_ref": "tool.parts.part_253",
+        "source_label": "p3sam_segment_253",
+        "point_count": 175,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 253
+      },
+      {
+        "tool_id": "short_screwdriver",
+        "marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "source_label": "p3sam_segment_0",
+        "point_count": 210,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 0
+      },
+      {
+        "tool_id": "short_screwdriver",
+        "marker": "2",
+        "part_id": "part_001",
+        "part_ref": "tool.parts.part_001",
+        "source_label": "p3sam_segment_29",
+        "point_count": 1313,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 29
+      },
+      {
+        "tool_id": "short_screwdriver",
+        "marker": "3",
+        "part_id": "part_002",
+        "part_ref": "tool.parts.part_002",
+        "source_label": "p3sam_segment_60",
+        "point_count": 123,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "contact_patch"
+        ],
+        "part_label": 60
+      },
+      {
+        "tool_id": "short_screwdriver",
+        "marker": "4",
+        "part_id": "part_003",
+        "part_ref": "tool.parts.part_003",
+        "source_label": "p3sam_segment_90",
+        "point_count": 179,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 90
+      },
+      {
+        "tool_id": "short_screwdriver",
+        "marker": "5",
+        "part_id": "part_004",
+        "part_ref": "tool.parts.part_004",
+        "source_label": "p3sam_segment_313",
+        "point_count": 357,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 313
+      },
+      {
+        "tool_id": "short_screwdriver",
+        "marker": "6",
+        "part_id": "part_005",
+        "part_ref": "tool.parts.part_005",
+        "source_label": "p3sam_segment_348",
+        "point_count": 285,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 348
+      },
+      {
+        "tool_id": "spoon_spatula",
+        "marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "source_label": "p3sam_segment_0",
+        "point_count": 1111,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 0
+      },
+      {
+        "tool_id": "spoon_spatula",
+        "marker": "2",
+        "part_id": "part_001",
+        "part_ref": "tool.parts.part_001",
+        "source_label": "p3sam_segment_25",
+        "point_count": 362,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 25
+      },
+      {
+        "tool_id": "spoon_spatula",
+        "marker": "3",
+        "part_id": "part_002",
+        "part_ref": "tool.parts.part_002",
+        "source_label": "p3sam_segment_208",
+        "point_count": 108,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "contact_patch"
+        ],
+        "part_label": 208
+      },
+      {
+        "tool_id": "staples_marker",
+        "marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "source_label": "p3sam_segment_0",
+        "point_count": 978,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "contact_patch"
+        ],
+        "part_label": 0
+      },
+      {
+        "tool_id": "staples_marker",
+        "marker": "2",
+        "part_id": "part_001",
+        "part_ref": "tool.parts.part_001",
+        "source_label": "p3sam_segment_86",
+        "point_count": 208,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 86
+      },
+      {
+        "tool_id": "staples_marker",
+        "marker": "3",
+        "part_id": "part_002",
+        "part_ref": "tool.parts.part_002",
+        "source_label": "p3sam_segment_95",
+        "point_count": 895,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 95
+      },
+      {
+        "tool_id": "staples_marker",
+        "marker": "4",
+        "part_id": "part_003",
+        "part_ref": "tool.parts.part_003",
+        "source_label": "p3sam_segment_282",
+        "point_count": 128,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 282
+      },
+      {
+        "tool_id": "staples_marker",
+        "marker": "5",
+        "part_id": "part_004",
+        "part_ref": "tool.parts.part_004",
+        "source_label": "p3sam_segment_385",
+        "point_count": 380,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "contact_patch"
+        ],
+        "part_label": 385
+      }
+    ],
+    "usage": "Use whole-mesh part-choice overviews and isolated part cards for VLM functional-part selection. Functional-face evidence is generated later after a part is selected."
+  }
+}

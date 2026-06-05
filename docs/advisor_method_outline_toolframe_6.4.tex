@@ -1,0 +1,315 @@
+% Advisor-facing method outline for ToolFrame 6.4.
+\documentclass[journal]{IEEEtran}
+
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{xcolor}
+
+\newcommand{\todo}[1]{\textcolor{red}{TODO: #1}}
+\newcommand{\method}{ToolFrame}
+
+\title{\method{}: Let the Tool Define the Frame for Dexterous Manipulation}
+\author{Advisor Brief Draft}
+
+\begin{document}
+\maketitle
+
+\section*{Title Candidates}
+\textbf{Preferred:}
+\begin{quote}
+\method{}: Let the Tool Define the Frame for Dexterous Manipulation
+\end{quote}
+
+\textbf{Safer RA-L-style alternative:}
+\begin{quote}
+\method{}: Tool-Centric Visual Grounding for Dexterous Manipulation
+\end{quote}
+
+\textbf{Method-oriented alternative:}
+\begin{quote}
+\method{}: Tool-Centric Compilation of Visual Evidence for Dexterous Tool Use
+\end{quote}
+
+\section{Core Thesis}
+Traditional VLM tool-use pipelines often treat the VLM as a planner that emits
+actions, trajectories, or waypoints. \method{} instead makes the tool, rather
+than the hand, the organizing frame for dexterous manipulation:
+\begin{quote}
+The tool defines the frame; the hand follows.
+\end{quote}
+
+The method decomposes tool use into three layers:
+\begin{enumerate}
+  \item \textbf{Functional tool geometry}: functional part, contact point, and
+  motion axis.
+  \item \textbf{Scene action evidence}: RGB-D start point, path points, end
+  point, and direction.
+  \item \textbf{Whole-tool execution targets}: compiled whole-tool $SE(3)$
+  subgoals executed by a dexterous hand policy.
+\end{enumerate}
+
+\section{Abstract Skeleton}
+\begin{enumerate}
+  \item \textbf{Background}: Dexterous tool use requires binding functional
+  tool geometry to task-relevant scene evidence.
+  \item \textbf{Problem}: Direct VLM trajectory generation entangles semantic
+  grounding, metric geometry, control feasibility, and hidden benchmark
+  assumptions.
+  \item \textbf{Method}: \method{} restricts VLMs to sparse public evidence
+  selection: tool refs and scene refs.
+  \item \textbf{Compiler}: A geometry-constrained compiler binds
+  \texttt{tool.contact\_point} and \texttt{tool.motion\_axis} to lifted RGB-D
+  scene refs and outputs whole-tool $SE(3)$ subgoals.
+  \item \textbf{Execution}: A SimToolReal fixed-goal dexterous policy executes
+  these subgoals.
+  \item \textbf{Evaluation}: Task contracts evaluate final success and
+  attribute failures by module.
+  \item \textbf{Results}: \todo{Fill final results from frozen
+  launcher\_summary files and per-task summary.json files.}
+\end{enumerate}
+
+\section{Introduction}
+\subsection{Motivation}
+Tool use is functional geometric grounding. A brush provides broad lateral
+contact, an eraser provides a flat wiping patch, a hammer provides an impact
+face and strike axis, a screwdriver provides a tip and shaft axis, and a marker
+provides a point tip and trace path. The dexterous hand should not merely move
+an end-effector; it should bring the functional part of the tool to the scene
+with the right pose and direction.
+
+\subsection{Problem}
+VLMs can identify task-relevant visual evidence, but asking them to directly
+generate robot trajectories mixes semantic grounding, metric geometry, policy
+feasibility, and benchmark hidden state. When execution fails, it is unclear
+whether the error came from tool grounding, scene grounding, geometric
+compilation, policy execution, or the task effect.
+
+\subsection{Key Idea}
+\method{} treats the VLM as an evidence selector:
+\begin{itemize}
+  \item VLMs select sparse scene refs.
+  \item VLM / part evidence selects functional tool refs.
+  \item The compiler produces metric whole-tool $SE(3)$ subgoals.
+  \item A dexterous policy executes fixed goals.
+  \item Task contracts evaluate success and failure attribution.
+\end{itemize}
+
+\subsection{Contributions}
+\begin{enumerate}
+  \item A tool-centric visual grounding interface using
+  \texttt{tool.contact\_point} and \texttt{tool.motion\_axis}.
+  \item A geometry-constrained compiler that binds tool refs and RGB-D scene
+  refs into whole-tool $SE(3)$ subgoals.
+  \item A closed-loop pipeline from public visual evidence to SimToolReal
+  fixed-goal dexterous rollout.
+  \item A task-contract evaluation protocol for final success and module-level
+  failure attribution.
+\end{enumerate}
+
+\section{Related Work}
+\subsection{VLMs for Robot Planning}
+Discuss VLM / LLM robot task planning, visual grounding, code-as-policies, and
+language-conditioned manipulation. Difference: \method{} does not use the VLM
+as a trajectory generator.
+
+\subsection{Tool Affordance and Functional Part Grounding}
+Discuss affordance learning, part segmentation, functional region prediction,
+and contact point estimation. Difference: \method{} uses functional tool refs
+as compiler inputs, not only as semantic labels.
+
+\subsection{Constraint-Based Manipulation and Subgoal Planning}
+Discuss task-space constraints, contact-rich manipulation, keyframe planning,
+and $SE(3)$ pose optimization. Difference: \method{} compiles sparse visual
+refs into whole-tool $SE(3)$ subgoals.
+
+\subsection{Tool-Use Benchmarks and Evaluation}
+Discuss manipulation benchmarks, tool-use benchmarks, and success metrics.
+Difference: \method{} separates task success from module-level failure
+attribution.
+
+\section{Problem Formulation and Evidence Boundary}
+\subsection{Allowed Inputs}
+The method may use task language, public RGB-D scene evidence, camera
+intrinsics/extrinsics, public tool mesh/part evidence, reviewed-or-pending
+public tool refs, and robot/gripper state needed for execution.
+
+\subsection{Forbidden Inputs}
+The method must not use hidden evaluator target refs, oracle target axes,
+oracle trajectories, simulator target centers for snapping refs, tool-family
+fallback, task-family fallback, primitive fallback, repair-loop fallback, or
+seed-specific shortcuts.
+
+\subsection{Reference Representation}
+Tool side:
+\begin{quote}
+\texttt{tool.contact\_point}, \texttt{tool.motion\_axis}
+\end{quote}
+
+Scene side:
+\begin{quote}
+\texttt{scene.start\_point}, \texttt{scene.path\_points},
+\texttt{scene.end\_point}, \texttt{scene.direction}
+\end{quote}
+
+Core objective: find whole-tool $SE(3)$ poses such that the selected tool
+contact point reaches the selected scene refs while the selected tool motion
+axis aligns with the scene direction.
+
+\section{Method: ToolFrame}
+\subsection{Overview}
+Figure~1 should show four modules:
+\begin{quote}
+(A) Tool-Centric Prior Extraction;
+(B) Scene Key-Points Grounding;
+(C) Geometry-Constrained Optimizer;
+(D) Policy Rollout and Evaluation.
+\end{quote}
+
+Suggested caption:
+\begin{quote}
+\method{} overview. The tool defines the manipulation frame: public tool-part
+evidence yields a functional part, contact point, and motion axis; public
+RGB-D scene evidence yields sparse scene references; a tool-centric $SE(3)$
+compiler binds them into whole-tool subgoals executed by a fixed-goal
+dexterous policy. The VLM selects evidence only and does not output robot
+trajectories.
+\end{quote}
+
+\subsection{A. Tool-Centric Prior Extraction}
+\textbf{Inputs}: tool mesh, segmented tool-part evidence, task language, and
+reviewed visual evidence.
+
+\textbf{Process}: generate candidate functional parts; select the functional
+part from public evidence; select contact point and motion axis on the chosen
+part; convert the selection to the tool frame.
+
+\textbf{Outputs}: \texttt{tool.contact\_point}, \texttt{tool.motion\_axis},
+\texttt{tool\_part\_graph}, part-selection evidence, and axis-binding
+evidence.
+
+\subsection{B. Scene Key-Points Grounding}
+\textbf{Inputs}: public RGB-D image, depth, camera calibration, and natural
+task language.
+
+\textbf{Process}: VLM selects start point, optional path points, end point, and
+scene direction; RGB-D lifting converts 2D refs into 3D refs.
+
+\textbf{Outputs}: \texttt{scene.start\_point\_3d},
+\texttt{scene.path\_points\_3d}, \texttt{scene.end\_point\_3d}, and
+\texttt{scene.direction\_3d}.
+
+\subsection{C. Geometry-Constrained Optimizer}
+\textbf{Inputs}: \texttt{tool.contact\_point}, \texttt{tool.motion\_axis},
+lifted scene refs, and task-stage constraints.
+
+\textbf{Constraints}: point match, point offset, axis alignment, move along,
+orientation offset about axis, and explicit diagnostic clearance.
+
+\textbf{Outputs}: \texttt{tool\_pose\_subgoals.json},
+\texttt{simtoolreal\_fixed\_goals.json}, and compiler report.
+
+This section should emphasize that the compiler does not infer task primitives
+such as sweep, strike, wipe, or insert. It only solves geometric constraints
+over tool and scene refs.
+
+\subsection{D. Policy Rollout and Evaluation}
+\textbf{Inputs}: fixed whole-tool subgoals, SimToolReal scene state, and
+rollout config.
+
+\textbf{Process}: the fixed-goal dexterous policy follows subgoals; rollout
+produces videos, contact evidence, and tracking diagnostics; task contracts
+evaluate final success; failure attribution records the first failed module.
+
+\textbf{Outputs}: \texttt{rollout\_summary.json},
+\texttt{visual\_evidence/manifest.json}, task success checks, failure
+attribution, and \texttt{summary.json}.
+
+\section{Benchmark and Tasks}
+\subsection{Tool Coverage}
+\begin{table}[h]
+\centering
+\caption{Tool functional geometries targeted by \method{}.}
+\begin{tabular}{ll}
+\toprule
+Tool & Functional geometry \\
+\midrule
+Brush & broad lateral contact and sweep axis \\
+Eraser & flat bottom contact patch and wipe axis \\
+Hammer & impact face and strike axis \\
+Screwdriver & tip and shaft/insertion axis \\
+Marker & point tip and writing/contact axis \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Scene Coverage}
+\begin{table}[h]
+\centering
+\caption{Scene families.}
+\begin{tabular}{ll}
+\toprule
+Scene & Purpose \\
+\midrule
+Tabletop & horizontal tabletop manipulation \\
+Side-board & vertical board manipulation \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Metrics}
+Main metrics:
+\begin{quote}
+functional grounding rate, scene grounding rate, subgoal validity rate, policy
+execution rate, task success rate, and failure attribution.
+\end{quote}
+Task success rate is the final task metric; other metrics explain where the
+pipeline fails.
+
+\section{Experiments}
+\subsection{Main Result Table}
+Final tables should report:
+\begin{quote}
+Task, Tool, Scene, N, Functional, Scene, Subgoal, Policy, Success, Failure.
+\end{quote}
+Numbers should only come from frozen \texttt{launcher\_summary} files and
+matching per-task \texttt{summary.json} files.
+
+\subsection{Qualitative Rollout}
+Show representative rollouts for brush sweep, eraser wipe, hammer strike,
+screwdriver insert, and marker trace. Each example should show:
+\begin{quote}
+tool refs $\rightarrow$ scene refs $\rightarrow$ compiled subgoals
+$\rightarrow$ rollout result.
+\end{quote}
+
+\subsection{Failure Attribution}
+Show whether failures occur in functional grounding, scene grounding, subgoal
+validity, policy execution, task effect, or needs-review cases.
+
+\section{Figures and Tables}
+\begin{itemize}
+  \item Figure 1: overall pipeline.
+  \item Figure 2: five tools and functional refs.
+  \item Figure 3: tabletop and side-board scene grounding.
+  \item Figure 4: whole-tool $SE(3)$ subgoals and dexterous rollout.
+  \item Figure 5: failure attribution or success summary.
+  \item Table 1: tool functional geometry coverage.
+  \item Table 2: task, scene, and contract status.
+  \item Table 3: main result table.
+\end{itemize}
+
+\section{Limitations}
+\begin{itemize}
+  \item Requires visible RGB-D evidence and accurate lifting.
+  \item Tool refs require public part evidence and human review.
+  \item Fixed-goal policy may fail even with valid compiled subgoals.
+  \item Side-board and marker-trace tasks may require stronger contracts.
+  \item No online repair loop or seed-specific shortcut is used.
+\end{itemize}
+
+\section{Conclusion}
+\method{} structures dexterous tool use as tool-centric evidence grounding and
+geometric subgoal compilation: the tool defines the frame, and the hand
+follows.
+
+\end{document}

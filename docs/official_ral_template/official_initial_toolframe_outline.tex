@@ -1,0 +1,343 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Official RA-L initial-submission style.
+% Source template: RA-L author page -> PaperCept ieeeconf.zip.
+% RA-L initial submissions use:
+% \documentclass[letterpaper, 10 pt, conference]{ieeeconf}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[letterpaper, 10 pt, conference]{ieeeconf}
+
+\IEEEoverridecommandlockouts
+\overrideIEEEmargins
+
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{xcolor}
+
+\newcommand{\todo}[1]{\textcolor{red}{TODO: #1}}
+\newcommand{\method}{ToolFrame}
+
+\title{\LARGE \bf
+\method{}: Let the Tool Define the Frame for Dexterous Manipulation
+}
+
+% RA-L initial submissions follow the double-anonymous review policy.
+% Leave the author block without identifying information.
+\author{}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+\pagestyle{empty}
+
+\begin{abstract}
+The central difficulty in dexterous tool use is that success is determined by
+an unobserved functional mechanism rather than by object identity alone: a
+brush sweeps through bristle contact, an eraser wipes through a flat patch, a
+hammer acts through an impact face, and a screwdriver acts through a tip and
+shaft axis. A robot therefore must recover both the tool-side mechanism
+(\emph{where} the tool should contact and \emph{which axis} should drive the
+effect) and the scene-side mechanism (\emph{where} the effect should start,
+move, and terminate). Directly asking a VLM to output robot trajectories hides
+this mechanism inside free-form actions and makes evaluation vulnerable to
+oracle axes, hidden target references, or task-family shortcuts. This paper
+proposes \method{}, a tool-centric image-grounded pipeline that exposes the
+mechanism as explicit intermediate references. The VLM is restricted to
+selecting sparse public evidence: tool-side functional references
+\texttt{tool.contact\_point} and \texttt{tool.motion\_axis}, and scene-side
+RGB-D references for start, path, end, and direction. A geometry-constrained
+compiler then binds the tool mechanism to the scene mechanism and solves
+whole-tool $SE(3)$ subgoals, which are executed by a SimToolReal fixed-goal
+dexterous policy. Task contracts evaluate the final physical effect and
+attribute failures to functional grounding, scene grounding, subgoal validity,
+policy execution, or task effect. \todo{Insert final headline results from
+frozen launcher\_summary files and corresponding per-task summary.json files.}
+\end{abstract}
+
+\section{INTRODUCTION}
+
+\subsection{Bottom-Level Challenge}
+A tool is useful because its geometry induces a task mechanism. The robot does
+not merely need to know that an object is a brush, eraser, hammer,
+screwdriver, or marker; it must know which part of the object transfers force
+or contact to the scene and which motion direction produces the intended
+effect. This is especially important for dexterous manipulation, where the hand
+may hold the same object in many feasible ways, but only a small subset of
+whole-tool poses activates the correct functional part.
+
+\subsection{Mechanistic Gap}
+The challenge is to recover this mechanism from public evidence without
+collapsing it into an opaque policy or prompt-generated motion. If a VLM is
+asked to generate dense waypoints or robot trajectories, the paper can no
+longer cleanly answer whether success came from visual grounding, geometric
+reasoning, controller robustness, or hidden task priors. The formulation must
+therefore expose the causal path from public evidence to tool contact, from
+tool contact to scene effect, and from scene effect to task-contract success.
+
+\subsection{Our Solution}
+\method{} decomposes the mechanism into two sparse reference sets. The
+tool-side set describes how the tool can create an effect: the functional part,
+contact point, and motion axis. The scene-side set describes where the effect
+should occur: start, path, end, and direction references lifted from RGB-D. A
+compiler then solves the missing bridge between them: whole-tool $SE(3)$ poses
+that make the tool mechanism coincide with the scene mechanism while respecting
+clearance and stage constraints. In short, \emph{the tool defines the frame;
+the hand follows}.
+
+\subsection{Contributions}
+\begin{enumerate}
+  \item A mechanism-explicit, public-evidence tool-use pipeline for dexterous
+  manipulation that combines RGB-D scene evidence with public tool-part
+  evidence.
+  \item A tool-centric reference interface that represents functional tool
+  geometry by \texttt{tool.contact\_point} and
+  \texttt{tool.motion\_axis}, while restricting the VLM to sparse scene and
+  tool references.
+  \item A geometry-constrained compiler that mechanistically binds tool refs to
+  scene refs and converts them into whole-tool $SE(3)$ subgoals for fixed-goal
+  dexterous rollout.
+  \item A task-contract benchmark protocol that evaluates the final physical
+  effect and attributes failures across grounding, compilation, execution, and
+  task-effect stages.
+\end{enumerate}
+
+\section{RELATED WORK}
+
+\subsection{Vision-Language Models for Robot Planning}
+Discuss VLM/LLM robot planning, visual grounding, language-conditioned
+manipulation, and code-as-policies. The underlying challenge is that language
+models can encode semantic priors but do not by themselves guarantee metric
+contact geometry. The contrast is that \method{} uses VLMs to expose sparse
+evidence for the mechanism, not to generate the mechanism's robot trajectory.
+
+\subsection{Tool Affordances and Functional Part Grounding}
+Discuss affordance learning, part segmentation, functional region prediction,
+and contact-point estimation. The underlying challenge is that a functional
+part label is not yet an executable manipulation constraint. The contrast is
+that \method{} turns functional parts into explicit contact-point and
+motion-axis constraints.
+
+\subsection{Constraint-Based Manipulation and Keyframe Planning}
+Discuss task-space constraints, contact-rich manipulation, keyframe/subgoal
+planning, and $SE(3)$ optimization. The underlying challenge is to translate a
+desired task effect into robot-feasible poses. The contrast is that \method{}
+performs this translation at the whole-tool level, binding tool mechanism and
+scene mechanism before policy rollout.
+
+\subsection{Tool-Use Benchmarks}
+Discuss tool-use and manipulation benchmarks. The contrast is that task
+contracts separate the final physical effect from the first failed mechanistic
+stage: functional grounding, scene grounding, subgoal validity, policy
+execution, or task effect.
+
+\section{PROBLEM FORMULATION AND EVIDENCE BOUNDARY}
+
+\subsection{Mechanistic View of Tool Use}
+We formulate a tool-use task as a relation between a tool mechanism and a scene
+mechanism. The tool mechanism specifies a contact point and a motion axis in
+the tool frame. The scene mechanism specifies the spatial locus and direction
+of the desired effect in the world frame. The robot succeeds only if the
+executed whole-tool motion makes these two mechanisms coincide under the task
+contract.
+
+\subsection{Allowed Public Inputs}
+The method may use natural task language, public RGB-D scene evidence, camera
+calibration, public tool meshes, segmented tool-part evidence, reviewed or
+review-pending public tool references, and robot state needed for execution.
+
+\subsection{Forbidden Method Inputs}
+The method must not use hidden evaluator target references, simulator target
+centers for snapping, oracle target axes, oracle trajectories, tool-family
+fallback, task-family fallback, primitive fallback, repair-loop fallback, or
+seed-specific shortcuts.
+
+\subsection{Reference Interface}
+Tool references are
+\begin{equation}
+  \mathcal{R}_{tool} =
+  \{p^{contact}_{tool}, a^{motion}_{tool}\},
+\end{equation}
+where $p^{contact}_{tool}$ is the functional contact point and
+$a^{motion}_{tool}$ is the tool-frame motion axis. Scene references are
+\begin{equation}
+  \mathcal{R}_{scene} =
+  \{p^{start}_{scene}, p^{path}_{scene}, p^{end}_{scene},
+  a^{direction}_{scene}\}.
+\end{equation}
+The compiler solves whole-tool poses $T_{world,tool}\in SE(3)$ that align the
+tool contact and motion references with the grounded scene references.
+
+\section{METHOD}
+
+\subsection{Overview}
+\begin{figure*}[t]
+\centering
+\fbox{\parbox{0.92\textwidth}{\centering
+Placeholder for Fig. 1: (A) Tool-Centric Prior Extraction;
+(B) Scene Key-Points Grounding; (C) Geometry-Constrained Optimizer;
+(D) Policy Rollout and Evaluation.}}
+\caption{\method{} overview. Public tool-part evidence exposes the tool
+mechanism; public RGB-D evidence exposes the scene mechanism; a tool-centric
+$SE(3)$ compiler binds both into whole-tool subgoals executed by a SimToolReal
+fixed-goal dexterous policy. The VLM selects evidence only and does not output
+robot trajectories.}
+\label{fig:overview}
+\end{figure*}
+
+\subsection{A. Tool-Centric Prior Extraction}
+The challenge on the tool side is that visual appearance and object category do
+not identify the operational mechanism. A hammer handle and hammer face are
+both visible parts, but only one creates the strike effect; a marker body and
+tip are both graspable, but only the tip creates the trace. This module
+therefore extracts a tool-centric prior from public tool evidence: the
+functional part, the contact point \texttt{tool.contact\_point}, and the
+motion axis \texttt{tool.motion\_axis}. The output is not a robot action; it
+is the tool mechanism that later constrains whole-tool poses.
+
+\subsection{B. Scene Key-Points Grounding}
+The challenge on the scene side is that the task effect is spatially sparse.
+For wiping, sweeping, inserting, or tracing, the important evidence is not a
+dense robot path but a small set of scene references that define where the
+effect should begin, how it should progress, and where it should terminate.
+\method{} uses the VLM only to select these sparse public RGB-D references:
+start point, optional path points, end point, and scene direction. The selected
+2D references are lifted to 3D using depth and camera calibration.
+
+\subsection{C. Geometry-Constrained Optimizer}
+The central mechanistic gap is that tool refs and scene refs live in different
+frames. A contact point in the tool frame cannot directly wipe a world-frame
+surface, and a scene direction cannot directly command a dexterous hand. The
+compiler closes this gap by solving for whole-tool $SE(3)$ poses that satisfy
+contact-point matching, motion-axis alignment, clearance, pre-contact approach,
+and stage-wise progression through lift, align, approach, and motion phases.
+The output is a sequence of fixed whole-tool subgoals, not low-level actions or
+VLM-generated trajectories.
+
+\subsection{D. Policy Rollout and Evaluation}
+The remaining challenge is execution: even a valid tool-centric subgoal can
+fail if the dexterous policy cannot track it, maintain contact, or produce the
+desired scene effect. \method{} therefore separates planning from evaluation.
+The SimToolReal fixed-goal policy executes the compiled whole-tool subgoals,
+while task contracts evaluate the resulting physical effect after rollout and
+attribute the first failure to the responsible stage. Contract outcomes are not
+used as a repair loop or fallback during the method.
+
+\section{BENCHMARK AND TASKS}
+
+\subsection{Functional Tool Geometry}
+\begin{table}[t]
+\caption{Functional tool geometries targeted by \method{}.}
+\label{tab:tools}
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+Tool & Functional mechanism \\
+\midrule
+Brush & broad lateral contact and sweep axis \\
+Eraser & flat bottom contact patch and wipe axis \\
+Hammer & impact face and strike axis \\
+Screwdriver & tip and shaft/insertion axis \\
+Marker & point tip and writing/contact axis \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+\subsection{Scene Coverage}
+The benchmark should stress whether the mechanism is genuinely geometric rather
+than scene-specific. Tabletop scenes test horizontal manipulation, while
+side-board scenes test whether the same tool-centric formulation transfers to
+vertical interaction where gravity, camera viewpoint, and contact orientation
+change.
+
+\subsection{Task Tiers}
+Headline tasks are those with fixed/current contracts and frozen statistics.
+Current headline candidates are brush sweep forward and tabletop eraser wipe.
+Candidate/provisional tasks include brush left, hammer down, screwdriver wide
+socket, and marker trace variants. Diagnostic tasks include harder variants
+such as screwdriver deep socket or dense layouts. Draft/smoke tasks are used
+for contract development only and must not be reported as final headline
+statistics.
+
+\subsection{Metrics}
+The metrics diagnose the causal chain from mechanism recovery to task effect:
+functional grounding rate, scene grounding rate, subgoal validity rate, policy
+execution rate, final task success rate, and failure attribution. Final numbers
+must come only from frozen \texttt{launcher\_summary} files and matched
+per-task summaries.
+
+\section{EXPERIMENTS}
+
+\subsection{Main Results}
+\begin{table*}[t]
+\caption{Main benchmark results. All numbers are placeholders until frozen
+launcher summaries are available.}
+\label{tab:main_results}
+\begin{center}
+\begin{tabular}{lcccccc}
+\toprule
+Task & $N$ & Func. & Scene & Subgoal & Policy & Success \\
+\midrule
+Brush sweep / forward & \todo{N} & \todo{} & \todo{} & \todo{} & \todo{} & \todo{} \\
+Eraser wipe / tabletop & \todo{N} & \todo{} & \todo{} & \todo{} & \todo{} & \todo{} \\
+Hammer strike / down & \todo{N} & \todo{} & \todo{} & \todo{} & \todo{} & \todo{} \\
+Screwdriver insert / wide socket & \todo{N} & \todo{} & \todo{} & \todo{} & \todo{} & \todo{} \\
+Marker trace / L or C & \todo{N} & \todo{} & \todo{} & \todo{} & \todo{} & \todo{} \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table*}
+
+\subsection{Qualitative Rollouts}
+Show representative rollouts for each tool family. Each example should expose
+the full mechanism chain: functional tool refs, grounded scene refs, compiled
+whole-tool subgoals, dexterous rollout, and final task-contract outcome.
+
+\subsection{Failure Attribution}
+Use stacked bars or a compact table to show where the mechanism breaks:
+functional tool grounding, scene grounding, invalid subgoals, policy execution,
+or task effect. This turns failed rollouts into evidence about the pipeline
+rather than only negative examples.
+
+\section{FIGURES AND TABLES PLAN}
+
+\begin{itemize}
+  \item Fig.~1: challenge-to-solution overview, showing tool mechanism, scene
+  mechanism, compiler bridge, and policy rollout.
+  \item Fig.~2: five tools and their functional mechanisms: contact points and
+  motion axes.
+  \item Fig.~3: tabletop and side-board scene mechanisms.
+  \item Fig.~4: whole-tool $SE(3)$ subgoals and dexterous rollout.
+  \item Fig.~5: failure attribution along the mechanism chain.
+  \item Table~I: functional geometry coverage.
+  \item Table~II: task, scene, and contract status.
+  \item Table~III: main results from frozen summaries.
+\end{itemize}
+
+\section{LIMITATIONS}
+
+Mechanism recovery requires visible RGB-D evidence and reasonably accurate
+2D-to-3D lifting. Tool-side mechanisms depend on public tool-part evidence and
+human review; the current system does not infer arbitrary unseen affordances. A
+geometrically valid mechanism alignment can still fail under the fixed-goal
+dexterous policy. Side-board and marker-trace tasks may require stronger task
+contracts before becoming headline statistics. The system intentionally does
+not use online repair, primitive fallback, or seed-specific shortcuts.
+
+\section{CONCLUSIONS}
+
+\method{} treats dexterous tool use as the recovery and execution of a
+functional mechanism. The tool supplies the contact and motion frame, the scene
+supplies the desired effect frame, and the compiler binds the two into
+whole-tool $SE(3)$ subgoals for fixed-goal dexterous execution. By keeping the
+VLM restricted to public evidence selection and by evaluating with task
+contracts, the paper makes the causal chain from visual grounding to physical
+effect explicit. The central message is simple: the tool defines the frame, and
+the hand follows.
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}

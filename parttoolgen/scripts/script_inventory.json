@@ -1,0 +1,55 @@
+{
+  "schema_version": "toolframe_script_inventory_v1",
+  "policy": {
+    "public_entrypoint": "Safe handoff CLI intended for ordinary users and CI.",
+    "registry_runner": "Task-family runner invoked by run_tool_use_benchmark.py; do not call directly for normal experiments.",
+    "internal_stage": "Composable stage CLI used by registry runners or public pipelines.",
+    "tool_prior_internal": "P3SAM/SAMPart3D tool-ref helper used behind run_p3sam_tool_ref_pipeline.py.",
+    "benchmark_auxiliary": "Evaluation, reporting, or task-specific evidence helper.",
+    "debug_legacy": "Developer-only or legacy debugging script; not part of publishable benchmark entrypoints."
+  },
+  "scripts": {
+    "bootstrap_parttoolgen_env.sh": {
+      "category": "public_entrypoint",
+      "stable_cli": true,
+      "do_not_move": true,
+      "description": "Create the project-local Python 3.8 core environment."
+    },
+    "check_toolframe_env.py": {
+      "category": "public_entrypoint",
+      "stable_cli": true,
+      "do_not_move": true,
+      "description": "Structured core/rollout/VLM/full environment check."
+    },
+    "parttoolgen_env.sh": {
+      "category": "public_entrypoint",
+      "stable_cli": true,
+      "do_not_move": true,
+      "description": "Sourceable environment wrapper for ToolFrame runs."
+    },
+    "run_checks.sh": {
+      "category": "public_entrypoint",
+      "stable_cli": true,
+      "do_not_move": true,
+      "description": "Unified quick/full local and CI quality gate."
+    },
+    "run_image_grounded_task_spec.py": {
+      "category": "public_entrypoint",
+      "stable_cli": true,
+      "do_not_move": true,
+      "description": "Public spec-driven image-grounded task runner and registry-task compatibility entrypoint."
+    },
+    "run_p3sam_tool_ref_pipeline.py": {
+      "category": "public_entrypoint",
+      "stable_cli": true,
+      "do_not_move": true,
+      "description": "Public tool-side P3SAM part-selection and contact/motion ref pipeline."
+    },
+    "run_tool_use_benchmark.py": {
+      "category": "public_entrypoint",
+      "stable_cli": true,
+      "do_not_move": true,
+      "description": "Public registry launcher for benchmark tasks and suites."
+    }
+  }
+}

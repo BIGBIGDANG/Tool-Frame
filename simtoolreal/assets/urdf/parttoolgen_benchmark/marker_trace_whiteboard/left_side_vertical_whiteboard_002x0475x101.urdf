@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<robot name="parttoolgen_marker_trace_left_side_wide_vertical_whiteboard">
+  <link name="whiteboard">
+    <visual>
+      <material name="whiteboard_surface">
+        <color rgba="0.96 0.98 0.96 1.0"/>
+      </material>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <box size="0.020 0.820 1.010"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <box size="0.020 0.820 1.010"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.00"/>
+      <inertia ixx="0.170675" ixy="0.0" ixz="0.0" iyy="0.085034" iyz="0.0" izz="0.056367"/>
+    </inertial>
+  </link>
+</robot>

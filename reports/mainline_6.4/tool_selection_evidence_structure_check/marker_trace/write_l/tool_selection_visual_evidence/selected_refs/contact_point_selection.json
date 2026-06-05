@@ -1,0 +1,294 @@
+{
+  "schema_version": "parttoolgen_contact_point_motion_axis_selection_v1",
+  "selection_semantics": "p3sam_vlm_contact_point_motion_axis",
+  "artifact_id": "staples_marker_marker_trace_draw_l_p3sam_contact_point_selection",
+  "tool_id": "staples_marker",
+  "task_id": "marker_trace_draw_l",
+  "task_instruction": "Use this marker to write the requested letter on the whiteboard.",
+  "selected_part": {
+    "marker": "2",
+    "part_ref": "tool.parts.part_001"
+  },
+  "contact_point": {
+    "marker": "F2",
+    "point_ref": "candidate.points.part_001_x_positive_endpoint",
+    "surface_ref": "candidate.surfaces.part_001_x_positive_endpoint",
+    "patch_id": "x_positive_endpoint",
+    "row": {
+      "tool_id": "staples_marker",
+      "part_marker": "2",
+      "part_id": "part_001",
+      "part_ref": "tool.parts.part_001",
+      "point_ref": "candidate.points.part_001_x_positive_endpoint",
+      "surface_ref": "candidate.surfaces.part_001_x_positive_endpoint",
+      "polarity": "positive",
+      "patch_id": "x_positive_endpoint",
+      "role": null,
+      "xyz_tool": [
+        0.11126841037761323,
+        -1.6131017863484365e-05,
+        -0.00012902267681940018
+      ],
+      "normal_tool": [
+        0.9954549577606813,
+        -0.01544895201857923,
+        -0.09397210730428575
+      ],
+      "face_marker": "F2",
+      "contact_marker": "F2",
+      "selection_semantics": "contact_point_bbox_face",
+      "derived_point_ref": "candidate.points.part_001_x_positive_endpoint",
+      "source_surface_ref": "candidate.surfaces.part_001_x_positive_endpoint"
+    }
+  },
+  "contact_point_candidates": [
+    {
+      "marker": "F2",
+      "point_ref": "candidate.points.part_001_x_positive_endpoint",
+      "surface_ref": "candidate.surfaces.part_001_x_positive_endpoint",
+      "patch_id": "x_positive_endpoint",
+      "row": {
+        "tool_id": "staples_marker",
+        "part_marker": "2",
+        "part_id": "part_001",
+        "part_ref": "tool.parts.part_001",
+        "point_ref": "candidate.points.part_001_x_positive_endpoint",
+        "surface_ref": "candidate.surfaces.part_001_x_positive_endpoint",
+        "polarity": "positive",
+        "patch_id": "x_positive_endpoint",
+        "role": null,
+        "xyz_tool": [
+          0.11126841037761323,
+          -1.6131017863484365e-05,
+          -0.00012902267681940018
+        ],
+        "normal_tool": [
+          0.9954549577606813,
+          -0.01544895201857923,
+          -0.09397210730428575
+        ],
+        "face_marker": "F2",
+        "contact_marker": "F2",
+        "selection_semantics": "contact_point_bbox_face",
+        "derived_point_ref": "candidate.points.part_001_x_positive_endpoint",
+        "source_surface_ref": "candidate.surfaces.part_001_x_positive_endpoint"
+      }
+    }
+  ],
+  "motion_axis": {
+    "marker": "F3",
+    "surface_ref": "candidate.surfaces.part_001_y_negative_contact",
+    "patch_id": "y_negative_contact",
+    "row": {
+      "tool_id": "staples_marker",
+      "part_marker": "2",
+      "part_id": "part_001",
+      "part_ref": "tool.parts.part_001",
+      "point_ref": "candidate.points.part_001_y_negative_contact",
+      "surface_ref": "candidate.surfaces.part_001_y_negative_contact",
+      "polarity": "negative",
+      "patch_id": "y_negative_contact",
+      "role": null,
+      "xyz_tool": [
+        0.09971189509717208,
+        -0.0019621422197635984,
+        -2.105662721597312e-05
+      ],
+      "normal_tool": [
+        0.08125769217434267,
+        -0.9966658637905998,
+        -0.007371798765388733
+      ],
+      "face_marker": "F3",
+      "contact_marker": "F3",
+      "selection_semantics": "contact_point_bbox_face",
+      "derived_point_ref": "candidate.points.part_001_y_negative_contact",
+      "source_surface_ref": "candidate.surfaces.part_001_y_negative_contact"
+    }
+  },
+  "contact_point_selection_policy": "compiler_min_rotation_from_vlm_contact_point_candidate_set",
+  "confidence": 1.0,
+  "reason": "reference P3SAM contact-point and motion-axis selection",
+  "contact_point_marker_table": [
+    {
+      "tool_id": "staples_marker",
+      "part_marker": "2",
+      "part_id": "part_001",
+      "part_ref": "tool.parts.part_001",
+      "point_ref": "candidate.points.part_001_x_negative_endpoint",
+      "surface_ref": "candidate.surfaces.part_001_x_negative_endpoint",
+      "polarity": "negative",
+      "patch_id": "x_negative_endpoint",
+      "role": null,
+      "xyz_tool": [
+        0.09018373364127252,
+        0.0001004223737252929,
+        5.7844836055103367e-05
+      ],
+      "normal_tool": [
+        0.0912196364082399,
+        0.8378714242337173,
+        0.5381918379036519
+      ],
+      "face_marker": "F1",
+      "contact_marker": "F1",
+      "selection_semantics": "contact_point_bbox_face",
+      "derived_point_ref": "candidate.points.part_001_x_negative_endpoint",
+      "source_surface_ref": "candidate.surfaces.part_001_x_negative_endpoint"
+    },
+    {
+      "tool_id": "staples_marker",
+      "part_marker": "2",
+      "part_id": "part_001",
+      "part_ref": "tool.parts.part_001",
+      "point_ref": "candidate.points.part_001_x_positive_endpoint",
+      "surface_ref": "candidate.surfaces.part_001_x_positive_endpoint",
+      "polarity": "positive",
+      "patch_id": "x_positive_endpoint",
+      "role": null,
+      "xyz_tool": [
+        0.11126841037761323,
+        -1.6131017863484365e-05,
+        -0.00012902267681940018
+      ],
+      "normal_tool": [
+        0.9954549577606813,
+        -0.01544895201857923,
+        -0.09397210730428575
+      ],
+      "face_marker": "F2",
+      "contact_marker": "F2",
+      "selection_semantics": "contact_point_bbox_face",
+      "derived_point_ref": "candidate.points.part_001_x_positive_endpoint",
+      "source_surface_ref": "candidate.surfaces.part_001_x_positive_endpoint"
+    },
+    {
+      "tool_id": "staples_marker",
+      "part_marker": "2",
+      "part_id": "part_001",
+      "part_ref": "tool.parts.part_001",
+      "point_ref": "candidate.points.part_001_y_negative_contact",
+      "surface_ref": "candidate.surfaces.part_001_y_negative_contact",
+      "polarity": "negative",
+      "patch_id": "y_negative_contact",
+      "role": null,
+      "xyz_tool": [
+        0.09971189509717208,
+        -0.0019621422197635984,
+        -2.105662721597312e-05
+      ],
+      "normal_tool": [
+        0.08125769217434267,
+        -0.9966658637905998,
+        -0.007371798765388733
+      ],
+      "face_marker": "F3",
+      "contact_marker": "F3",
+      "selection_semantics": "contact_point_bbox_face",
+      "derived_point_ref": "candidate.points.part_001_y_negative_contact",
+      "source_surface_ref": "candidate.surfaces.part_001_y_negative_contact"
+    },
+    {
+      "tool_id": "staples_marker",
+      "part_marker": "2",
+      "part_id": "part_001",
+      "part_ref": "tool.parts.part_001",
+      "point_ref": "candidate.points.part_001_y_positive_contact",
+      "surface_ref": "candidate.surfaces.part_001_y_positive_contact",
+      "polarity": "positive",
+      "patch_id": "y_positive_contact",
+      "role": null,
+      "xyz_tool": [
+        0.09972362252972858,
+        0.0019574819610747385,
+        -2.795464877787098e-06
+      ],
+      "normal_tool": [
+        0.08160446059626467,
+        0.996656766748639,
+        0.004000163114434254
+      ],
+      "face_marker": "F4",
+      "contact_marker": "F4",
+      "selection_semantics": "contact_point_bbox_face",
+      "derived_point_ref": "candidate.points.part_001_y_positive_contact",
+      "source_surface_ref": "candidate.surfaces.part_001_y_positive_contact"
+    },
+    {
+      "tool_id": "staples_marker",
+      "part_marker": "2",
+      "part_id": "part_001",
+      "part_ref": "tool.parts.part_001",
+      "point_ref": "candidate.points.part_001_z_negative_contact",
+      "surface_ref": "candidate.surfaces.part_001_z_negative_contact",
+      "polarity": "negative",
+      "patch_id": "z_negative_contact",
+      "role": null,
+      "xyz_tool": [
+        0.09974754775362407,
+        -1.2711864563140091e-05,
+        -0.0019532213483163083
+      ],
+      "normal_tool": [
+        0.07999759748124027,
+        -0.004649104466002947,
+        -0.9967842144741728
+      ],
+      "face_marker": "F5",
+      "contact_marker": "F5",
+      "selection_semantics": "contact_point_bbox_face",
+      "derived_point_ref": "candidate.points.part_001_z_negative_contact",
+      "source_surface_ref": "candidate.surfaces.part_001_z_negative_contact"
+    },
+    {
+      "tool_id": "staples_marker",
+      "part_marker": "2",
+      "part_id": "part_001",
+      "part_ref": "tool.parts.part_001",
+      "point_ref": "candidate.points.part_001_z_positive_contact",
+      "surface_ref": "candidate.surfaces.part_001_z_positive_contact",
+      "polarity": "positive",
+      "patch_id": "z_positive_contact",
+      "role": null,
+      "xyz_tool": [
+        0.09974172077228874,
+        -1.143117370220672e-06,
+        0.0019535462262418113
+      ],
+      "normal_tool": [
+        0.082346535437709,
+        0.0038002683266033107,
+        0.9965965111628938
+      ],
+      "face_marker": "F6",
+      "contact_marker": "F6",
+      "selection_semantics": "contact_point_bbox_face",
+      "derived_point_ref": "candidate.points.part_001_z_positive_contact",
+      "source_surface_ref": "candidate.surfaces.part_001_z_positive_contact"
+    }
+  ],
+  "visual_evidence": {
+    "visual_evidence": "configs/tool_refs/staples_marker/evidence/02_contact_marker_selection/visual_evidence.json",
+    "prompt_images": []
+  },
+  "raw_response": {
+    "part": {
+      "selected_marker": "2",
+      "confidence": 1.0,
+      "reason": "reference P3SAM part selection"
+    },
+    "contact_point_motion_axis": {
+      "selected_contact_point_marker": "F2",
+      "candidate_contact_point_markers": [
+        "F2"
+      ],
+      "selected_motion_axis_marker": "F3",
+      "confidence": 1.0,
+      "reason": "reference P3SAM contact-point and motion-axis selection"
+    }
+  },
+  "metadata": {
+    "created_by": "parttoolgen.scripts.select_p3sam_tool_refs",
+    "tool_side_grounding_source": "p3sam"
+  }
+}

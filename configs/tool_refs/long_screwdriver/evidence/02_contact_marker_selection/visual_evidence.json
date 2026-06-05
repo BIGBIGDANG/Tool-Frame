@@ -1,0 +1,382 @@
+{
+  "schema_version": "v0.1",
+  "evidence_id": "02_contact_marker_selection_visual_evidence",
+  "items": [
+    {
+      "id": "long_screwdriver_whole_mesh_part_choice_overview",
+      "kind": "whole_mesh_part_choice_overview",
+      "media_type": "image",
+      "path": "configs/tool_refs/long_screwdriver/evidence/02_contact_marker_selection/long_screwdriver/overview/long_screwdriver_whole_mesh_part_choice_overview.png",
+      "description": "Multi-view whole-mesh SAMPart3D part candidates for long_screwdriver; each part is shown as a colored overlay on the mesh, with the same anonymous marker ID reused across views.",
+      "provider_id": "sampart3d_part_role_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "long_screwdriver_isolated_part_choice_overview",
+      "kind": "isolated_part_choice_overview",
+      "media_type": "image",
+      "path": "configs/tool_refs/long_screwdriver/evidence/02_contact_marker_selection/long_screwdriver/overview/long_screwdriver_isolated_part_choice_overview.png",
+      "description": "Isolated SAMPart3D part candidates for long_screwdriver; auxiliary debug view.",
+      "provider_id": "sampart3d_part_role_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "debug_only"
+    },
+    {
+      "id": "long_screwdriver_part_candidate_1_isolated_card",
+      "kind": "isolated_part_card",
+      "media_type": "image",
+      "path": "configs/tool_refs/long_screwdriver/evidence/02_contact_marker_selection/long_screwdriver/part_cards/candidate_001_card.png",
+      "part_marker": "1",
+      "description": "Isolated SAMPart3D part candidate 1 for long_screwdriver; auxiliary debug view.",
+      "provider_id": "sampart3d_part_role_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "debug_only"
+    },
+    {
+      "id": "long_screwdriver_part_candidate_1_selected_part_bbox_overview",
+      "kind": "selected_part_bbox_overview",
+      "media_type": "image",
+      "path": "configs/tool_refs/long_screwdriver/evidence/02_contact_marker_selection/long_screwdriver/selected_part_bbox_overview/candidate_001_bbox_overview.png",
+      "part_marker": "1",
+      "description": "5.15-style selected-part bbox overview for part candidate 1 on long_screwdriver.",
+      "provider_id": "sampart3d_part_role_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "long_screwdriver_part_candidate_1_face_F1_highlight",
+      "kind": "selected_part_face_highlight",
+      "media_type": "image",
+      "path": "configs/tool_refs/long_screwdriver/evidence/02_contact_marker_selection/long_screwdriver/selected_part_face_highlights/candidate_001_face_F1_highlight.png",
+      "part_marker": "1",
+      "face_marker": "F1",
+      "point_ref": "candidate.points.part_000_x_negative_endpoint",
+      "surface_ref": "candidate.surfaces.part_000_x_negative_endpoint",
+      "patch_id": "x_negative_endpoint",
+      "description": "5.15-style selected-part face evidence for long_screwdriver part 1, face F1: part bbox is drawn, only this bbox face is highlighted, and the contact point plus surface-normal/motion-axis arrow are shown.",
+      "provider_id": "sampart3d_part_role_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "long_screwdriver_part_candidate_1_face_F2_highlight",
+      "kind": "selected_part_face_highlight",
+      "media_type": "image",
+      "path": "configs/tool_refs/long_screwdriver/evidence/02_contact_marker_selection/long_screwdriver/selected_part_face_highlights/candidate_001_face_F2_highlight.png",
+      "part_marker": "1",
+      "face_marker": "F2",
+      "point_ref": "candidate.points.part_000_x_positive_endpoint",
+      "surface_ref": "candidate.surfaces.part_000_x_positive_endpoint",
+      "patch_id": "x_positive_endpoint",
+      "description": "5.15-style selected-part face evidence for long_screwdriver part 1, face F2: part bbox is drawn, only this bbox face is highlighted, and the contact point plus surface-normal/motion-axis arrow are shown.",
+      "provider_id": "sampart3d_part_role_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "long_screwdriver_part_candidate_1_face_F3_highlight",
+      "kind": "selected_part_face_highlight",
+      "media_type": "image",
+      "path": "configs/tool_refs/long_screwdriver/evidence/02_contact_marker_selection/long_screwdriver/selected_part_face_highlights/candidate_001_face_F3_highlight.png",
+      "part_marker": "1",
+      "face_marker": "F3",
+      "point_ref": "candidate.points.part_000_y_negative_contact",
+      "surface_ref": "candidate.surfaces.part_000_y_negative_contact",
+      "patch_id": "y_negative_contact",
+      "description": "5.15-style selected-part face evidence for long_screwdriver part 1, face F3: part bbox is drawn, only this bbox face is highlighted, and the contact point plus surface-normal/motion-axis arrow are shown.",
+      "provider_id": "sampart3d_part_role_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "long_screwdriver_part_candidate_1_face_F4_highlight",
+      "kind": "selected_part_face_highlight",
+      "media_type": "image",
+      "path": "configs/tool_refs/long_screwdriver/evidence/02_contact_marker_selection/long_screwdriver/selected_part_face_highlights/candidate_001_face_F4_highlight.png",
+      "part_marker": "1",
+      "face_marker": "F4",
+      "point_ref": "candidate.points.part_000_y_positive_contact",
+      "surface_ref": "candidate.surfaces.part_000_y_positive_contact",
+      "patch_id": "y_positive_contact",
+      "description": "5.15-style selected-part face evidence for long_screwdriver part 1, face F4: part bbox is drawn, only this bbox face is highlighted, and the contact point plus surface-normal/motion-axis arrow are shown.",
+      "provider_id": "sampart3d_part_role_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "long_screwdriver_part_candidate_1_face_F5_highlight",
+      "kind": "selected_part_face_highlight",
+      "media_type": "image",
+      "path": "configs/tool_refs/long_screwdriver/evidence/02_contact_marker_selection/long_screwdriver/selected_part_face_highlights/candidate_001_face_F5_highlight.png",
+      "part_marker": "1",
+      "face_marker": "F5",
+      "point_ref": "candidate.points.part_000_z_negative_contact",
+      "surface_ref": "candidate.surfaces.part_000_z_negative_contact",
+      "patch_id": "z_negative_contact",
+      "description": "5.15-style selected-part face evidence for long_screwdriver part 1, face F5: part bbox is drawn, only this bbox face is highlighted, and the contact point plus surface-normal/motion-axis arrow are shown.",
+      "provider_id": "sampart3d_part_role_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "long_screwdriver_part_candidate_1_face_F6_highlight",
+      "kind": "selected_part_face_highlight",
+      "media_type": "image",
+      "path": "configs/tool_refs/long_screwdriver/evidence/02_contact_marker_selection/long_screwdriver/selected_part_face_highlights/candidate_001_face_F6_highlight.png",
+      "part_marker": "1",
+      "face_marker": "F6",
+      "point_ref": "candidate.points.part_000_z_positive_contact",
+      "surface_ref": "candidate.surfaces.part_000_z_positive_contact",
+      "patch_id": "z_positive_contact",
+      "description": "5.15-style selected-part face evidence for long_screwdriver part 1, face F6: part bbox is drawn, only this bbox face is highlighted, and the contact point plus surface-normal/motion-axis arrow are shown.",
+      "provider_id": "sampart3d_part_role_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    }
+  ],
+  "metadata": {
+    "evidence_kind": "sampart3d_part_overview_only",
+    "contact_marker_table_scope": "selected_part_only",
+    "selected_contact_point_markers_by_tool": {
+      "long_screwdriver": [
+        "1"
+      ]
+    },
+    "selected_contact_point_markers_default": [],
+    "part_role_selection_path": "configs/tool_refs/long_screwdriver/part_selection.json",
+    "region_marker_table": [
+      {
+        "tool_id": "long_screwdriver",
+        "marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "source_label": "p3sam_segment_0",
+        "point_count": 876,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 0
+      },
+      {
+        "tool_id": "long_screwdriver",
+        "marker": "2",
+        "part_id": "part_001",
+        "part_ref": "tool.parts.part_001",
+        "source_label": "p3sam_segment_9",
+        "point_count": 2552,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 9
+      },
+      {
+        "tool_id": "long_screwdriver",
+        "marker": "3",
+        "part_id": "part_002",
+        "part_ref": "tool.parts.part_002",
+        "source_label": "p3sam_segment_232",
+        "point_count": 496,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "contact_patch"
+        ],
+        "part_label": 232
+      },
+      {
+        "tool_id": "long_screwdriver",
+        "marker": "4",
+        "part_id": "part_003",
+        "part_ref": "tool.parts.part_003",
+        "source_label": "p3sam_segment_293",
+        "point_count": 1137,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "contact_patch"
+        ],
+        "part_label": 293
+      },
+      {
+        "tool_id": "long_screwdriver",
+        "marker": "5",
+        "part_id": "part_004",
+        "part_ref": "tool.parts.part_004",
+        "source_label": "p3sam_segment_354",
+        "point_count": 503,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "contact_patch"
+        ],
+        "part_label": 354
+      }
+    ],
+    "contact_marker_table": [
+      {
+        "tool_id": "long_screwdriver",
+        "part_marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "point_ref": "candidate.points.part_000_x_negative_endpoint",
+        "surface_ref": "candidate.surfaces.part_000_x_negative_endpoint",
+        "polarity": "negative",
+        "patch_id": "x_negative_endpoint",
+        "role": null,
+        "xyz_tool": [
+          0.0953997761786542,
+          -0.0012671309203636909,
+          -0.002188380049328195
+        ],
+        "normal_tool": [
+          -0.07012999579437453,
+          -0.051159626387810866,
+          -0.9962251132739731
+        ],
+        "face_marker": "F1",
+        "contact_marker": "F1",
+        "selection_semantics": "contact_point_bbox_face",
+        "derived_point_ref": "candidate.points.part_000_x_negative_endpoint",
+        "source_surface_ref": "candidate.surfaces.part_000_x_negative_endpoint"
+      },
+      {
+        "tool_id": "long_screwdriver",
+        "part_marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "point_ref": "candidate.points.part_000_x_positive_endpoint",
+        "surface_ref": "candidate.surfaces.part_000_x_positive_endpoint",
+        "polarity": "positive",
+        "patch_id": "x_positive_endpoint",
+        "role": null,
+        "xyz_tool": [
+          0.18845729600560382,
+          -0.0007001980142122606,
+          -0.0023690881448253623
+        ],
+        "normal_tool": [
+          0.9528034191085312,
+          -0.3032982257787093,
+          0.013260119704576518
+        ],
+        "face_marker": "F2",
+        "contact_marker": "F2",
+        "selection_semantics": "contact_point_bbox_face",
+        "derived_point_ref": "candidate.points.part_000_x_positive_endpoint",
+        "source_surface_ref": "candidate.surfaces.part_000_x_positive_endpoint"
+      },
+      {
+        "tool_id": "long_screwdriver",
+        "part_marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "point_ref": "candidate.points.part_000_y_negative_contact",
+        "surface_ref": "candidate.surfaces.part_000_y_negative_contact",
+        "polarity": "negative",
+        "patch_id": "y_negative_contact",
+        "role": null,
+        "xyz_tool": [
+          0.1365271562012627,
+          -0.0031280831080425617,
+          -0.002017948727938744
+        ],
+        "normal_tool": [
+          0.03444445807644855,
+          -0.9965937769495574,
+          0.07492945384316838
+        ],
+        "face_marker": "F3",
+        "contact_marker": "F3",
+        "selection_semantics": "contact_point_bbox_face",
+        "derived_point_ref": "candidate.points.part_000_y_negative_contact",
+        "source_surface_ref": "candidate.surfaces.part_000_y_negative_contact"
+      },
+      {
+        "tool_id": "long_screwdriver",
+        "part_marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "point_ref": "candidate.points.part_000_y_positive_contact",
+        "surface_ref": "candidate.surfaces.part_000_y_positive_contact",
+        "polarity": "positive",
+        "patch_id": "y_positive_contact",
+        "role": null,
+        "xyz_tool": [
+          0.13933070607255107,
+          0.0010609474024566112,
+          -0.001970441533042691
+        ],
+        "normal_tool": [
+          0.023465440859723297,
+          0.9969248059636872,
+          0.0747683378143682
+        ],
+        "face_marker": "F4",
+        "contact_marker": "F4",
+        "selection_semantics": "contact_point_bbox_face",
+        "derived_point_ref": "candidate.points.part_000_y_positive_contact",
+        "source_surface_ref": "candidate.surfaces.part_000_y_positive_contact"
+      },
+      {
+        "tool_id": "long_screwdriver",
+        "part_marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "point_ref": "candidate.points.part_000_z_negative_contact",
+        "surface_ref": "candidate.surfaces.part_000_z_negative_contact",
+        "polarity": "negative",
+        "patch_id": "z_negative_contact",
+        "role": null,
+        "xyz_tool": [
+          0.1394083913764672,
+          -0.0009205839540991354,
+          -0.003968488493858816
+        ],
+        "normal_tool": [
+          0.016136408921313065,
+          -0.008730491797120016,
+          -0.9998316832447872
+        ],
+        "face_marker": "F5",
+        "contact_marker": "F5",
+        "selection_semantics": "contact_point_bbox_face",
+        "derived_point_ref": "candidate.points.part_000_z_negative_contact",
+        "source_surface_ref": "candidate.surfaces.part_000_z_negative_contact"
+      },
+      {
+        "tool_id": "long_screwdriver",
+        "part_marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "point_ref": "candidate.points.part_000_z_positive_contact",
+        "surface_ref": "candidate.surfaces.part_000_z_positive_contact",
+        "polarity": "positive",
+        "patch_id": "z_positive_contact",
+        "role": null,
+        "xyz_tool": [
+          0.1394259627743926,
+          -0.0009007134609618714,
+          -0.00018121131190136788
+        ],
+        "normal_tool": [
+          0.04053522265058945,
+          -0.015413323702090077,
+          0.9990592200551084
+        ],
+        "face_marker": "F6",
+        "contact_marker": "F6",
+        "selection_semantics": "contact_point_bbox_face",
+        "derived_point_ref": "candidate.points.part_000_z_positive_contact",
+        "source_surface_ref": "candidate.surfaces.part_000_z_positive_contact"
+      }
+    ],
+    "usage": "The whole-mesh part-choice overview exposes anonymous SAMPart3D regions in full-tool context as one multi-view sheet with colored part overlays for contact-region selection. Isolated cards are auxiliary debug views. After a part is selected, the renderer emits a selected-part bbox overview plus one selected-part face-highlight card per F marker; each face card shows the bbox, one highlighted bbox face, the contact point, and the surface normal/motion-axis arrow. This renderer must not emit legacy per-face/contact-choice paths."
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "schema_version": "toolframe_screwdriver_insert_side_socket_benchmark_config_draft_v1",
+  "benchmark": "screwdriver_insert",
+  "variant": "side_socket_insert",
+  "manual_review_status": "draft_pending_side_socket_runner",
+  "description": "Draft side-board long-screwdriver insertion task: a visible socket is mounted on the shared left-side vertical side-board, public whiteboard_front RGB-D evidence is used for VLM point refs, and success should use the same compiled terminal socket-goal plus measured tip radial/inside-depth contract as the tabletop socket tasks.",
+  "runner_status": "not_registry_runnable_until_side_scene_mode_exists",
+  "runner": "parttoolgen/src/parttoolgen/cli/runners/run_image_grounded_screwdriver_insert_eval.py",
+  "runner_args": {
+    "output_root": "artifacts/image_grounded/screwdriver_insert/side_socket_insert_draft",
+    "tool_refs_dir": "configs/tool_refs/long_screwdriver",
+    "seed_start": 0,
+    "trials": 1,
+    "device": "cuda:0",
+    "rollout_max_steps": 1500,
+    "rollout_max_tracking_error_m": 0.018,
+    "capture_video_every": 1,
+    "approach_offset_m": 0.045,
+    "target_approach_axis_source": "opposite_scene_direction",
+    "terminal_inside_depth_m": 0.035,
+    "success_min_inside_depth_m": 0.005,
+    "socket_asset": "urdf/parttoolgen_benchmark/screwdriver_insert_socket/deep_socket_wide_048x055.urdf",
+    "socket_size_xyz": [
+      0.048,
+      0.048,
+      0.055
+    ],
+    "socket_top_local_z_m": 0.055,
+    "socket_inner_diameter_m": 0.024,
+    "socket_tip_radial_tolerance_m": 0.012,
+    "scene_mode": "side_board",
+    "grounding_camera": "whiteboard_front"
+  },
+  "scene_initialization": {
+    "environment_id": "side_left_vertical_whiteboard_soft02",
+    "whiteboard_asset": "urdf/parttoolgen_benchmark/marker_trace_whiteboard/left_side_vertical_whiteboard_002x0475x101.urdf",
+    "whiteboard_center_world": [
+      0.38,
+      0.0,
+      0.505
+    ],
+    "public_whiteboard_surface_normal_world": [
+      -1.0,
+      0.0,
+      0.0
+    ],
+    "public_evidence_camera": "whiteboard_front",
+    "socket": {
+      "role": "visible_side_board_socket",
+      "asset": "urdf/parttoolgen_benchmark/screwdriver_insert_socket/deep_socket_wide_048x055.urdf",
+      "mount_policy": "rotate socket so its local insertion axis maps to the side-board inward direction; exact pose must be validated by side-scene preview before promotion",
+      "terminal_inside_depth_m": 0.035,
+      "success_min_inside_depth_m": 0.005,
+      "inner_diameter_m": 0.024,
+      "tip_radial_tolerance_m": 0.012
+    },
+    "tool_mesh": "simtoolreal/assets/urdf/dextoolbench/screwdriver/long_screwdriver/long_screwdriver.obj",
+    "target_grounding_policy": "The shared VLM point-ref interface applies: VLM marks the visible socket opening point and may choose a visible direction or a public default insertion axis when the point refs overlap in the image.",
+    "tool_grounding_policy": "Reuse long_screwdriver refs; VLM-valid contact/axis candidates are passed to the compiler for optimization."
+  },
+  "mainline_params_pending_review": {
+    "grounding_camera": "whiteboard_front",
+    "depth_sample_policy": "nearest",
+    "direction_source": "vlm_scene_direction_plus_task_socket_inside_goal",
+    "end_depth_policy": "task_contract_socket_inside_goal_along_vlm_or_default_axis",
+    "tool_motion_axis_ref": "tool.motion_axis",
+    "tool_motion_axis_target_ref": "scene.direction",
+    "tool_motion_axis_relation": "parallel",
+    "approach_offset_m": 0.045,
+    "target_approach_axis_source": "opposite_scene_direction"
+  },
+  "acceptance": {
+    "success_policy": "draft_side_screwdriver_insert_tip_inside_socket",
+    "required_predicates_pending_runner": [
+      "compiled_terminal_socket_goal",
+      "semantic_insertion_path",
+      "tip_radial_alignment",
+      "tip_inside_socket_depth"
+    ],
+    "requires_tracking_execution_passed": false
+  },
+  "contract_status": {
+    "environment_id": "side_left_vertical_whiteboard_soft02",
+    "benchmark_status": "draft/not_runnable",
+    "blocked_reason": "The tabletop screwdriver runner must be extended with side_board scene initialization, whiteboard_front render/lift settings, and side-socket actor pose validation before this split can be smoke-run.",
+    "large_statistics_status": "not_allowed"
+  }
+}
+

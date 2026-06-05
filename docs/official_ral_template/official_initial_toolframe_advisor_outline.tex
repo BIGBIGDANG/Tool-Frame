@@ -1,0 +1,330 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Official RA-L initial-submission style, advisor-facing outline version.
+% Source template: RA-L author page -> PaperCept ieeeconf.zip.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[letterpaper, 10 pt, conference]{ieeeconf}
+
+\IEEEoverridecommandlockouts
+\overrideIEEEmargins
+
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{xcolor}
+
+\newcommand{\method}{ToolFrame}
+\newcommand{\todo}[1]{\textcolor{red}{TODO: #1}}
+\newcommand{\claim}[1]{\textbf{Claim:} #1}
+\newcommand{\openitem}[1]{\textit{Open:} #1}
+
+\title{\LARGE \bf
+\method{}: Let the Tool Define the Frame for Dexterous Manipulation
+}
+
+% RA-L initial submissions are double-anonymous.
+\author{}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+\pagestyle{empty}
+
+\begin{abstract}
+This outline frames \method{} around a bottom-level mechanism: tool use succeeds
+only when the functional geometry of a tool is made to coincide with the
+desired physical effect in the scene. The difficulty is that this mechanism is
+not directly given by language, object category, or a VLM-generated trajectory.
+It must be recovered from public evidence, expressed in metric geometry, and
+executed by a dexterous policy without relying on hidden evaluator references
+or task-specific fallback primitives. \method{} addresses this by separating
+tool-use reasoning into three explicit layers: sparse visual evidence
+selection, tool-centric geometric compilation, and fixed-goal dexterous
+rollout. The key paper message is that the VLM should not be the trajectory
+generator; it should expose the visual evidence from which a compiler can bind
+tool contact, tool motion, and scene effect into whole-tool $SE(3)$ subgoals.
+\todo{Final abstract should add frozen headline results only after the
+benchmark is finalized.}
+\end{abstract}
+
+\section{INTRODUCTION}
+
+\subsection{Bottom-Level Mechanism}
+The paper should begin from the physical mechanism of tool use rather than from
+VLM planning. A tool is not useful because it belongs to a semantic category;
+it is useful because one part of its geometry transfers contact, force, or
+motion to the scene. A brush acts through bristles, an eraser through a flat
+patch, a hammer through an impact face, a screwdriver through a tip and axis,
+and a marker through a point contact. In dexterous manipulation, the hand may
+grasp the same tool in many ways, but the task succeeds only when the whole
+tool is placed so that the functional part and functional direction create the
+desired scene effect.
+
+\subsection{Core Difficulty}
+The fundamental challenge is a three-way binding problem. The system must bind
+the tool mechanism, the scene mechanism, and the dexterous execution interface:
+\begin{equation}
+  \begin{aligned}
+  &\text{tool mechanism}\\
+  &\quad \longleftrightarrow \text{scene effect}
+  \longleftrightarrow \text{whole-tool execution}.
+  \end{aligned}
+\end{equation}
+Existing VLM-centric robot pipelines often blur this binding by asking the VLM
+to produce actions, dense waypoints, or trajectories. That is attractive
+engineering-wise, but weak scientifically: success can come from hidden target
+priors, task-family assumptions, controller behavior, or prompt-specific
+shortcuts rather than from image-grounded tool-use reasoning.
+
+\subsection{Central Insight}
+The main insight is to treat tool use as a \emph{compiler problem}, not a
+trajectory-generation problem. The VLM contributes sparse public references:
+which tool part is functional and which scene points or directions matter. The
+compiler is responsible for turning these references into metric constraints on
+the whole tool. The policy is responsible only for executing the resulting
+fixed goals. This division makes the causal chain visible:
+\begin{quote}
+public evidence $\rightarrow$ functional references $\rightarrow$ whole-tool
+$SE(3)$ subgoals $\rightarrow$ dexterous rollout $\rightarrow$ task contract.
+\end{quote}
+
+\subsection{Proposed Positioning}
+\claim{\method{} is an image-grounded, tool-centric pipeline for dexterous tool
+use where the tool defines the manipulation frame and the hand follows
+compiled whole-tool subgoals.}
+
+The work should be positioned against two common but weaker framings. It is not
+``VLM writes robot trajectories'', because the VLM only selects sparse public
+evidence. It is not merely ``affordance prediction'', because the predicted
+tool references become geometric constraints that are compiled into executable
+subgoals. The novelty is the explicit bridge between functional tool evidence,
+RGB-D scene evidence, and fixed-goal dexterous execution.
+
+\subsection{Contributions to Claim}
+\begin{enumerate}
+  \item \textbf{Mechanism-explicit formulation.} Tool use is formulated as
+  aligning a tool-side functional mechanism with a scene-side effect mechanism.
+  \item \textbf{Evidence-bounded VLM role.} The VLM selects sparse public tool
+  and scene references, but does not generate trajectories, primitives, or
+  task-family fallbacks.
+  \item \textbf{Tool-centric geometric compiler.} The compiler converts
+  contact and motion references into whole-tool $SE(3)$ subgoals for a
+  dexterous fixed-goal policy.
+  \item \textbf{Task-contract evaluation.} The benchmark evaluates final
+  physical effect and attributes failures along the mechanism chain.
+\end{enumerate}
+
+\section{RELATED WORK POSITIONING}
+
+\subsection{VLMs for Robot Planning}
+The relevant prior work shows that VLMs are useful semantic and visual
+interfaces. The gap is that free-form VLM plans do not expose the geometric
+mechanism needed for contact-rich tool use. Our distinction should be stated
+crisply: \method{} uses VLMs for evidence selection, while metric geometry and
+execution are handled by explicit modules.
+
+\subsection{Tool Affordances and Functional Parts}
+Affordance and part-grounding work often identifies where a tool can be used.
+The missing step is converting this knowledge into robot-executable constraints.
+\method{} makes the functional part operational by representing it through a
+contact point and motion axis that are consumed by a compiler.
+
+\subsection{Constraint-Based Manipulation}
+Constraint-based manipulation provides the right language for geometric
+reasoning, but usually assumes task frames or contacts are already specified.
+\method{} contributes the image-grounded front end and tool-centric reference
+interface that produce those constraints from public evidence.
+
+\subsection{Benchmarks for Tool Use}
+The benchmark contribution should be framed around attribution, not only around
+success rate. The paper should show not just whether a rollout succeeded, but
+where the mechanism chain failed when it did not.
+
+\section{PROBLEM STATEMENT}
+
+\subsection{Mechanistic Variables}
+At the outline level, the technical interface can stay compact:
+\begin{equation}
+  \mathcal{R}_{tool} =
+  \{p^{contact}_{tool}, a^{motion}_{tool}\},
+\end{equation}
+\begin{equation}
+  \mathcal{R}_{scene} =
+  \{p^{start}_{scene}, p^{path}_{scene}, p^{end}_{scene},
+  a^{direction}_{scene}\}.
+\end{equation}
+The paper's technical problem is to infer these references from public
+evidence and compile them into whole-tool poses
+$T_{world,tool}\in SE(3)$ that are executable by the fixed-goal policy.
+
+\subsection{Evidence Boundary}
+This boundary is part of the paper's scientific value. The method may use
+public RGB-D scene evidence, public tool-part evidence, tool meshes, task
+language, and robot state needed for execution. It must not use hidden
+evaluator targets, oracle target axes, oracle trajectories, primitive
+fallbacks, repair loops, task-family fallbacks, or seed-specific shortcuts.
+
+\subsection{Why This Boundary Matters}
+The boundary prevents the benchmark from becoming a test of hidden priors. If a
+method can snap to simulator targets or fall back to hand-coded task
+primitives, then the central claim of image-grounded tool use is no longer
+testable. \method{} should be sold as a stricter, more auditable route: it uses
+less privileged information and exposes the intermediate mechanism.
+
+\section{METHOD OUTLINE}
+
+\subsection{Overview Figure}
+Fig.~\ref{fig:overview} should be the main selling figure. It should not read
+like a software pipeline. It should read like a mechanism decomposition:
+tool-side mechanism, scene-side mechanism, compiler bridge, and dexterous
+rollout.
+
+\begin{figure*}[t]
+\centering
+\fbox{\parbox{0.92\textwidth}{\centering
+Advisor-facing Fig. 1 placeholder: (A) recover tool mechanism;
+(B) ground scene effect references; (C) compile whole-tool $SE(3)$ subgoals;
+(D) execute and evaluate with task contracts.}}
+\caption{Conceptual overview. \method{} exposes the hidden mechanism of tool
+use: public tool evidence defines contact and motion references; public RGB-D
+scene evidence defines effect references; a geometry compiler binds both into
+whole-tool subgoals; a fixed-goal dexterous policy executes them.}
+\label{fig:overview}
+\end{figure*}
+
+\subsection{A. Tool-Centric Prior Extraction}
+\claim{Recover the functional mechanism of the tool.}
+
+This section should explain why object category and visible geometry are
+insufficient. The method extracts a compact tool-side representation: a
+functional part, a contact point, and a motion axis. Avoid over-specifying the
+current implementation details unless they are frozen. The important point is
+that the output is not a semantic label but a geometric mechanism.
+
+\subsection{B. Scene Key-Points Grounding}
+\claim{Recover the sparse scene mechanism of the desired effect.}
+
+This section should explain that the task does not require the VLM to draw a
+robot trajectory. It requires sparse references that describe where the
+physical effect should occur. RGB-D lifting turns selected image refs into
+metric scene refs. Keep uncertain details such as exact prompting, sampling
+policy, or per-task thresholds out of the main outline until they are stable.
+
+\subsection{C. Geometry-Constrained Compiler}
+\claim{Bind the tool mechanism to the scene mechanism.}
+
+This is the most important method section. The compiler should be presented as
+the bridge that turns public evidence into executable whole-tool poses. At the
+outline level, state the constraint families rather than implementation
+particulars: contact alignment, motion-axis alignment, approach/clearance, and
+stage-wise whole-tool subgoals. The compiler's output is fixed $SE(3)$ goals,
+not low-level robot actions.
+
+\subsection{D. Fixed-Goal Dexterous Rollout and Evaluation}
+\claim{Let the hand execute; let task contracts judge the physical effect.}
+
+The policy section should be deliberately modest. The method does not claim to
+learn a new universal dexterous policy. It uses a fixed-goal SimToolReal policy
+as the execution layer for compiled subgoals. The evaluation layer then
+attributes failures to grounding, compilation, execution, or final task effect.
+
+\section{BENCHMARK AND EVALUATION PLAN}
+
+\subsection{What the Benchmark Should Demonstrate}
+The benchmark should demonstrate that the formulation is tool-centric rather
+than task-name-specific. The strongest version would cover multiple tool
+geometries and at least two scene families, while clearly separating headline
+statistics from candidate or diagnostic tasks.
+
+\subsection{Task Tiers}
+\begin{table}[t]
+\caption{Advisor-facing task tiers. Exact task membership should be frozen only
+after contracts and launcher summaries are finalized.}
+\label{tab:tiers}
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+Tier & Role in the paper \\
+\midrule
+Headline & Main statistics from frozen contracts \\
+Candidate & Promising tasks pending final review \\
+Diagnostic & Stress tests for mechanism failures \\
+Draft/Smoke & Development evidence, not final claims \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+\subsection{Metrics}
+Use metrics to explain the mechanism chain, not only to report success:
+functional grounding, scene grounding, subgoal validity, policy execution,
+final task success, and first-failure attribution. Do not insert numbers until
+the frozen launcher summaries are available.
+
+\subsection{Expected Main Table}
+The final paper should contain one compact table for headline tasks:
+\begin{quote}
+Task, Tool, Scene, $N$, grounding validity, subgoal validity, execution
+completion, final success, and dominant failure mode.
+\end{quote}
+The exact columns can be adjusted after the contracts stabilize.
+
+\section{PAPER PACKAGING}
+
+\subsection{One-Sentence Pitch}
+\begin{quote}
+\method{} makes dexterous tool use auditable by turning public tool and scene
+evidence into tool-centric whole-tool subgoals, instead of asking a VLM to
+invent robot trajectories.
+\end{quote}
+
+\subsection{Main Figure Message}
+The figure should visually prove the paper's story:
+\begin{quote}
+Tool geometry defines the functional frame; RGB-D scene evidence defines the
+effect frame; the compiler binds them; the hand executes.
+\end{quote}
+
+\subsection{Claims to Avoid}
+The outline should not overclaim general tool use, general dexterity, online
+adaptation, real-robot transfer, or open-ended VLM planning unless experiments
+support them. It should not report historical migration snapshots as final
+success statistics.
+
+\section{OPEN DECISIONS FOR ADVISOR DISCUSSION}
+
+\begin{itemize}
+  \item Which title is strongest: the current slogan title or a more
+  conservative tool-centric visual grounding title?
+  \item Which tasks are safe as headline statistics after contract freezing?
+  \item How many tool families and scene families are necessary for the RA-L
+  claim to feel broad enough?
+  \item Which baseline is most fair: direct VLM waypointing, no tool axis, no
+  contact point, or primitive-style task planning?
+  \item Should the paper emphasize ``dexterous manipulation'' in the title, or
+  reserve dexterity for the execution section to avoid overclaiming?
+\end{itemize}
+
+\section{LIMITATIONS}
+
+The paper should state limitations as consequences of the mechanism boundary.
+If the functional part is not visible or reviewed, the tool mechanism may be
+wrong. If depth lifting is noisy, the scene mechanism may be wrong. If the
+compiler produces a feasible tool pose but the policy cannot maintain contact,
+the task may still fail. These limitations are acceptable because the paper
+does not hide them behind repair loops or privileged simulator references.
+
+\section{CONCLUSION}
+
+The paper's final message should be simple and defensible: tool use is a
+mechanism-binding problem. \method{} exposes this mechanism through public
+visual evidence, binds tool and scene references with geometry, and executes
+the result through a fixed-goal dexterous policy. This is the strongest
+packaging of the work: the tool defines the frame, the compiler makes it
+executable, and the hand follows.
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}

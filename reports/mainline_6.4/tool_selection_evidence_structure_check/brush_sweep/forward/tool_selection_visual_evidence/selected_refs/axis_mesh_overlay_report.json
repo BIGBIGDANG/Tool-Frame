@@ -1,0 +1,91 @@
+{
+  "schema_version": "parttoolgen_contact_point_motion_axis_mesh_evidence_v1",
+  "tool_id": "red_brush",
+  "task_id": "brush_sweep_forward",
+  "selected_part": {
+    "marker": "3",
+    "part_ref": "tool.parts.part_002"
+  },
+  "view_indices": [],
+  "image": null,
+  "render_sources": [],
+  "contact_point": {
+    "marker": "F3",
+    "point_ref": "candidate.points.part_002_y_negative_contact",
+    "surface_ref": "candidate.surfaces.part_002_y_negative_contact",
+    "patch_id": "y_negative_contact",
+    "xyz_tool": [
+      0.18396509852230847,
+      -0.03683701301047563,
+      0.056813286543359966
+    ]
+  },
+  "contact_point_surface": {
+    "frame_source": "contact_point_bbox_face",
+    "patch_id": "y_negative_contact",
+    "surface_ref": "candidate.surfaces.part_002_y_negative_contact",
+    "raw_mesh_patch_center_xyz_tool": [
+      0.18396509852230847,
+      -0.03683701301047563,
+      0.056813286543359966
+    ],
+    "contact_point_xyz_tool": [
+      0.18396509852230847,
+      -0.03683701301047563,
+      0.056813286543359966
+    ],
+    "surface_center_xyz_tool": [
+      0.18396509852230847,
+      -0.03683701301047563,
+      0.056813286543359966
+    ],
+    "rectangle_corners_xyz_tool": null,
+    "long_edge_m": null,
+    "short_edge_m": null,
+    "source_surface_ref": "candidate.surfaces.part_002_y_negative_contact"
+  },
+  "motion_axis_surface": {
+    "frame_source": "contact_point_bbox_face",
+    "patch_id": "y_positive_contact",
+    "surface_ref": "candidate.surfaces.part_002_y_positive_contact",
+    "surface_center_xyz_tool": [
+      0.16621045182151986,
+      0.03317043655672021,
+      0.05116884335349644
+    ],
+    "normal_role": "mesh_patch_normal",
+    "motion_axis_ref": "tool.motion_axis",
+    "motion_axis_tool": [
+      0.11062908535097059,
+      0.9704888965341569,
+      -0.21427204012264855
+    ],
+    "mesh_normal_tool": [
+      0.11062908535097059,
+      0.9704888965341569,
+      -0.21427204012264855
+    ]
+  },
+  "motion_axis": {
+    "source": "selected_motion_axis_surface",
+    "marker": "F4",
+    "role": "mesh_patch_normal",
+    "ref": "tool.motion_axis",
+    "vector_tool": [
+      0.11062908535097059,
+      0.9704888965341569,
+      -0.21427204012264855
+    ],
+    "surface_ref": "candidate.surfaces.part_002_y_positive_contact",
+    "mesh_normal_tool": [
+      0.11062908535097059,
+      0.9704888965341569,
+      -0.21427204012264855
+    ]
+  },
+  "metadata": {
+    "source_prior": "artifacts/tool_prior/p3sam/red_brush/tool_prior",
+    "visual_evidence": "configs/tool_refs/red_brush/evidence/02_contact_marker_selection/visual_evidence.json",
+    "created_by": "parttoolgen.scripts.select_p3sam_tool_refs"
+  }
+}

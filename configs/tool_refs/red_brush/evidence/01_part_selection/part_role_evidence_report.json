@@ -1,0 +1,65 @@
+{
+  "tools": [
+    {
+      "tool_id": "red_brush",
+      "part_count": 3,
+      "view_count": 16,
+      "part_choice_overview": "configs/tool_refs/red_brush/evidence/01_part_selection/red_brush/overview/red_brush_whole_mesh_part_choice_overview.png",
+      "isolated_part_choice_overview": "configs/tool_refs/red_brush/evidence/01_part_selection/red_brush/overview/red_brush_isolated_part_choice_overview.png",
+      "part_cards": {
+        "part_000": "configs/tool_refs/red_brush/evidence/01_part_selection/red_brush/part_cards/candidate_001_card.png",
+        "part_001": "configs/tool_refs/red_brush/evidence/01_part_selection/red_brush/part_cards/candidate_002_card.png",
+        "part_002": "configs/tool_refs/red_brush/evidence/01_part_selection/red_brush/part_cards/candidate_003_card.png"
+      },
+      "selected_part_bbox_overviews": {},
+      "face_highlight_cards": [],
+      "region_marker_table": [
+        {
+          "marker": "1",
+          "part_id": "part_000",
+          "part_ref": "tool.parts.part_000",
+          "source_label": "sampart3d_segment_0",
+          "point_count": 830,
+          "role_candidates": [
+            "tool_part_candidate",
+            "functional_candidate",
+            "grasp_candidate",
+            "contact_patch"
+          ],
+          "part_label": 0
+        },
+        {
+          "marker": "2",
+          "part_id": "part_001",
+          "part_ref": "tool.parts.part_001",
+          "source_label": "sampart3d_segment_13",
+          "point_count": 384,
+          "role_candidates": [
+            "tool_part_candidate",
+            "functional_candidate",
+            "grasp_candidate",
+            "fine_feature_candidate",
+            "contact_patch"
+          ],
+          "part_label": 13
+        },
+        {
+          "marker": "3",
+          "part_id": "part_002",
+          "part_ref": "tool.parts.part_002",
+          "source_label": "sampart3d_segment_58",
+          "point_count": 10909,
+          "role_candidates": [
+            "tool_part_candidate",
+            "functional_candidate",
+            "contact_patch"
+          ],
+          "part_label": 58
+        }
+      ],
+      "contact_marker_table": [],
+      "selected_contact_markers": null,
+      "ppt_vector_assets": {}
+    }
+  ]
+}

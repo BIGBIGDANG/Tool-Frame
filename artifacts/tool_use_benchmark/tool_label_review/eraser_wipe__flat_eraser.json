@@ -1,0 +1,91 @@
+{
+  "schema_version": "toolframe_manual_tool_label_review_v1",
+  "task_type": "eraser_wipe",
+  "tool_id": "flat_eraser",
+  "task_semantics": {
+    "functional_part": "eraser body/pad that can physically wipe the tabletop HDU sticker surface",
+    "contact_point": "broad erasing surface that should touch the target patch",
+    "motion_axis": "tool-side axis used to orient the long stroke direction"
+  },
+  "manual_review_status": "approved",
+  "audit_policy": {
+    "used_for_method_selection": false,
+    "used_for_compiler_constraints": false,
+    "used_for_task_success": false,
+    "purpose": "post_hoc_evaluator_audit_and_failure_attribution_only",
+    "empty_allowed_lists_mean": "not_audited"
+  },
+  "reviewer": "human_user",
+  "review_date": "2026-05-27",
+  "evidence": {
+    "tool_ref_dir": "configs/tool_refs/flat_eraser",
+    "contact_point_selection": "configs/tool_refs/flat_eraser/contact_point_selection.json",
+    "axis_binding": "configs/tool_refs/flat_eraser/axis_binding.json",
+    "part_visual_evidence": "configs/tool_refs/flat_eraser/evidence/01_part_selection/visual_evidence.json",
+    "contact_visual_evidence": "configs/tool_refs/flat_eraser/evidence/02_contact_marker_selection/visual_evidence.json",
+    "whole_mesh_overview": "configs/tool_refs/flat_eraser/evidence/01_part_selection/flat_eraser/overview/flat_eraser_whole_mesh_part_choice_overview.png",
+    "isolated_part_overview": "configs/tool_refs/flat_eraser/evidence/01_part_selection/flat_eraser/overview/flat_eraser_isolated_part_choice_overview.png",
+    "part_card": "configs/tool_refs/flat_eraser/evidence/01_part_selection/flat_eraser/part_cards/candidate_004_card.png",
+    "face_images_glob": "configs/tool_refs/flat_eraser/evidence/02_contact_marker_selection/flat_eraser/selected_part_face_highlights/candidate_004_face_F*_highlight.png"
+  },
+  "candidate_from_artifacts_not_approved": {
+    "selected_contact_point_part_ref": "tool.parts.part_292",
+    "selected_contact_point_face_marker": "F3",
+    "selected_contact_point_source_ref": "candidate.points.part_292_y_negative_contact",
+    "selected_contact_point_surface_ref": "candidate.surfaces.part_292_y_negative_contact",
+    "selected_motion_axis_face_marker": "F1",
+    "selected_motion_axis_surface_ref": "candidate.surfaces.part_292_x_negative_endpoint",
+    "candidate_contact_point_face_markers": [
+      "F3",
+      "F4"
+    ],
+    "candidate_contact_point_source_refs": [
+      "candidate.points.part_292_y_negative_contact",
+      "candidate.points.part_292_y_positive_contact"
+    ],
+    "candidate_contact_point_surface_refs": [
+      "candidate.surfaces.part_292_y_negative_contact",
+      "candidate.surfaces.part_292_y_positive_contact"
+    ]
+  },
+  "approved_contract": {
+    "allowed_contact_point_part_markers": [
+      "4"
+    ],
+    "allowed_contact_point_part_refs": [
+      "tool.parts.part_292"
+    ],
+    "allowed_contact_point_face_markers": [
+      "F3",
+      "F4"
+    ],
+    "allowed_contact_point_source_refs": [
+      "candidate.points.part_292_y_negative_contact",
+      "candidate.points.part_292_y_positive_contact"
+    ],
+    "allowed_contact_point_surface_refs": [
+      "candidate.surfaces.part_292_y_negative_contact",
+      "candidate.surfaces.part_292_y_positive_contact"
+    ],
+    "allowed_motion_axis_face_markers": [
+      "F1",
+      "F2",
+      "F5",
+      "F6"
+    ],
+    "allowed_motion_axis_surface_refs": [
+      "candidate.surfaces.part_292_x_negative_endpoint",
+      "candidate.surfaces.part_292_x_positive_endpoint",
+      "candidate.surfaces.part_292_z_negative_contact",
+      "candidate.surfaces.part_292_z_positive_contact"
+    ],
+    "candidate_filter_policy": {
+      "exclude_internal_tool_surfaces_from_vlm_selection": true,
+      "applies_to_all_tools": true,
+      "notes": "For eraser wipe, contact faces are F3/F4 only after generic internal-surface filtering; the remaining F labels can serve as motion-axis refs."
+    }
+  },
+  "review_notes": [
+    "Human review: contact-point part marker is 4. Contact faces are the non-internal faces among F3/F4. All other non-internal faces can be motion-axis refs."
+  ]
+}

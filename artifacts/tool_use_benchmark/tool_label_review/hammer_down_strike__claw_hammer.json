@@ -1,0 +1,53 @@
+{
+  "schema_version": "toolframe_manual_tool_label_review_v1",
+  "task_type": "hammer_down_strike",
+  "tool_id": "claw_hammer",
+  "task_semantics": {
+    "functional_part": "hammer head region that should strike the nail",
+    "contact_point": "striking face that should contact the nail/top target",
+    "motion_axis": "face normal aligned to the VLM-grounded strike scene.direction"
+  },
+  "manual_review_status": "pending",
+  "audit_policy": {
+    "used_for_method_selection": false,
+    "used_for_compiler_constraints": false,
+    "used_for_task_success": false,
+    "purpose": "post_hoc_evaluator_audit_and_failure_attribution_only",
+    "empty_allowed_lists_mean": "not_audited"
+  },
+  "reviewer": null,
+  "review_date": null,
+  "evidence": {
+    "tool_ref_dir": "configs/tool_refs/claw_hammer",
+    "contact_point_selection": "configs/tool_refs/claw_hammer/contact_point_selection.json",
+    "axis_binding": "configs/tool_refs/claw_hammer/axis_binding.json",
+    "axis_mesh_overlay_report": "configs/tool_refs/claw_hammer/axis_mesh_overlay_report.json",
+    "whole_mesh_overview": "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/claw_hammer/overview/claw_hammer_claw_hammer_whole_mesh_part_choice_overview.png",
+    "part_cards_glob": "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/claw_hammer/part_cards/claw_hammer_candidate_*_card.png"
+  },
+  "candidate_from_artifacts_not_approved": {
+    "selected_contact_point_part_ref": "tool.parts.part_001",
+    "selected_contact_point_face_marker": "F3",
+    "selected_contact_point_source_ref": "candidate.points.part_001_y_negative_endpoint",
+    "selected_contact_point_surface_ref": "candidate.surfaces.part_001_y_negative_endpoint",
+    "selected_motion_axis_surface_ref": "candidate.surfaces.part_001_y_negative_endpoint",
+    "candidate_contact_point_face_markers": [
+      "F3"
+    ],
+    "candidate_contact_point_source_refs": [
+      "candidate.points.part_001_y_negative_endpoint"
+    ],
+    "candidate_contact_point_surface_refs": [
+      "candidate.surfaces.part_001_y_negative_endpoint"
+    ]
+  },
+  "approved_contract": {
+    "allowed_contact_point_part_refs": [],
+    "allowed_contact_point_face_markers": [],
+    "allowed_contact_point_source_refs": [],
+    "allowed_contact_point_surface_refs": [],
+    "allowed_motion_axis_face_markers": [],
+    "allowed_motion_axis_surface_refs": []
+  },
+  "review_notes": []
+}

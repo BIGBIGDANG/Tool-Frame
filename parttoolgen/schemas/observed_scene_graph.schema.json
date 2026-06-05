@@ -1,0 +1,210 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "observed_scene_graph.schema.json",
+  "title": "ObservedSceneGraph",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "scene_id",
+    "frames",
+    "objects",
+    "keypoints",
+    "axes",
+    "regions",
+    "surfaces",
+    "relations",
+    "metadata"
+  ],
+  "properties": {
+    "schema_version": { "const": "v0.1" },
+    "scene_id": { "type": "string", "minLength": 1 },
+    "frames": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "$ref": "#/$defs/frame" }
+    },
+    "objects": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/object" }
+    },
+    "keypoints": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/keypoint" }
+    },
+    "axes": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/axis" }
+    },
+    "regions": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/region" }
+    },
+    "surfaces": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/surface" }
+    },
+    "relations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/relation" }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["created_by", "geometry_mode"],
+      "properties": {
+        "created_by": { "type": "string", "minLength": 1 },
+        "task_instruction": { "type": "string" },
+        "source_system": { "type": "string", "minLength": 1 },
+        "capture_mode": {
+          "type": "string",
+          "enum": ["rgbd"]
+        },
+        "observation_bundle": { "type": "string" },
+        "frame_convention": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "geometry_mode": {
+          "type": "string",
+          "enum": ["observed", "mixed"]
+        },
+        "notes": { "type": "string" }
+      }
+    }
+  },
+  "$defs": {
+    "vec2": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": { "type": "number" }
+    },
+    "vec3": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": { "type": "number" }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["observation_id", "method"],
+      "properties": {
+        "observation_id": { "type": "string", "minLength": 1 },
+        "method": { "type": "string", "minLength": 1 },
+        "source_artifact": { "type": "string" }
+      }
+    },
+    "grounding_metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["confidence", "source", "provenance"],
+      "properties": {
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "source": { "type": "string", "minLength": 1 },
+        "provenance": { "$ref": "#/$defs/provenance" }
+      }
+    },
+    "frame": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": { "type": "string", "minLength": 1 },
+        "parent": { "type": "string" },
+        "description": { "type": "string" }
+      }
+    },
+    "object": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["category", "confidence", "source", "provenance"],
+      "properties": {
+        "category": { "type": "string", "minLength": 1 },
+        "mask_id": { "type": "string" },
+        "attributes": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "source": { "type": "string", "minLength": 1 },
+        "provenance": { "$ref": "#/$defs/provenance" }
+      }
+    },
+    "keypoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frame", "confidence", "source", "provenance"],
+      "properties": {
+        "frame": { "const": "world" },
+        "object_ref": { "type": "string" },
+        "pixel": { "$ref": "#/$defs/vec2" },
+        "xyz_world": { "$ref": "#/$defs/vec3" },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "source": { "type": "string", "minLength": 1 },
+        "provenance": { "$ref": "#/$defs/provenance" }
+      }
+    },
+    "axis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frame", "vector_world", "confidence", "source", "provenance"],
+      "properties": {
+        "frame": { "const": "world" },
+        "object_ref": { "type": "string" },
+        "vector_world": { "$ref": "#/$defs/vec3" },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "source": { "type": "string", "minLength": 1 },
+        "provenance": { "$ref": "#/$defs/provenance" }
+      }
+    },
+    "region": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frame", "center_xyz_world", "confidence", "source", "provenance"],
+      "properties": {
+        "frame": { "const": "world" },
+        "object_ref": { "type": "string" },
+        "center_xyz_world": { "$ref": "#/$defs/vec3" },
+        "extent_xyz": { "$ref": "#/$defs/vec3" },
+        "normal_world": { "$ref": "#/$defs/vec3" },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "source": { "type": "string", "minLength": 1 },
+        "provenance": { "$ref": "#/$defs/provenance" }
+      }
+    },
+    "surface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "frame",
+        "point_xyz_world",
+        "normal_world",
+        "confidence",
+        "source",
+        "provenance"
+      ],
+      "properties": {
+        "frame": { "const": "world" },
+        "point_xyz_world": { "$ref": "#/$defs/vec3" },
+        "normal_world": { "$ref": "#/$defs/vec3" },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "source": { "type": "string", "minLength": 1 },
+        "provenance": { "$ref": "#/$defs/provenance" }
+      }
+    },
+    "relation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "subject", "object"],
+      "properties": {
+        "type": { "type": "string", "minLength": 1 },
+        "subject": { "type": "string", "minLength": 1 },
+        "object": { "type": "string", "minLength": 1 },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "source": { "type": "string" }
+      }
+    }
+  }
+}

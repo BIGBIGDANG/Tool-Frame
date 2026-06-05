@@ -1,0 +1,28 @@
+{
+  "schema_version": "v0.1",
+  "provider_id": "p3sam_tool_prior_provider",
+  "provider_type": "tool_prior",
+  "source_kind": "MESH_PRIOR",
+  "deployable": true,
+  "oracle": false,
+  "capabilities": [
+    "tool_functional_parts"
+  ],
+  "frame_contracts": [
+    "simtoolreal_asset_root"
+  ],
+  "provenance": {
+    "method": "p3sam_face_labels_geometry_functional_frames",
+    "source_artifacts": [
+      "simtoolreal/assets/urdf/dextoolbench/spatula/spoon_spatula/spoon_spatula.obj",
+      "artifacts/tool_prior/p3sam/spoon_spatula/face_labels/p3sam_face_labels.npy"
+    ],
+    "timestamp_or_capture_id": "spoon_spatula_p3sam_auto_mask_20260525",
+    "notes": "Offline tool mesh prior. p3sam regions produce executable geometry functional point, axis, surface, and grasp candidates."
+  },
+  "metadata": {
+    "segment_count": 3,
+    "functional_candidate_count": 18,
+    "grasp_candidate_count": 3
+  }
+}

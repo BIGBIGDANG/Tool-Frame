@@ -1,0 +1,28 @@
+{
+  "schema_version": "v0.1",
+  "provider_id": "sampart3d_tool_prior_provider",
+  "provider_type": "tool_prior",
+  "source_kind": "MESH_PRIOR",
+  "deployable": true,
+  "oracle": false,
+  "capabilities": [
+    "tool_functional_parts"
+  ],
+  "frame_contracts": [
+    "simtoolreal_asset_root"
+  ],
+  "provenance": {
+    "method": "sampart3d_face_labels_geometry_functional_frames",
+    "source_artifacts": [
+      "simtoolreal/assets/urdf/dextoolbench/hammer/claw_hammer/claw_hammer.obj",
+      "artifacts/tool_prior/sampart3d_scale2/claw_hammer/face_labels/mesh_2.0.npy"
+    ],
+    "timestamp_or_capture_id": "claw_hammer_sampart3d_scale2",
+    "notes": "Offline tool mesh prior. SAMPart3D regions produce executable geometry functional point, axis, surface, and grasp candidates."
+  },
+  "metadata": {
+    "segment_count": 3,
+    "functional_candidate_count": 18,
+    "grasp_candidate_count": 3
+  }
+}

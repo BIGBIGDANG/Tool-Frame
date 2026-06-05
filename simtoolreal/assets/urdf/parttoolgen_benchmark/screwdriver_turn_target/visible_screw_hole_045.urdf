@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<robot name="parttoolgen_visible_screw_hole_045">
+  <link name="visible_screw_hole">
+    <visual>
+      <material name="matte_gray_plate">
+        <color rgba="0.62 0.64 0.66 1.0"/>
+      </material>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <box size="0.045 0.045 0.010"/>
+      </geometry>
+    </visual>
+    <visual>
+      <material name="matte_black_hole">
+        <color rgba="0.02 0.02 0.02 1.0"/>
+      </material>
+      <origin xyz="0 0 0.006" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.009" length="0.002"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <box size="0.045 0.045 0.010"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.02"/>
+      <inertia ixx="0.000004" ixy="0.0" ixz="0.0" iyy="0.000004" iyz="0.0" izz="0.000004"/>
+    </inertial>
+  </link>
+</robot>

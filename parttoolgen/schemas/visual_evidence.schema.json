@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://parttoolgen.local/schemas/visual_evidence.schema.json",
+  "title": "VisualEvidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "evidence_id", "items"],
+  "properties": {
+    "schema_version": {
+      "const": "v0.1"
+    },
+    "evidence_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "media_type", "path"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "enum": [
+              "rgb",
+              "depth",
+              "mask_overlay",
+              "contact_sheet",
+              "goal_preview",
+              "whole_mesh_part_choice_overview",
+              "isolated_part_choice_overview",
+              "isolated_part_card",
+              "selected_part_bbox_overview",
+              "selected_part_face_highlight",
+              "rollout_frame",
+              "rollout_video",
+              "report",
+              "other"
+            ]
+          },
+          "media_type": {
+            "enum": ["image", "video", "json", "text", "other"]
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string"
+          },
+          "part_marker": {
+            "type": "string"
+          },
+          "face_marker": {
+            "type": "string"
+          },
+          "point_ref": {
+            "type": "string"
+          },
+          "surface_ref": {
+            "type": "string"
+          },
+          "patch_id": {
+            "type": "string"
+          },
+          "provider_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source_stage": {
+            "type": "string",
+            "minLength": 1
+          },
+          "allowed_use": {
+            "enum": ["planning_context", "repair_diagnosis", "debug_only"],
+            "default": "planning_context"
+          }
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Optional prompt-safe metadata. Numbered region/candidate overlays may include ref_table rows that map marker numbers to listed provider refs.",
+      "additionalProperties": true
+    }
+  }
+}

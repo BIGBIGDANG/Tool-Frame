@@ -1,0 +1,1003 @@
+{
+  "schema_version": "v0.1",
+  "tool_id": "staples_marker",
+  "tool_frame": "tool",
+  "parts": {
+    "part_000": {
+      "label": "p3sam_segment_0",
+      "role_candidates": [
+        "tool_part_candidate",
+        "functional_candidate",
+        "contact_patch"
+      ],
+      "mask_ref": "p3sam:face_label:0",
+      "point_count": 978,
+      "face_count": 1408,
+      "original_face_count": 1408,
+      "connected_component_count": 21,
+      "removed_disconnected_face_count": 0,
+      "centroid_xyz_tool": [
+        -0.02405181725971372,
+        0.00026434442740286344,
+        0.00023252529652351714
+      ],
+      "obb": {
+        "center_xyz_tool": [
+          -0.023328335,
+          1.3019999999999872e-05,
+          -2.436000000000018e-05
+        ],
+        "extent_xyz": [
+          0.026079069999999996,
+          0.020716560000000002,
+          0.02069038
+        ],
+        "axes_tool": {
+          "x": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "y": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "z": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        }
+      },
+      "surface_patches": {
+        "x_negative_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            -0.03448683625433744,
+            -0.00010859203278069051,
+            0.00023897663667572794
+          ],
+          "normal_tool": [
+            -0.9997597606458191,
+            -0.010917172867507869,
+            -0.01900621819287598
+          ],
+          "support_faces": 415,
+          "confidence": 0.9,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "x_positive_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            -0.01312054781571464,
+            0.00021550486153609929,
+            -5.066961224550311e-06
+          ],
+          "normal_tool": [
+            0.9647800845027352,
+            -0.16624702442918418,
+            0.20386592509621956
+          ],
+          "support_faces": 233,
+          "confidence": 0.9,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            -0.024020739419048122,
+            -0.007917700736846993,
+            -0.00012795744667255514
+          ],
+          "normal_tool": [
+            0.039278020825617425,
+            -0.9990174339762755,
+            -0.020528119531033364
+          ],
+          "support_faces": 110,
+          "confidence": 0.9,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            -0.02373498350548196,
+            0.008014750417098825,
+            1.4091667169242688e-05
+          ],
+          "normal_tool": [
+            0.044886392333937625,
+            0.9989505036174774,
+            0.009116090479603382
+          ],
+          "support_faces": 119,
+          "confidence": 0.9,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            -0.023885005660082437,
+            -8.056761025045407e-05,
+            -0.007925050895372517
+          ],
+          "normal_tool": [
+            0.04904695748562627,
+            -0.008210849617087873,
+            -0.9987627235284509
+          ],
+          "support_faces": 125,
+          "confidence": 0.9,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            -0.024200365927049466,
+            -4.594469252805043e-06,
+            0.007969306210473055
+          ],
+          "normal_tool": [
+            0.05295567348271165,
+            -0.001546619891633284,
+            0.9985956662297825
+          ],
+          "support_faces": 124,
+          "confidence": 0.9,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy"
+          }
+        }
+      },
+      "confidence": 0.9,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 0,
+        "connected_component_index": 0,
+        "connected_component_count": 21,
+        "original_face_count": 1408,
+        "kept_face_count": 1408,
+        "removed_disconnected_face_count": 0,
+        "component_filter": "keep_dominant_spatial_cluster_per_p3sam_label"
+      }
+    },
+    "part_001": {
+      "label": "p3sam_segment_86",
+      "role_candidates": [
+        "tool_part_candidate",
+        "functional_candidate",
+        "grasp_candidate",
+        "contact_patch"
+      ],
+      "mask_ref": "p3sam:face_label:86",
+      "point_count": 208,
+      "face_count": 304,
+      "original_face_count": 304,
+      "connected_component_count": 7,
+      "removed_disconnected_face_count": 0,
+      "centroid_xyz_tool": [
+        0.101711051298077,
+        -2.8590865384614673e-06,
+        6.797269230769208e-05
+      ],
+      "obb": {
+        "center_xyz_tool": [
+          0.100512145,
+          -1.889000000000014e-05,
+          1.9219999999999914e-05
+        ],
+        "extent_xyz": [
+          0.026002789999999998,
+          0.00589486,
+          0.00723702
+        ],
+        "axes_tool": {
+          "x": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "y": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "z": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        }
+      },
+      "surface_patches": {
+        "x_negative_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            0.09018373364127252,
+            0.0001004223737252929,
+            5.7844836055103367e-05
+          ],
+          "normal_tool": [
+            0.0912196364082399,
+            0.8378714242337173,
+            0.5381918379036519
+          ],
+          "support_faces": 48,
+          "confidence": 0.6590970848890316,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "x_positive_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            0.11126841037761323,
+            -1.6131017863484365e-05,
+            -0.00012902267681940018
+          ],
+          "normal_tool": [
+            0.9954549577606813,
+            -0.01544895201857923,
+            -0.09397210730428575
+          ],
+          "support_faces": 80,
+          "confidence": 0.6590970848890316,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.09971189509717208,
+            -0.0019621422197635984,
+            -2.105662721597312e-05
+          ],
+          "normal_tool": [
+            0.08125769217434267,
+            -0.9966658637905998,
+            -0.007371798765388733
+          ],
+          "support_faces": 159,
+          "confidence": 0.6590970848890316,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.09972362252972858,
+            0.0019574819610747385,
+            -2.795464877787098e-06
+          ],
+          "normal_tool": [
+            0.08160446059626467,
+            0.996656766748639,
+            0.004000163114434254
+          ],
+          "support_faces": 158,
+          "confidence": 0.6590970848890316,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.09974754775362407,
+            -1.2711864563140091e-05,
+            -0.0019532213483163083
+          ],
+          "normal_tool": [
+            0.07999759748124027,
+            -0.004649104466002947,
+            -0.9967842144741728
+          ],
+          "support_faces": 154,
+          "confidence": 0.6590970848890316,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.09974172077228874,
+            -1.143117370220672e-06,
+            0.0019535462262418113
+          ],
+          "normal_tool": [
+            0.082346535437709,
+            0.0038002683266033107,
+            0.9965965111628938
+          ],
+          "support_faces": 159,
+          "confidence": 0.6590970848890316,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy"
+          }
+        }
+      },
+      "confidence": 0.6590970848890316,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 86,
+        "connected_component_index": 0,
+        "connected_component_count": 7,
+        "original_face_count": 304,
+        "kept_face_count": 304,
+        "removed_disconnected_face_count": 0,
+        "component_filter": "keep_dominant_spatial_cluster_per_p3sam_label"
+      }
+    },
+    "part_002": {
+      "label": "p3sam_segment_95",
+      "role_candidates": [
+        "tool_part_candidate",
+        "functional_candidate",
+        "grasp_candidate",
+        "contact_patch"
+      ],
+      "mask_ref": "p3sam:face_label:95",
+      "point_count": 895,
+      "face_count": 1374,
+      "original_face_count": 1374,
+      "connected_component_count": 23,
+      "removed_disconnected_face_count": 0,
+      "centroid_xyz_tool": [
+        0.04775322320670391,
+        0.0003923005139664837,
+        0.0008117208603351958
+      ],
+      "obb": {
+        "center_xyz_tool": [
+          0.040244635,
+          -2.3280000000000522e-05,
+          -8.349999999993779e-07
+        ],
+        "extent_xyz": [
+          0.09572527,
+          0.01719348,
+          0.01731541
+        ],
+        "axes_tool": {
+          "x": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "y": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "z": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        }
+      },
+      "surface_patches": {
+        "x_negative_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            0.0018912048176563728,
+            -0.00019320590488345888,
+            -5.727072529670613e-05
+          ],
+          "normal_tool": [
+            -0.3934638909374826,
+            -0.8566152093930685,
+            -0.3337612163880136
+          ],
+          "support_faces": 257,
+          "confidence": 0.8945335591687906,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "x_positive_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            0.08154609179078448,
+            -5.365543614809352e-05,
+            7.015420772349733e-05
+          ],
+          "normal_tool": [
+            0.9996068931839764,
+            -0.017575567440280212,
+            0.021843958620878585
+          ],
+          "support_faces": 493,
+          "confidence": 0.8945335591687906,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.03842662604672021,
+            -0.0070108076384807465,
+            -3.331326923227348e-05
+          ],
+          "normal_tool": [
+            0.027889665414894203,
+            -0.999601343980033,
+            -0.004395415379357955
+          ],
+          "support_faces": 380,
+          "confidence": 0.8945335591687906,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.038270280443657295,
+            0.007040224838900073,
+            -6.449523496907669e-07
+          ],
+          "normal_tool": [
+            0.027839784303714407,
+            0.999612161609021,
+            0.0006875850952150694
+          ],
+          "support_faces": 372,
+          "confidence": 0.8945335591687906,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.038468270571651995,
+            -1.1814756657621239e-05,
+            -0.0070364691559451145
+          ],
+          "normal_tool": [
+            0.0284808790741592,
+            -0.001735432026676475,
+            -0.999592831008128
+          ],
+          "support_faces": 373,
+          "confidence": 0.8945335591687906,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.03821843712011128,
+            1.322016838837642e-06,
+            0.007014885973349299
+          ],
+          "normal_tool": [
+            0.02727324568290451,
+            0.0016912302480277175,
+            0.9996265851857723
+          ],
+          "support_faces": 444,
+          "confidence": 0.8945335591687906,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy"
+          }
+        }
+      },
+      "confidence": 0.8945335591687906,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 95,
+        "connected_component_index": 0,
+        "connected_component_count": 23,
+        "original_face_count": 1374,
+        "kept_face_count": 1374,
+        "removed_disconnected_face_count": 0,
+        "component_filter": "keep_dominant_spatial_cluster_per_p3sam_label"
+      }
+    },
+    "part_003": {
+      "label": "p3sam_segment_282",
+      "role_candidates": [
+        "tool_part_candidate",
+        "functional_candidate",
+        "grasp_candidate",
+        "contact_patch"
+      ],
+      "mask_ref": "p3sam:face_label:282",
+      "point_count": 128,
+      "face_count": 142,
+      "original_face_count": 142,
+      "connected_component_count": 8,
+      "removed_disconnected_face_count": 0,
+      "centroid_xyz_tool": [
+        -0.022646714531249987,
+        8.161273437499992e-05,
+        5.0167578124999976e-05
+      ],
+      "obb": {
+        "center_xyz_tool": [
+          -0.02326963,
+          0.000168395,
+          -8.287499999999994e-05
+        ],
+        "extent_xyz": [
+          0.026249679999999997,
+          0.00190433,
+          0.0022156700000000003
+        ],
+        "axes_tool": {
+          "x": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "y": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "z": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        }
+      },
+      "surface_patches": {
+        "x_negative_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            -0.03408892841399373,
+            3.386947719816483e-05,
+            -5.868252382488981e-05
+          ],
+          "normal_tool": [
+            -0.9131044110143643,
+            -0.38154118774804285,
+            0.1437590228052609
+          ],
+          "support_faces": 36,
+          "confidence": 0.5929076108094762,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "x_positive_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            -0.013071487612771592,
+            0.00016387474299716078,
+            2.2340717120584092e-05
+          ],
+          "normal_tool": [
+            0.3770814867429881,
+            0.6955310311088752,
+            -0.6115931140229776
+          ],
+          "support_faces": 28,
+          "confidence": 0.5929076108094762,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            -0.023441543808509924,
+            -0.00042272802933344326,
+            3.571986835614482e-05
+          ],
+          "normal_tool": [
+            -0.008054699968206408,
+            -0.9996932359620629,
+            -0.02342126768818217
+          ],
+          "support_faces": 76,
+          "confidence": 0.5929076108094762,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            -0.023315085088920603,
+            0.0005436622707284539,
+            7.56037976849822e-05
+          ],
+          "normal_tool": [
+            -0.014500865953621036,
+            0.9915455737751467,
+            0.1289461128282282
+          ],
+          "support_faces": 70,
+          "confidence": 0.5929076108094762,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            -0.0235090284364428,
+            4.706853708831555e-05,
+            -0.0004691085236760711
+          ],
+          "normal_tool": [
+            -0.007610340182436145,
+            -0.04952782514794921,
+            -0.9987437495466099
+          ],
+          "support_faces": 72,
+          "confidence": 0.5929076108094762,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            -0.023999690719108097,
+            5.3386480357888185e-05,
+            0.0005208678353050263
+          ],
+          "normal_tool": [
+            -0.024167640743755905,
+            0.05601499221260314,
+            0.9981373882328537
+          ],
+          "support_faces": 75,
+          "confidence": 0.5929076108094762,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy"
+          }
+        }
+      },
+      "confidence": 0.5929076108094762,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 282,
+        "connected_component_index": 0,
+        "connected_component_count": 8,
+        "original_face_count": 142,
+        "kept_face_count": 142,
+        "removed_disconnected_face_count": 0,
+        "component_filter": "keep_dominant_spatial_cluster_per_p3sam_label"
+      }
+    },
+    "part_004": {
+      "label": "p3sam_segment_385",
+      "role_candidates": [
+        "tool_part_candidate",
+        "functional_candidate",
+        "contact_patch"
+      ],
+      "mask_ref": "p3sam:face_label:385",
+      "point_count": 380,
+      "face_count": 444,
+      "original_face_count": 444,
+      "connected_component_count": 19,
+      "removed_disconnected_face_count": 0,
+      "centroid_xyz_tool": [
+        -0.009454036973684217,
+        -0.00022793639473684145,
+        0.0008040896578947368
+      ],
+      "obb": {
+        "center_xyz_tool": [
+          -0.008869305000000001,
+          -0.0002450400000000002,
+          0.0001019599999999999
+        ],
+        "extent_xyz": [
+          0.0052096500000000006,
+          0.01745514,
+          0.0171194
+        ],
+        "axes_tool": {
+          "x": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "y": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "z": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        }
+      },
+      "surface_patches": {
+        "x_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            -0.00983227104699782,
+            -6.143314552090321e-05,
+            3.1301083345303245e-05
+          ],
+          "normal_tool": [
+            -0.9998249710223838,
+            0.014149338817093569,
+            -0.012240242282261143
+          ],
+          "support_faces": 350,
+          "confidence": 0.702698504330574,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "x_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            -0.009352396526073618,
+            -0.0003781577025414018,
+            0.0016593699425759432
+          ],
+          "normal_tool": [
+            0.025203931106844695,
+            -0.22406743528737966,
+            0.9742476822145882
+          ],
+          "support_faces": 59,
+          "confidence": 0.702698504330574,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_negative_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            -0.008766579702374183,
+            -0.0069085439668879756,
+            -0.0003239729695262691
+          ],
+          "normal_tool": [
+            -0.22972006819275773,
+            -0.9727686081851727,
+            -0.030820856558451407
+          ],
+          "support_faces": 99,
+          "confidence": 0.702698504330574,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_positive_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            -0.008549941526207678,
+            0.006673610061306146,
+            3.5616672835498734e-05
+          ],
+          "normal_tool": [
+            -0.2894959722053363,
+            0.9571791527373184,
+            0.0003894123220885092
+          ],
+          "support_faces": 100,
+          "confidence": 0.702698504330574,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            -0.008512063892757485,
+            -5.0839433492233475e-05,
+            -0.006639749002491654
+          ],
+          "normal_tool": [
+            -0.29305714276126027,
+            -0.0003447419975493773,
+            -0.9560948657060979
+          ],
+          "support_faces": 106,
+          "confidence": 0.702698504330574,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            -0.008665450775274766,
+            0.00023381089851934813,
+            0.006627989183664643
+          ],
+          "normal_tool": [
+            -0.26902464225803757,
+            0.022049990074475074,
+            0.9628808544132812
+          ],
+          "support_faces": 120,
+          "confidence": 0.702698504330574,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy"
+          }
+        }
+      },
+      "confidence": 0.702698504330574,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "staples_marker_p3sam_auto_mask_20260525",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/staples_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 385,
+        "connected_component_index": 0,
+        "connected_component_count": 19,
+        "original_face_count": 444,
+        "kept_face_count": 444,
+        "removed_disconnected_face_count": 0,
+        "component_filter": "keep_dominant_spatial_cluster_per_p3sam_label"
+      }
+    }
+  },
+  "relations": [
+    {
+      "type": "part_of",
+      "subject": "tool.parts.part_000",
+      "object": "tool.staples_marker",
+      "confidence": 0.9,
+      "source": "p3sam_tool_prior"
+    },
+    {
+      "type": "part_of",
+      "subject": "tool.parts.part_001",
+      "object": "tool.staples_marker",
+      "confidence": 0.6590970848890316,
+      "source": "p3sam_tool_prior"
+    },
+    {
+      "type": "part_of",
+      "subject": "tool.parts.part_002",
+      "object": "tool.staples_marker",
+      "confidence": 0.8945335591687906,
+      "source": "p3sam_tool_prior"
+    },
+    {
+      "type": "part_of",
+      "subject": "tool.parts.part_003",
+      "object": "tool.staples_marker",
+      "confidence": 0.5929076108094762,
+      "source": "p3sam_tool_prior"
+    },
+    {
+      "type": "part_of",
+      "subject": "tool.parts.part_004",
+      "object": "tool.staples_marker",
+      "confidence": 0.702698504330574,
+      "source": "p3sam_tool_prior"
+    }
+  ],
+  "metadata": {
+    "created_by": "parttoolgen.providers.tool_prior.sampart3d_mesh_candidates",
+    "geometry_mode": "prior",
+    "segmentation_mode": "p3sam",
+    "notes": "p3sam face labels are converted in the stable SimToolReal tool/asset frame."
+  }
+}

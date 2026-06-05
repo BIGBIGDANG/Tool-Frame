@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "observation_bundle.schema.json",
+  "title": "ObservationBundle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "observation_id",
+    "source_system",
+    "capture_mode",
+    "task_instruction",
+    "frames",
+    "cameras",
+    "artifacts",
+    "state",
+    "metadata"
+  ],
+  "properties": {
+    "schema_version": { "const": "v0.1" },
+    "observation_id": { "type": "string", "minLength": 1 },
+    "source_system": { "const": "simtoolreal" },
+    "capture_mode": {
+      "type": "string",
+      "enum": ["rgbd"]
+    },
+    "task_instruction": { "type": "string" },
+    "frames": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "type": "object", "additionalProperties": true }
+    },
+    "cameras": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "$ref": "#/$defs/camera" }
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rgb", "depth", "segmentation", "masks", "camera", "state"],
+      "properties": {
+        "rgb": { "type": "string", "minLength": 1 },
+        "depth": { "type": "string", "minLength": 1 },
+        "segmentation": { "type": "string", "minLength": 1 },
+        "masks": { "type": "string" },
+        "camera": { "type": "string" },
+        "state": { "type": "string", "minLength": 1 }
+      }
+    },
+    "state": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["object_pose_xyzw", "table_pose_xyzw", "object_name", "table_asset"],
+      "properties": {
+        "object_pose_xyzw": { "$ref": "#/$defs/pose7" },
+        "table_pose_xyzw": { "$ref": "#/$defs/pose7" },
+        "goal_pose_xyzw": { "$ref": "#/$defs/pose7" },
+        "object_name": { "type": "string", "minLength": 1 },
+        "object_category": { "type": "string" },
+        "table_asset": { "type": "string", "minLength": 1 }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["created_by", "simtoolreal_source_modified"],
+      "properties": {
+        "created_by": { "type": "string", "minLength": 1 },
+        "simtoolreal_source_modified": { "type": "boolean" },
+        "notes": { "type": "string" }
+      }
+    }
+  },
+  "$defs": {
+    "vec3": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": { "type": "number" }
+    },
+    "pose7": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "items": { "type": "number" }
+    },
+    "camera": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["frame", "width", "height"],
+      "properties": {
+        "frame": { "type": "string", "minLength": 1 },
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 },
+        "view_matrix": {
+          "type": "array",
+          "items": { "type": "array", "items": { "type": "number" } }
+        },
+        "projection_matrix": {
+          "type": "array",
+          "items": { "type": "array", "items": { "type": "number" } }
+        },
+        "position_world": { "$ref": "#/$defs/vec3" },
+        "look_at_world": { "$ref": "#/$defs/vec3" }
+      }
+    }
+  }
+}

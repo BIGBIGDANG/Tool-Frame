@@ -1,0 +1,148 @@
+#!/usr/bin/env bash
+# Thin public command wrapper for ToolFrame handoff users.
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+
+usage() {
+  cat <<'EOF'
+Usage: bin/toolframe <command> [args...]
+
+Public commands:
+  bootstrap-env     Create the project-local Python 3.8 environment.
+  env-check         Check the current ToolFrame environment.
+  check             Run quick/full source and registry checks.
+  benchmark         Run or inspect registered benchmark tasks.
+  tool-ref          Generate or regenerate P3SAM/VLM tool refs.
+  inventory         List segmented SimToolReal tools and planned task assets.
+  list              List registered benchmark tasks and suites.
+  paper-headline    Run the reviewed headline subset for ToolFrame 6.4.
+  preflight-headline Preflight the reviewed headline subset for ToolFrame 6.4.
+  paper-release     Run the ToolFrame 6.4 paper-release candidate suite.
+  preflight-paper   Preflight the ToolFrame 6.4 paper-release candidate suite.
+  preflight-all     Preflight every current launcher-runnable task.
+  run-all           Run every current launcher-runnable task.
+  run-spec          Run a unified task spec or registry task/suite.
+
+Examples:
+  bin/toolframe bootstrap-env
+  bin/toolframe check --quick
+  bin/toolframe preflight-headline
+  bin/toolframe benchmark --suite current_all_runnable --preflight-only --skip-rollout
+  bin/toolframe preflight-paper
+  bin/toolframe benchmark --task brush_sweep/red_zone --trials 1 --device auto
+  bin/toolframe tool-ref --help
+  bin/toolframe inventory --compact
+  bin/toolframe run-spec --task brush_sweep/red_zone --preflight-only
+EOF
+}
+
+run_with_env() {
+  local target="$1"
+  shift
+  bash -lc '
+    set -euo pipefail
+    root="$1"
+    target="$2"
+    shift 2
+    source "${root}/parttoolgen/scripts/parttoolgen_env.sh" >/dev/null
+    exec "${PARTTOOLGEN_CORE_PYTHON}" "${target}" "$@"
+  ' bash "${ROOT}" "${target}" "$@"
+}
+
+run_python_help_without_env() {
+  local target="$1"
+  shift
+  PYTHONPATH="${ROOT}/parttoolgen/src:${PYTHONPATH:-}" exec python3 "${target}" "$@"
+}
+
+cmd="${1:-help}"
+if [[ "$#" -gt 0 ]]; then
+  shift
+fi
+
+case "${cmd}" in
+  help|-h|--help)
+    usage
+    ;;
+  bootstrap-env)
+    exec bash "${ROOT}/parttoolgen/scripts/bootstrap_parttoolgen_env.sh" "$@"
+    ;;
+  env-check)
+    run_with_env "${ROOT}/parttoolgen/scripts/check_toolframe_env.py" "$@"
+    ;;
+  check)
+    exec "${ROOT}/parttoolgen/scripts/run_checks.sh" "$@"
+    ;;
+  benchmark)
+    if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
+      run_python_help_without_env "${ROOT}/parttoolgen/scripts/run_tool_use_benchmark.py" "$@"
+    fi
+    run_with_env "${ROOT}/parttoolgen/scripts/run_tool_use_benchmark.py" "$@"
+    ;;
+  tool-ref|tool-refs)
+    if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
+      run_python_help_without_env "${ROOT}/parttoolgen/scripts/run_p3sam_tool_ref_pipeline.py" "$@"
+    fi
+    run_with_env "${ROOT}/parttoolgen/scripts/run_p3sam_tool_ref_pipeline.py" "$@"
+    ;;
+  inventory)
+    run_with_env "${ROOT}/parttoolgen/src/parttoolgen/cli/aux/list_simtoolreal_segmented_tools.py" "$@"
+    ;;
+  list)
+    run_with_env "${ROOT}/parttoolgen/scripts/run_tool_use_benchmark.py" --list "$@"
+    ;;
+  preflight-headline)
+    run_with_env "${ROOT}/parttoolgen/scripts/run_tool_use_benchmark.py" \
+      --suite paper_release_6.4_headline \
+      --preflight-only \
+      --skip-rollout \
+      --aggregate none \
+      "$@"
+    ;;
+  paper-headline)
+    run_with_env "${ROOT}/parttoolgen/scripts/run_tool_use_benchmark.py" \
+      --suite paper_release_6.4_headline \
+      "$@"
+    ;;
+  preflight-paper)
+    run_with_env "${ROOT}/parttoolgen/scripts/run_tool_use_benchmark.py" \
+      --suite paper_release_6.4 \
+      --preflight-only \
+      --skip-rollout \
+      --aggregate none \
+      "$@"
+    ;;
+  paper-release)
+    run_with_env "${ROOT}/parttoolgen/scripts/run_tool_use_benchmark.py" \
+      --suite paper_release_6.4 \
+      "$@"
+    ;;
+  preflight-all)
+    run_with_env "${ROOT}/parttoolgen/scripts/run_tool_use_benchmark.py" \
+      --suite current_all_runnable \
+      --preflight-only \
+      --skip-rollout \
+      --aggregate none \
+      "$@"
+    ;;
+  run-all)
+    run_with_env "${ROOT}/parttoolgen/scripts/run_tool_use_benchmark.py" \
+      --suite current_all_runnable \
+      "$@"
+    ;;
+  run-spec)
+    if [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]]; then
+      run_python_help_without_env "${ROOT}/parttoolgen/scripts/run_image_grounded_task_spec.py" "$@"
+    fi
+    run_with_env "${ROOT}/parttoolgen/scripts/run_image_grounded_task_spec.py" "$@"
+    ;;
+  *)
+    echo "Unknown ToolFrame command: ${cmd}" >&2
+    echo >&2
+    usage >&2
+    exit 2
+    ;;
+esac

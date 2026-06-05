@@ -1,0 +1,340 @@
+{
+  "schema_version": "v0.1",
+  "evidence_id": "02_contact_marker_selection_visual_evidence",
+  "items": [
+    {
+      "id": "handle_eraser_whole_mesh_part_choice_overview",
+      "kind": "whole_mesh_part_choice_overview",
+      "media_type": "image",
+      "path": "configs/tool_refs/handle_eraser/evidence/02_contact_marker_selection/handle_eraser/overview/handle_eraser_whole_mesh_part_choice_overview.png",
+      "description": "Multi-view whole-mesh SAMPart3D part candidates for handle_eraser; each part is shown as a colored overlay on the mesh, with the same anonymous marker ID reused across views.",
+      "provider_id": "sampart3d_part_role_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "handle_eraser_isolated_part_choice_overview",
+      "kind": "isolated_part_choice_overview",
+      "media_type": "image",
+      "path": "configs/tool_refs/handle_eraser/evidence/02_contact_marker_selection/handle_eraser/overview/handle_eraser_isolated_part_choice_overview.png",
+      "description": "Isolated SAMPart3D part candidates for handle_eraser; auxiliary debug view.",
+      "provider_id": "sampart3d_part_role_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "debug_only"
+    },
+    {
+      "id": "handle_eraser_part_candidate_2_isolated_card",
+      "kind": "isolated_part_card",
+      "media_type": "image",
+      "path": "configs/tool_refs/handle_eraser/evidence/02_contact_marker_selection/handle_eraser/part_cards/candidate_002_card.png",
+      "part_marker": "2",
+      "description": "Isolated SAMPart3D part candidate 2 for handle_eraser; auxiliary debug view.",
+      "provider_id": "sampart3d_part_role_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "debug_only"
+    },
+    {
+      "id": "handle_eraser_part_candidate_2_selected_part_bbox_overview",
+      "kind": "selected_part_bbox_overview",
+      "media_type": "image",
+      "path": "configs/tool_refs/handle_eraser/evidence/02_contact_marker_selection/handle_eraser/selected_part_bbox_overview/candidate_002_bbox_overview.png",
+      "part_marker": "2",
+      "description": "5.15-style selected-part bbox overview for part candidate 2 on handle_eraser.",
+      "provider_id": "sampart3d_part_role_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "handle_eraser_part_candidate_2_face_F1_highlight",
+      "kind": "selected_part_face_highlight",
+      "media_type": "image",
+      "path": "configs/tool_refs/handle_eraser/evidence/02_contact_marker_selection/handle_eraser/selected_part_face_highlights/candidate_002_face_F1_highlight.png",
+      "part_marker": "2",
+      "face_marker": "F1",
+      "point_ref": "candidate.points.part_001_x_negative_endpoint",
+      "surface_ref": "candidate.surfaces.part_001_x_negative_endpoint",
+      "patch_id": "x_negative_endpoint",
+      "description": "5.15-style selected-part face evidence for handle_eraser part 2, face F1: part bbox is drawn, only this bbox face is highlighted, and the contact point plus surface-normal/motion-axis arrow are shown.",
+      "provider_id": "sampart3d_part_role_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "handle_eraser_part_candidate_2_face_F2_highlight",
+      "kind": "selected_part_face_highlight",
+      "media_type": "image",
+      "path": "configs/tool_refs/handle_eraser/evidence/02_contact_marker_selection/handle_eraser/selected_part_face_highlights/candidate_002_face_F2_highlight.png",
+      "part_marker": "2",
+      "face_marker": "F2",
+      "point_ref": "candidate.points.part_001_x_positive_endpoint",
+      "surface_ref": "candidate.surfaces.part_001_x_positive_endpoint",
+      "patch_id": "x_positive_endpoint",
+      "description": "5.15-style selected-part face evidence for handle_eraser part 2, face F2: part bbox is drawn, only this bbox face is highlighted, and the contact point plus surface-normal/motion-axis arrow are shown.",
+      "provider_id": "sampart3d_part_role_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "handle_eraser_part_candidate_2_face_F3_highlight",
+      "kind": "selected_part_face_highlight",
+      "media_type": "image",
+      "path": "configs/tool_refs/handle_eraser/evidence/02_contact_marker_selection/handle_eraser/selected_part_face_highlights/candidate_002_face_F3_highlight.png",
+      "part_marker": "2",
+      "face_marker": "F3",
+      "point_ref": "candidate.points.part_001_y_negative_contact",
+      "surface_ref": "candidate.surfaces.part_001_y_negative_contact",
+      "patch_id": "y_negative_contact",
+      "description": "5.15-style selected-part face evidence for handle_eraser part 2, face F3: part bbox is drawn, only this bbox face is highlighted, and the contact point plus surface-normal/motion-axis arrow are shown.",
+      "provider_id": "sampart3d_part_role_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "handle_eraser_part_candidate_2_face_F4_highlight",
+      "kind": "selected_part_face_highlight",
+      "media_type": "image",
+      "path": "configs/tool_refs/handle_eraser/evidence/02_contact_marker_selection/handle_eraser/selected_part_face_highlights/candidate_002_face_F4_highlight.png",
+      "part_marker": "2",
+      "face_marker": "F4",
+      "point_ref": "candidate.points.part_001_y_positive_contact",
+      "surface_ref": "candidate.surfaces.part_001_y_positive_contact",
+      "patch_id": "y_positive_contact",
+      "description": "5.15-style selected-part face evidence for handle_eraser part 2, face F4: part bbox is drawn, only this bbox face is highlighted, and the contact point plus surface-normal/motion-axis arrow are shown.",
+      "provider_id": "sampart3d_part_role_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "handle_eraser_part_candidate_2_face_F5_highlight",
+      "kind": "selected_part_face_highlight",
+      "media_type": "image",
+      "path": "configs/tool_refs/handle_eraser/evidence/02_contact_marker_selection/handle_eraser/selected_part_face_highlights/candidate_002_face_F5_highlight.png",
+      "part_marker": "2",
+      "face_marker": "F5",
+      "point_ref": "candidate.points.part_001_z_negative_contact",
+      "surface_ref": "candidate.surfaces.part_001_z_negative_contact",
+      "patch_id": "z_negative_contact",
+      "description": "5.15-style selected-part face evidence for handle_eraser part 2, face F5: part bbox is drawn, only this bbox face is highlighted, and the contact point plus surface-normal/motion-axis arrow are shown.",
+      "provider_id": "sampart3d_part_role_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "handle_eraser_part_candidate_2_face_F6_highlight",
+      "kind": "selected_part_face_highlight",
+      "media_type": "image",
+      "path": "configs/tool_refs/handle_eraser/evidence/02_contact_marker_selection/handle_eraser/selected_part_face_highlights/candidate_002_face_F6_highlight.png",
+      "part_marker": "2",
+      "face_marker": "F6",
+      "point_ref": "candidate.points.part_001_z_positive_contact",
+      "surface_ref": "candidate.surfaces.part_001_z_positive_contact",
+      "patch_id": "z_positive_contact",
+      "description": "5.15-style selected-part face evidence for handle_eraser part 2, face F6: part bbox is drawn, only this bbox face is highlighted, and the contact point plus surface-normal/motion-axis arrow are shown.",
+      "provider_id": "sampart3d_part_role_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    }
+  ],
+  "metadata": {
+    "evidence_kind": "sampart3d_part_overview_only",
+    "contact_marker_table_scope": "selected_part_only",
+    "selected_contact_point_markers_by_tool": {
+      "handle_eraser": [
+        "2"
+      ]
+    },
+    "selected_contact_point_markers_default": [],
+    "part_role_selection_path": "configs/tool_refs/handle_eraser/part_selection.json",
+    "region_marker_table": [
+      {
+        "tool_id": "handle_eraser",
+        "marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "source_label": "p3sam_segment_0",
+        "point_count": 2416,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 0
+      },
+      {
+        "tool_id": "handle_eraser",
+        "marker": "2",
+        "part_id": "part_001",
+        "part_ref": "tool.parts.part_001",
+        "source_label": "p3sam_segment_131",
+        "point_count": 12751,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 131
+      }
+    ],
+    "contact_marker_table": [
+      {
+        "tool_id": "handle_eraser",
+        "part_marker": "2",
+        "part_id": "part_001",
+        "part_ref": "tool.parts.part_001",
+        "point_ref": "candidate.points.part_001_x_negative_endpoint",
+        "surface_ref": "candidate.surfaces.part_001_x_negative_endpoint",
+        "polarity": "negative",
+        "patch_id": "x_negative_endpoint",
+        "role": null,
+        "xyz_tool": [
+          -0.07497247998623265,
+          -0.0022226716325701406,
+          -0.06186686445624655
+        ],
+        "normal_tool": [
+          -0.9969413410050315,
+          -0.04606686784537728,
+          0.06313324228966902
+        ],
+        "face_marker": "F1",
+        "contact_marker": "F1",
+        "selection_semantics": "contact_point_bbox_face",
+        "derived_point_ref": "candidate.points.part_001_x_negative_endpoint",
+        "source_surface_ref": "candidate.surfaces.part_001_x_negative_endpoint"
+      },
+      {
+        "tool_id": "handle_eraser",
+        "part_marker": "2",
+        "part_id": "part_001",
+        "part_ref": "tool.parts.part_001",
+        "point_ref": "candidate.points.part_001_x_positive_endpoint",
+        "surface_ref": "candidate.surfaces.part_001_x_positive_endpoint",
+        "polarity": "positive",
+        "patch_id": "x_positive_endpoint",
+        "role": null,
+        "xyz_tool": [
+          0.06974949740127595,
+          0.0015312997184699436,
+          -0.06134505950826156
+        ],
+        "normal_tool": [
+          0.9975253871323719,
+          0.06268938248067701,
+          0.031829912827452386
+        ],
+        "face_marker": "F2",
+        "contact_marker": "F2",
+        "selection_semantics": "contact_point_bbox_face",
+        "derived_point_ref": "candidate.points.part_001_x_positive_endpoint",
+        "source_surface_ref": "candidate.surfaces.part_001_x_positive_endpoint"
+      },
+      {
+        "tool_id": "handle_eraser",
+        "part_marker": "2",
+        "part_id": "part_001",
+        "part_ref": "tool.parts.part_001",
+        "point_ref": "candidate.points.part_001_y_negative_contact",
+        "surface_ref": "candidate.surfaces.part_001_y_negative_contact",
+        "polarity": "negative",
+        "patch_id": "y_negative_contact",
+        "role": null,
+        "xyz_tool": [
+          -0.01332098907075586,
+          -0.02575699441520302,
+          -0.06096644395524663
+        ],
+        "normal_tool": [
+          -0.08956903286584324,
+          -0.9775743937138693,
+          0.19059300382343103
+        ],
+        "face_marker": "F3",
+        "contact_marker": "F3",
+        "selection_semantics": "contact_point_bbox_face",
+        "derived_point_ref": "candidate.points.part_001_y_negative_contact",
+        "source_surface_ref": "candidate.surfaces.part_001_y_negative_contact"
+      },
+      {
+        "tool_id": "handle_eraser",
+        "part_marker": "2",
+        "part_id": "part_001",
+        "part_ref": "tool.parts.part_001",
+        "point_ref": "candidate.points.part_001_y_positive_contact",
+        "surface_ref": "candidate.surfaces.part_001_y_positive_contact",
+        "polarity": "positive",
+        "patch_id": "y_positive_contact",
+        "role": null,
+        "xyz_tool": [
+          -0.00033898461149313805,
+          0.023247285791833425,
+          -0.060232697699986244
+        ],
+        "normal_tool": [
+          -0.004969260284185185,
+          0.9901483133760304,
+          0.13993435593459638
+        ],
+        "face_marker": "F4",
+        "contact_marker": "F4",
+        "selection_semantics": "contact_point_bbox_face",
+        "derived_point_ref": "candidate.points.part_001_y_positive_contact",
+        "source_surface_ref": "candidate.surfaces.part_001_y_positive_contact"
+      },
+      {
+        "tool_id": "handle_eraser",
+        "part_marker": "2",
+        "part_id": "part_001",
+        "part_ref": "tool.parts.part_001",
+        "point_ref": "candidate.points.part_001_z_negative_contact",
+        "surface_ref": "candidate.surfaces.part_001_z_negative_contact",
+        "polarity": "negative",
+        "patch_id": "z_negative_contact",
+        "role": null,
+        "xyz_tool": [
+          -0.003294815579477083,
+          0.006400835522270834,
+          -0.07113621527595293
+        ],
+        "normal_tool": [
+          -0.008182422056723244,
+          -0.016811983039837372,
+          -0.99982518731804
+        ],
+        "face_marker": "F5",
+        "contact_marker": "F5",
+        "selection_semantics": "contact_point_bbox_face",
+        "derived_point_ref": "candidate.points.part_001_z_negative_contact",
+        "source_surface_ref": "candidate.surfaces.part_001_z_negative_contact"
+      },
+      {
+        "tool_id": "handle_eraser",
+        "part_marker": "2",
+        "part_id": "part_001",
+        "part_ref": "tool.parts.part_001",
+        "point_ref": "candidate.points.part_001_z_positive_contact",
+        "surface_ref": "candidate.surfaces.part_001_z_positive_contact",
+        "polarity": "positive",
+        "patch_id": "z_positive_contact",
+        "role": null,
+        "xyz_tool": [
+          -0.01512455973550766,
+          -0.002199516525409961,
+          -0.04723292364461273
+        ],
+        "normal_tool": [
+          -0.5966909575255243,
+          -0.19482396375062389,
+          0.7784622819095146
+        ],
+        "face_marker": "F6",
+        "contact_marker": "F6",
+        "selection_semantics": "contact_point_bbox_face",
+        "derived_point_ref": "candidate.points.part_001_z_positive_contact",
+        "source_surface_ref": "candidate.surfaces.part_001_z_positive_contact"
+      }
+    ],
+    "usage": "The whole-mesh part-choice overview exposes anonymous SAMPart3D regions in full-tool context as one multi-view sheet with colored part overlays for contact-region selection. Isolated cards are auxiliary debug views. After a part is selected, the renderer emits a selected-part bbox overview plus one selected-part face-highlight card per F marker; each face card shows the bbox, one highlighted bbox face, the contact point, and the surface normal/motion-axis arrow. This renderer must not emit legacy per-face/contact-choice paths."
+  }
+}

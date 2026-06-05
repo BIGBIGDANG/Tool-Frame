@@ -1,0 +1,245 @@
+{
+  "schema_version": "toolframe_segmented_tool_part_selection_package_v0",
+  "created_at": "2026-05-25",
+  "package_id": "all_simtoolreal_p3sam_segmented_tools_20260525",
+  "provider": "p3sam",
+  "tool_scope": "simtoolreal_dextoolbench_all_tools",
+  "purpose": "Pack all SimToolReal P3SAM-segmented tool part-selection render evidence together for VLM functional-part selection.",
+  "visual_evidence": "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/visual_evidence.json",
+  "contact_sheets": {
+    "overview": "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/contact_sheets/all_tools_overview_sheet.png",
+    "part_cards": "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/contact_sheets/all_part_cards_sheet.png"
+  },
+  "tools": [
+    {
+      "tool_id": "blue_brush",
+      "provider": "p3sam",
+      "source_visual_evidence": "artifacts/visualizations/p3sam_simtoolreal_alltools_part_overview_20260525/visual_evidence.json",
+      "source_tool_prior": "artifacts/tool_prior/p3sam/blue_brush/tool_prior",
+      "overview_images": [
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/blue_brush/overview/blue_brush_blue_brush_whole_mesh_part_choice_overview.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/blue_brush/overview/blue_brush_blue_brush_isolated_part_choice_overview.png"
+      ],
+      "part_cards": [
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/blue_brush/part_cards/blue_brush_candidate_001_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/blue_brush/part_cards/blue_brush_candidate_002_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/blue_brush/part_cards/blue_brush_candidate_003_card.png"
+      ],
+      "part_count": 3,
+      "part_card_count": 3,
+      "overview_count": 2
+    },
+    {
+      "tool_id": "red_brush",
+      "provider": "p3sam",
+      "source_visual_evidence": "artifacts/visualizations/p3sam_simtoolreal_alltools_part_overview_20260525/visual_evidence.json",
+      "source_tool_prior": "artifacts/tool_prior/p3sam/red_brush/tool_prior",
+      "overview_images": [
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/red_brush/overview/red_brush_red_brush_whole_mesh_part_choice_overview.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/red_brush/overview/red_brush_red_brush_isolated_part_choice_overview.png"
+      ],
+      "part_cards": [
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/red_brush/part_cards/red_brush_candidate_001_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/red_brush/part_cards/red_brush_candidate_002_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/red_brush/part_cards/red_brush_candidate_003_card.png"
+      ],
+      "part_count": 3,
+      "part_card_count": 3,
+      "overview_count": 2
+    },
+    {
+      "tool_id": "flat_eraser",
+      "provider": "p3sam",
+      "source_visual_evidence": "artifacts/visualizations/p3sam_simtoolreal_alltools_part_overview_20260525/visual_evidence.json",
+      "source_tool_prior": "artifacts/tool_prior/p3sam/flat_eraser/tool_prior",
+      "overview_images": [
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/flat_eraser/overview/flat_eraser_flat_eraser_whole_mesh_part_choice_overview.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/flat_eraser/overview/flat_eraser_flat_eraser_isolated_part_choice_overview.png"
+      ],
+      "part_cards": [
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/flat_eraser/part_cards/flat_eraser_candidate_001_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/flat_eraser/part_cards/flat_eraser_candidate_002_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/flat_eraser/part_cards/flat_eraser_candidate_003_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/flat_eraser/part_cards/flat_eraser_candidate_004_card.png"
+      ],
+      "part_count": 4,
+      "part_card_count": 4,
+      "overview_count": 2
+    },
+    {
+      "tool_id": "handle_eraser",
+      "provider": "p3sam",
+      "source_visual_evidence": "artifacts/visualizations/p3sam_simtoolreal_alltools_part_overview_20260525/visual_evidence.json",
+      "source_tool_prior": "artifacts/tool_prior/p3sam/handle_eraser/tool_prior",
+      "overview_images": [
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/handle_eraser/overview/handle_eraser_handle_eraser_whole_mesh_part_choice_overview.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/handle_eraser/overview/handle_eraser_handle_eraser_isolated_part_choice_overview.png"
+      ],
+      "part_cards": [
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/handle_eraser/part_cards/handle_eraser_candidate_001_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/handle_eraser/part_cards/handle_eraser_candidate_002_card.png"
+      ],
+      "part_count": 2,
+      "part_card_count": 2,
+      "overview_count": 2
+    },
+    {
+      "tool_id": "claw_hammer",
+      "provider": "p3sam",
+      "source_visual_evidence": "artifacts/visualizations/p3sam_simtoolreal_alltools_part_overview_20260525/visual_evidence.json",
+      "source_tool_prior": "artifacts/tool_prior/p3sam/claw_hammer/tool_prior",
+      "overview_images": [
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/claw_hammer/overview/claw_hammer_claw_hammer_whole_mesh_part_choice_overview.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/claw_hammer/overview/claw_hammer_claw_hammer_isolated_part_choice_overview.png"
+      ],
+      "part_cards": [
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/claw_hammer/part_cards/claw_hammer_candidate_001_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/claw_hammer/part_cards/claw_hammer_candidate_002_card.png"
+      ],
+      "part_count": 2,
+      "part_card_count": 2,
+      "overview_count": 2
+    },
+    {
+      "tool_id": "mallet_hammer",
+      "provider": "p3sam",
+      "source_visual_evidence": "artifacts/visualizations/p3sam_simtoolreal_alltools_part_overview_20260525/visual_evidence.json",
+      "source_tool_prior": "artifacts/tool_prior/p3sam/mallet_hammer/tool_prior",
+      "overview_images": [
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/mallet_hammer/overview/mallet_hammer_mallet_hammer_whole_mesh_part_choice_overview.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/mallet_hammer/overview/mallet_hammer_mallet_hammer_isolated_part_choice_overview.png"
+      ],
+      "part_cards": [
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/mallet_hammer/part_cards/mallet_hammer_candidate_001_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/mallet_hammer/part_cards/mallet_hammer_candidate_002_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/mallet_hammer/part_cards/mallet_hammer_candidate_003_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/mallet_hammer/part_cards/mallet_hammer_candidate_004_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/mallet_hammer/part_cards/mallet_hammer_candidate_005_card.png"
+      ],
+      "part_count": 5,
+      "part_card_count": 5,
+      "overview_count": 2
+    },
+    {
+      "tool_id": "sharpie_marker",
+      "provider": "p3sam",
+      "source_visual_evidence": "artifacts/visualizations/p3sam_simtoolreal_alltools_part_overview_20260525/visual_evidence.json",
+      "source_tool_prior": "artifacts/tool_prior/p3sam/sharpie_marker/tool_prior",
+      "overview_images": [
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/sharpie_marker/overview/sharpie_marker_sharpie_marker_whole_mesh_part_choice_overview.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/sharpie_marker/overview/sharpie_marker_sharpie_marker_isolated_part_choice_overview.png"
+      ],
+      "part_cards": [
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/sharpie_marker/part_cards/sharpie_marker_candidate_001_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/sharpie_marker/part_cards/sharpie_marker_candidate_002_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/sharpie_marker/part_cards/sharpie_marker_candidate_003_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/sharpie_marker/part_cards/sharpie_marker_candidate_004_card.png"
+      ],
+      "part_count": 4,
+      "part_card_count": 4,
+      "overview_count": 2
+    },
+    {
+      "tool_id": "staples_marker",
+      "provider": "p3sam",
+      "source_visual_evidence": "artifacts/visualizations/p3sam_simtoolreal_alltools_part_overview_20260525/visual_evidence.json",
+      "source_tool_prior": "artifacts/tool_prior/p3sam/staples_marker/tool_prior",
+      "overview_images": [
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/staples_marker/overview/staples_marker_staples_marker_whole_mesh_part_choice_overview.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/staples_marker/overview/staples_marker_staples_marker_isolated_part_choice_overview.png"
+      ],
+      "part_cards": [
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/staples_marker/part_cards/staples_marker_candidate_001_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/staples_marker/part_cards/staples_marker_candidate_002_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/staples_marker/part_cards/staples_marker_candidate_003_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/staples_marker/part_cards/staples_marker_candidate_004_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/staples_marker/part_cards/staples_marker_candidate_005_card.png"
+      ],
+      "part_count": 5,
+      "part_card_count": 5,
+      "overview_count": 2
+    },
+    {
+      "tool_id": "long_screwdriver",
+      "provider": "p3sam",
+      "source_visual_evidence": "artifacts/visualizations/p3sam_simtoolreal_alltools_part_overview_20260525/visual_evidence.json",
+      "source_tool_prior": "artifacts/tool_prior/p3sam/long_screwdriver/tool_prior",
+      "overview_images": [
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/long_screwdriver/overview/long_screwdriver_long_screwdriver_whole_mesh_part_choice_overview.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/long_screwdriver/overview/long_screwdriver_long_screwdriver_isolated_part_choice_overview.png"
+      ],
+      "part_cards": [
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/long_screwdriver/part_cards/long_screwdriver_candidate_001_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/long_screwdriver/part_cards/long_screwdriver_candidate_002_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/long_screwdriver/part_cards/long_screwdriver_candidate_003_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/long_screwdriver/part_cards/long_screwdriver_candidate_004_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/long_screwdriver/part_cards/long_screwdriver_candidate_005_card.png"
+      ],
+      "part_count": 5,
+      "part_card_count": 5,
+      "overview_count": 2
+    },
+    {
+      "tool_id": "short_screwdriver",
+      "provider": "p3sam",
+      "source_visual_evidence": "artifacts/visualizations/p3sam_simtoolreal_alltools_part_overview_20260525/visual_evidence.json",
+      "source_tool_prior": "artifacts/tool_prior/p3sam/short_screwdriver/tool_prior",
+      "overview_images": [
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/short_screwdriver/overview/short_screwdriver_short_screwdriver_whole_mesh_part_choice_overview.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/short_screwdriver/overview/short_screwdriver_short_screwdriver_isolated_part_choice_overview.png"
+      ],
+      "part_cards": [
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/short_screwdriver/part_cards/short_screwdriver_candidate_001_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/short_screwdriver/part_cards/short_screwdriver_candidate_002_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/short_screwdriver/part_cards/short_screwdriver_candidate_003_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/short_screwdriver/part_cards/short_screwdriver_candidate_004_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/short_screwdriver/part_cards/short_screwdriver_candidate_005_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/short_screwdriver/part_cards/short_screwdriver_candidate_006_card.png"
+      ],
+      "part_count": 6,
+      "part_card_count": 6,
+      "overview_count": 2
+    },
+    {
+      "tool_id": "flat_spatula",
+      "provider": "p3sam",
+      "source_visual_evidence": "artifacts/visualizations/p3sam_simtoolreal_alltools_part_overview_20260525/visual_evidence.json",
+      "source_tool_prior": "artifacts/tool_prior/p3sam/flat_spatula/tool_prior",
+      "overview_images": [
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/flat_spatula/overview/flat_spatula_flat_spatula_whole_mesh_part_choice_overview.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/flat_spatula/overview/flat_spatula_flat_spatula_isolated_part_choice_overview.png"
+      ],
+      "part_cards": [
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/flat_spatula/part_cards/flat_spatula_candidate_001_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/flat_spatula/part_cards/flat_spatula_candidate_002_card.png"
+      ],
+      "part_count": 2,
+      "part_card_count": 2,
+      "overview_count": 2
+    },
+    {
+      "tool_id": "spoon_spatula",
+      "provider": "p3sam",
+      "source_visual_evidence": "artifacts/visualizations/p3sam_simtoolreal_alltools_part_overview_20260525/visual_evidence.json",
+      "source_tool_prior": "artifacts/tool_prior/p3sam/spoon_spatula/tool_prior",
+      "overview_images": [
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/spoon_spatula/overview/spoon_spatula_spoon_spatula_whole_mesh_part_choice_overview.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/spoon_spatula/overview/spoon_spatula_spoon_spatula_isolated_part_choice_overview.png"
+      ],
+      "part_cards": [
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/spoon_spatula/part_cards/spoon_spatula_candidate_001_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/spoon_spatula/part_cards/spoon_spatula_candidate_002_card.png",
+        "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/spoon_spatula/part_cards/spoon_spatula_candidate_003_card.png"
+      ],
+      "part_count": 3,
+      "part_card_count": 3,
+      "overview_count": 2
+    }
+  ],
+  "summary": {
+    "tool_count": 12,
+    "image_item_count": 68,
+    "part_count": 44,
+    "part_card_count": 44
+  }
+}

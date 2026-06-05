@@ -1,0 +1,34 @@
+{
+  "schema_version": "v0.1",
+  "provider_id": "p3sam_tool_prior_provider",
+  "provider_type": "tool_prior",
+  "source_kind": "MESH_PRIOR",
+  "deployable": true,
+  "oracle": false,
+  "capabilities": [
+    "tool_functional_parts",
+    "typed_contact_refs"
+  ],
+  "frame_contracts": [
+    "simtoolreal_asset_root"
+  ],
+  "provenance": {
+    "method": "p3sam_face_labels_geometry_functional_frames",
+    "source_artifacts": [
+      "simtoolreal/assets/urdf/dextoolbench/brush/blue_brush/blue_brush.obj",
+      "artifacts/tool_prior/p3sam/blue_brush/face_labels/p3sam_face_labels.npy"
+    ],
+    "timestamp_or_capture_id": "blue_brush_p3sam_typed_contact_refs",
+    "notes": "Offline tool mesh prior. P3-SAM regions produce executable geometry functional point, axis, surface, and grasp candidates."
+  },
+  "metadata": {
+    "segment_count": 3,
+    "functional_candidate_count": 18,
+    "patch_candidate_count": 18,
+    "edge_candidate_count": 18,
+    "grasp_candidate_count": 3,
+    "segmentation_model": "P3-SAM",
+    "p3sam_code_ref": "e96be065375438962375b55326416291342958a7",
+    "p3sam_weights_ref": "/data5/cmz_data/project_5.10/PartCentricAffordanceProgram_5.15/artifacts/models/Hunyuan3D-Part/P3-SAM/weights/p3sam/p3sam.safetensors"
+  }
+}

@@ -1,0 +1,2182 @@
+{
+  "schema_version": "v0.1",
+  "tool_id": "sharpie_marker",
+  "tool_frame": "tool",
+  "functional_parts": {
+    "part_000_x_negative_endpoint": {
+      "role": "endpoint_contact_patch",
+      "center": {
+        "xyz_tool": [
+          0.0507674459683634,
+          -0.0013851613518672445,
+          0.012994165714173667
+        ]
+      },
+      "normal": {
+        "vector_tool": [
+          -0.8171369799803073,
+          -0.24028991797526672,
+          0.5239731970894144
+        ]
+      },
+      "axis": {
+        "vector_tool": [
+          0.5764435409896294,
+          -0.3406227391444701,
+          0.7427576950991862
+        ]
+      },
+      "frame": {
+        "origin": [
+          0.0507674459683634,
+          -0.0013851613518672445,
+          0.012994165714173667
+        ],
+        "x_axis": [
+          0.5764435409896294,
+          -0.3406227391444701,
+          0.7427576950991862
+        ],
+        "y_axis": [
+          2.7755575615628914e-17,
+          0.9089757449443621,
+          0.41684900755890275
+        ],
+        "z_axis": [
+          -0.8171369799803074,
+          -0.24028991797526675,
+          0.5239731970894145
+        ]
+      },
+      "T_tool_functional": [
+        [
+          0.5764435409896294,
+          2.7755575615628914e-17,
+          -0.8171369799803074,
+          0.0507674459683634
+        ],
+        [
+          -0.3406227391444701,
+          0.9089757449443621,
+          -0.24028991797526675,
+          -0.0013851613518672445
+        ],
+        [
+          0.7427576950991862,
+          0.41684900755890275,
+          0.5239731970894145,
+          0.012994165714173667
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "confidence": 0.7117684611879882,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "sharpie_marker_p3sam_typed_contact_refs",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/sharpie_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 0,
+        "patch_id": "x_negative_endpoint",
+        "connected_component_index": 0,
+        "connected_component_count": 12,
+        "original_face_count": 603,
+        "kept_face_count": 603,
+        "removed_disconnected_face_count": 0
+      }
+    },
+    "part_000_x_positive_endpoint": {
+      "role": "endpoint_contact_patch",
+      "center": {
+        "xyz_tool": [
+          0.0950565432851638,
+          -0.0013081909075469615,
+          0.010902242531420659
+        ]
+      },
+      "normal": {
+        "vector_tool": [
+          0.5469189503731854,
+          -0.12115467564587719,
+          0.8283726252670566
+        ]
+      },
+      "axis": {
+        "vector_tool": [
+          0.8371855599105212,
+          0.07914826916523617,
+          -0.5411616115038596
+        ]
+      },
+      "frame": {
+        "origin": [
+          0.0950565432851638,
+          -0.0013081909075469615,
+          0.010902242531420659
+        ],
+        "x_axis": [
+          0.8371855599105212,
+          0.07914826916523617,
+          -0.5411616115038596
+        ],
+        "y_axis": [
+          0.0,
+          0.9894731406447017,
+          0.14471663326207662
+        ],
+        "z_axis": [
+          0.5469189503731855,
+          -0.1211546756458772,
+          0.8283726252670567
+        ]
+      },
+      "T_tool_functional": [
+        [
+          0.8371855599105212,
+          0.0,
+          0.5469189503731855,
+          0.0950565432851638
+        ],
+        [
+          0.07914826916523617,
+          0.9894731406447017,
+          -0.1211546756458772,
+          -0.0013081909075469615
+        ],
+        [
+          -0.5411616115038596,
+          0.14471663326207662,
+          0.8283726252670567,
+          0.010902242531420659
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "confidence": 0.7117684611879882,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "sharpie_marker_p3sam_typed_contact_refs",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/sharpie_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 0,
+        "patch_id": "x_positive_endpoint",
+        "connected_component_index": 0,
+        "connected_component_count": 12,
+        "original_face_count": 603,
+        "kept_face_count": 603,
+        "removed_disconnected_face_count": 0
+      }
+    },
+    "part_000_y_negative_contact": {
+      "role": "contact_patch",
+      "center": {
+        "xyz_tool": [
+          0.07457354958130359,
+          -0.0031677543106507088,
+          0.012498710719038925
+        ]
+      },
+      "normal": {
+        "vector_tool": [
+          -0.039966456397815264,
+          -0.9793304614811477,
+          0.19827891864271366
+        ]
+      },
+      "axis": {
+        "vector_tool": [
+          0.9992010219985774,
+          -0.03917166548684166,
+          0.007930842325090474
+        ]
+      },
+      "frame": {
+        "origin": [
+          0.07457354958130359,
+          -0.0031677543106507088,
+          0.012498710719038925
+        ],
+        "x_axis": [
+          0.9992010219985774,
+          -0.03917166548684166,
+          0.007930842325090474
+        ],
+        "y_axis": [
+          0.0,
+          0.19843746581255595,
+          0.9801135506470109
+        ],
+        "z_axis": [
+          -0.039966456397815264,
+          -0.9793304614811477,
+          0.19827891864271366
+        ]
+      },
+      "T_tool_functional": [
+        [
+          0.9992010219985774,
+          0.0,
+          -0.039966456397815264,
+          0.07457354958130359
+        ],
+        [
+          -0.03917166548684166,
+          0.19843746581255595,
+          -0.9793304614811477,
+          -0.0031677543106507088
+        ],
+        [
+          0.007930842325090474,
+          0.9801135506470109,
+          0.19827891864271366,
+          0.012498710719038925
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "confidence": 0.7117684611879882,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "sharpie_marker_p3sam_typed_contact_refs",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/sharpie_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 0,
+        "patch_id": "y_negative_contact",
+        "connected_component_index": 0,
+        "connected_component_count": 12,
+        "original_face_count": 603,
+        "kept_face_count": 603,
+        "removed_disconnected_face_count": 0
+      }
+    },
+    "part_000_y_positive_contact": {
+      "role": "contact_patch",
+      "center": {
+        "xyz_tool": [
+          0.07334430677382954,
+          0.0009290334773671158,
+          0.012901101508658972
+        ]
+      },
+      "normal": {
+        "vector_tool": [
+          0.0185708965528578,
+          0.9993336251471584,
+          -0.031423358373376196
+        ]
+      },
+      "axis": {
+        "vector_tool": [
+          0.9998275460304258,
+          -0.018561722417113225,
+          0.0005836605922813706
+        ]
+      },
+      "frame": {
+        "origin": [
+          0.07334430677382954,
+          0.0009290334773671158,
+          0.012901101508658972
+        ],
+        "x_axis": [
+          0.9998275460304258,
+          -0.018561722417113225,
+          0.0005836605922813706
+        ],
+        "y_axis": [
+          0.0,
+          -0.0314287783909686,
+          -0.9995059939234239
+        ],
+        "z_axis": [
+          0.018570896552857805,
+          0.9993336251471585,
+          -0.0314233583733762
+        ]
+      },
+      "T_tool_functional": [
+        [
+          0.9998275460304258,
+          0.0,
+          0.018570896552857805,
+          0.07334430677382954
+        ],
+        [
+          -0.018561722417113225,
+          -0.0314287783909686,
+          0.9993336251471585,
+          0.0009290334773671158
+        ],
+        [
+          0.0005836605922813706,
+          -0.9995059939234239,
+          -0.0314233583733762,
+          0.012901101508658972
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "confidence": 0.7117684611879882,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "sharpie_marker_p3sam_typed_contact_refs",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/sharpie_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 0,
+        "patch_id": "y_positive_contact",
+        "connected_component_index": 0,
+        "connected_component_count": 12,
+        "original_face_count": 603,
+        "kept_face_count": 603,
+        "removed_disconnected_face_count": 0
+      }
+    },
+    "part_000_z_negative_contact": {
+      "role": "contact_patch",
+      "center": {
+        "xyz_tool": [
+          0.07743573847206439,
+          -0.002273712378298382,
+          0.0106637835865148
+        ]
+      },
+      "normal": {
+        "vector_tool": [
+          -0.3566027193138374,
+          -0.9306070838378263,
+          -0.08249215774140821
+        ]
+      },
+      "axis": {
+        "vector_tool": [
+          0.9342561215095014,
+          -0.3552098927359441,
+          -0.031487005645863486
+        ]
+      },
+      "frame": {
+        "origin": [
+          0.07743573847206439,
+          -0.002273712378298382,
+          0.0106637835865148
+        ],
+        "x_axis": [
+          0.9342561215095014,
+          -0.3552098927359441,
+          -0.031487005645863486
+        ],
+        "y_axis": [
+          -3.469446951953614e-18,
+          -0.08829715518280311,
+          0.9960941784724093
+        ],
+        "z_axis": [
+          -0.35660271931383747,
+          -0.9306070838378264,
+          -0.08249215774140822
+        ]
+      },
+      "T_tool_functional": [
+        [
+          0.9342561215095014,
+          -3.469446951953614e-18,
+          -0.35660271931383747,
+          0.07743573847206439
+        ],
+        [
+          -0.3552098927359441,
+          -0.08829715518280311,
+          -0.9306070838378264,
+          -0.002273712378298382
+        ],
+        [
+          -0.031487005645863486,
+          0.9960941784724093,
+          -0.08249215774140822,
+          0.0106637835865148
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "confidence": 0.7117684611879882,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "sharpie_marker_p3sam_typed_contact_refs",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/sharpie_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 0,
+        "patch_id": "z_negative_contact",
+        "connected_component_index": 0,
+        "connected_component_count": 12,
+        "original_face_count": 603,
+        "kept_face_count": 603,
+        "removed_disconnected_face_count": 0
+      }
+    },
+    "part_000_z_positive_contact": {
+      "role": "contact_patch",
+      "center": {
+        "xyz_tool": [
+          0.07154505995076682,
+          -0.0012191138636857045,
+          0.014577094518737456
+        ]
+      },
+      "normal": {
+        "vector_tool": [
+          0.03645018553803222,
+          -0.07131795750725889,
+          0.9967874060757569
+        ]
+      },
+      "axis": {
+        "vector_tool": [
+          0.9993354711878505,
+          0.0026012814097783913,
+          -0.03635724633115267
+        ]
+      },
+      "frame": {
+        "origin": [
+          0.07154505995076682,
+          -0.0012191138636857045,
+          0.014577094518737456
+        ],
+        "x_axis": [
+          0.9993354711878505,
+          0.0026012814097783913,
+          -0.03635724633115267
+        ],
+        "y_axis": [
+          -4.336808689942018e-19,
+          0.9974502404992542,
+          0.07136538185969471
+        ],
+        "z_axis": [
+          0.03645018553803222,
+          -0.07131795750725889,
+          0.9967874060757569
+        ]
+      },
+      "T_tool_functional": [
+        [
+          0.9993354711878505,
+          -4.336808689942018e-19,
+          0.03645018553803222,
+          0.07154505995076682
+        ],
+        [
+          0.0026012814097783913,
+          0.9974502404992542,
+          -0.07131795750725889,
+          -0.0012191138636857045
+        ],
+        [
+          -0.03635724633115267,
+          0.07136538185969471,
+          0.9967874060757569,
+          0.014577094518737456
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "confidence": 0.7117684611879882,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "sharpie_marker_p3sam_typed_contact_refs",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/sharpie_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 0,
+        "patch_id": "z_positive_contact",
+        "connected_component_index": 0,
+        "connected_component_count": 12,
+        "original_face_count": 603,
+        "kept_face_count": 603,
+        "removed_disconnected_face_count": 0
+      }
+    },
+    "part_018_x_negative_endpoint": {
+      "role": "endpoint_contact_patch",
+      "center": {
+        "xyz_tool": [
+          -0.038700400650585935,
+          7.86896378485242e-05,
+          -0.0010071850907883229
+        ]
+      },
+      "normal": {
+        "vector_tool": [
+          -0.9998043940093486,
+          -0.010934312071743621,
+          0.016480732359848257
+        ]
+      },
+      "axis": {
+        "vector_tool": [
+          0.019778112134355322,
+          -0.5527409886511777,
+          0.8331183743894498
+        ]
+      },
+      "frame": {
+        "origin": [
+          -0.038700400650585935,
+          7.86896378485242e-05,
+          -0.0010071850907883229
+        ],
+        "x_axis": [
+          0.019778112134355322,
+          -0.5527409886511777,
+          0.8331183743894498
+        ],
+        "y_axis": [
+          0.0,
+          0.8332813692171669,
+          0.552849129252786
+        ],
+        "z_axis": [
+          -0.9998043940093486,
+          -0.010934312071743621,
+          0.016480732359848257
+        ]
+      },
+      "T_tool_functional": [
+        [
+          0.019778112134355322,
+          0.0,
+          -0.9998043940093486,
+          -0.038700400650585935
+        ],
+        [
+          -0.5527409886511777,
+          0.8332813692171669,
+          -0.010934312071743621,
+          7.86896378485242e-05
+        ],
+        [
+          0.8331183743894498,
+          0.552849129252786,
+          0.016480732359848257,
+          -0.0010071850907883229
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "confidence": 0.9,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "sharpie_marker_p3sam_typed_contact_refs",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/sharpie_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 18,
+        "patch_id": "x_negative_endpoint",
+        "connected_component_index": 0,
+        "connected_component_count": 6,
+        "original_face_count": 1782,
+        "kept_face_count": 1782,
+        "removed_disconnected_face_count": 0
+      }
+    },
+    "part_018_x_positive_endpoint": {
+      "role": "endpoint_contact_patch",
+      "center": {
+        "xyz_tool": [
+          0.038143395580259164,
+          0.0003950713806194619,
+          -0.0009607173299609966
+        ]
+      },
+      "normal": {
+        "vector_tool": [
+          0.8972277446523733,
+          0.4130753648098443,
+          0.1560484450843053
+        ]
+      },
+      "axis": {
+        "vector_tool": [
+          0.441568085606303,
+          -0.8393330270481455,
+          -0.31707679744847583
+        ]
+      },
+      "frame": {
+        "origin": [
+          0.038143395580259164,
+          0.0003950713806194619,
+          -0.0009607173299609966
+        ],
+        "x_axis": [
+          0.441568085606303,
+          -0.8393330270481455,
+          -0.31707679744847583
+        ],
+        "y_axis": [
+          0.0,
+          0.3533961130140104,
+          -0.9354737769208653
+        ],
+        "z_axis": [
+          0.8972277446523734,
+          0.41307536480984436,
+          0.15604844508430532
+        ]
+      },
+      "T_tool_functional": [
+        [
+          0.441568085606303,
+          0.0,
+          0.8972277446523734,
+          0.038143395580259164
+        ],
+        [
+          -0.8393330270481455,
+          0.3533961130140104,
+          0.41307536480984436,
+          0.0003950713806194619
+        ],
+        [
+          -0.31707679744847583,
+          -0.9354737769208653,
+          0.15604844508430532,
+          -0.0009607173299609966
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "confidence": 0.9,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "sharpie_marker_p3sam_typed_contact_refs",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/sharpie_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 18,
+        "patch_id": "x_positive_endpoint",
+        "connected_component_index": 0,
+        "connected_component_count": 6,
+        "original_face_count": 1782,
+        "kept_face_count": 1782,
+        "removed_disconnected_face_count": 0
+      }
+    },
+    "part_018_y_negative_contact": {
+      "role": "contact_patch",
+      "center": {
+        "xyz_tool": [
+          0.0012758486677058427,
+          -0.00894496477817067,
+          -0.0010542254116179405
+        ]
+      },
+      "normal": {
+        "vector_tool": [
+          -0.010293228146372908,
+          -0.9999418509447519,
+          -0.003216237477336405
+        ]
+      },
+      "axis": {
+        "vector_tool": [
+          0.9999470233238992,
+          -0.010293174903073632,
+          -3.310722003761101e-05
+        ]
+      },
+      "frame": {
+        "origin": [
+          0.0012758486677058427,
+          -0.00894496477817067,
+          -0.0010542254116179405
+        ],
+        "x_axis": [
+          0.9999470233238992,
+          -0.010293174903073632,
+          -3.310722003761101e-05
+        ],
+        "y_axis": [
+          -6.776263578034403e-21,
+          -0.0032164078719344445,
+          0.9999948273468225
+        ],
+        "z_axis": [
+          -0.010293228146372908,
+          -0.9999418509447519,
+          -0.003216237477336405
+        ]
+      },
+      "T_tool_functional": [
+        [
+          0.9999470233238992,
+          -6.776263578034403e-21,
+          -0.010293228146372908,
+          0.0012758486677058427
+        ],
+        [
+          -0.010293174903073632,
+          -0.0032164078719344445,
+          -0.9999418509447519,
+          -0.00894496477817067
+        ],
+        [
+          -3.310722003761101e-05,
+          0.9999948273468225,
+          -0.003216237477336405,
+          -0.0010542254116179405
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "confidence": 0.9,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "sharpie_marker_p3sam_typed_contact_refs",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/sharpie_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 18,
+        "patch_id": "y_negative_contact",
+        "connected_component_index": 0,
+        "connected_component_count": 6,
+        "original_face_count": 1782,
+        "kept_face_count": 1782,
+        "removed_disconnected_face_count": 0
+      }
+    },
+    "part_018_y_positive_contact": {
+      "role": "contact_patch",
+      "center": {
+        "xyz_tool": [
+          0.0010547358491675856,
+          0.009140209163305829,
+          -0.0009742594235772424
+        ]
+      },
+      "normal": {
+        "vector_tool": [
+          -0.008702578202201498,
+          0.9999616033826945,
+          0.001028052987650126
+        ]
+      },
+      "axis": {
+        "vector_tool": [
+          0.9999621318493189,
+          0.00870257360300521,
+          8.947050329282133e-06
+        ]
+      },
+      "frame": {
+        "origin": [
+          0.0010547358491675856,
+          0.009140209163305829,
+          -0.0009742594235772424
+        ],
+        "x_axis": [
+          0.9999621318493189,
+          0.00870257360300521,
+          8.947050329282133e-06
+        ],
+        "y_axis": [
+          -1.6940658945086007e-21,
+          0.0010280919195898512,
+          -0.9999994715133629
+        ],
+        "z_axis": [
+          -0.008702578202201498,
+          0.9999616033826945,
+          0.001028052987650126
+        ]
+      },
+      "T_tool_functional": [
+        [
+          0.9999621318493189,
+          -1.6940658945086007e-21,
+          -0.008702578202201498,
+          0.0010547358491675856
+        ],
+        [
+          0.00870257360300521,
+          0.0010280919195898512,
+          0.9999616033826945,
+          0.009140209163305829
+        ],
+        [
+          8.947050329282133e-06,
+          -0.9999994715133629,
+          0.001028052987650126,
+          -0.0009742594235772424
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "confidence": 0.9,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "sharpie_marker_p3sam_typed_contact_refs",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/sharpie_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 18,
+        "patch_id": "y_positive_contact",
+        "connected_component_index": 0,
+        "connected_component_count": 6,
+        "original_face_count": 1782,
+        "kept_face_count": 1782,
+        "removed_disconnected_face_count": 0
+      }
+    },
+    "part_018_z_negative_contact": {
+      "role": "contact_patch",
+      "center": {
+        "xyz_tool": [
+          0.001027163246149832,
+          0.0001437789629713989,
+          -0.010072599290912592
+        ]
+      },
+      "normal": {
+        "vector_tool": [
+          -0.00999099397255185,
+          0.002251444839506622,
+          -0.9999475541425036
+        ]
+      },
+      "axis": {
+        "vector_tool": [
+          0.999950088774155,
+          2.2495294588772295e-05,
+          -0.009990968647798307
+        ]
+      },
+      "frame": {
+        "origin": [
+          0.001027163246149832,
+          0.0001437789629713989,
+          -0.010072599290912592
+        ],
+        "x_axis": [
+          0.999950088774155,
+          2.2495294588772295e-05,
+          -0.009990968647798307
+        ],
+        "y_axis": [
+          3.3881317890172014e-21,
+          -0.9999974652418357,
+          -0.002251557217487407
+        ],
+        "z_axis": [
+          -0.00999099397255185,
+          0.002251444839506622,
+          -0.9999475541425036
+        ]
+      },
+      "T_tool_functional": [
+        [
+          0.999950088774155,
+          3.3881317890172014e-21,
+          -0.00999099397255185,
+          0.001027163246149832
+        ],
+        [
+          2.2495294588772295e-05,
+          -0.9999974652418357,
+          0.002251444839506622,
+          0.0001437789629713989
+        ],
+        [
+          -0.009990968647798307,
+          -0.002251557217487407,
+          -0.9999475541425036,
+          -0.010072599290912592
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "confidence": 0.9,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "sharpie_marker_p3sam_typed_contact_refs",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/sharpie_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 18,
+        "patch_id": "z_negative_contact",
+        "connected_component_index": 0,
+        "connected_component_count": 6,
+        "original_face_count": 1782,
+        "kept_face_count": 1782,
+        "removed_disconnected_face_count": 0
+      }
+    },
+    "part_018_z_positive_contact": {
+      "role": "contact_patch",
+      "center": {
+        "xyz_tool": [
+          0.001078667319673991,
+          0.00016542045163228384,
+          0.007949550028237688
+        ]
+      },
+      "normal": {
+        "vector_tool": [
+          -0.010961253874652896,
+          0.0007295483036677444,
+          0.9999396575157764
+        ]
+      },
+      "axis": {
+        "vector_tool": [
+          0.9999399236521639,
+          7.997244615573765e-06,
+          0.010961250957289122
+        ]
+      },
+      "frame": {
+        "origin": [
+          0.001078667319673991,
+          0.00016542045163228384,
+          0.007949550028237688
+        ],
+        "x_axis": [
+          0.9999399236521639,
+          7.997244615573765e-06,
+          0.010961250957289122
+        ],
+        "y_axis": [
+          1.6940658945086007e-21,
+          0.999999733847623,
+          -0.000729592134898619
+        ],
+        "z_axis": [
+          -0.010961253874652896,
+          0.0007295483036677444,
+          0.9999396575157764
+        ]
+      },
+      "T_tool_functional": [
+        [
+          0.9999399236521639,
+          1.6940658945086007e-21,
+          -0.010961253874652896,
+          0.001078667319673991
+        ],
+        [
+          7.997244615573765e-06,
+          0.999999733847623,
+          0.0007295483036677444,
+          0.00016542045163228384
+        ],
+        [
+          0.010961250957289122,
+          -0.000729592134898619,
+          0.9999396575157764,
+          0.007949550028237688
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "confidence": 0.9,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "sharpie_marker_p3sam_typed_contact_refs",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/sharpie_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 18,
+        "patch_id": "z_positive_contact",
+        "connected_component_index": 0,
+        "connected_component_count": 6,
+        "original_face_count": 1782,
+        "kept_face_count": 1782,
+        "removed_disconnected_face_count": 0
+      }
+    },
+    "part_246_x_negative_endpoint": {
+      "role": "endpoint_contact_patch",
+      "center": {
+        "xyz_tool": [
+          0.04957842830845534,
+          -0.002434980963381596,
+          0.0007267298840504398
+        ]
+      },
+      "normal": {
+        "vector_tool": [
+          -0.7456334476972397,
+          -0.5209746187882396,
+          0.4154710678899027
+        ]
+      },
+      "axis": {
+        "vector_tool": [
+          0.6663563323591423,
+          -0.5829555184004259,
+          0.46490009882916034
+        ]
+      },
+      "frame": {
+        "origin": [
+          0.04957842830845534,
+          -0.002434980963381596,
+          0.0007267298840504398
+        ],
+        "x_axis": [
+          0.6663563323591423,
+          -0.5829555184004259,
+          0.46490009882916034
+        ],
+        "y_axis": [
+          5.551115123125783e-17,
+          0.6234968405252261,
+          0.7818258692669748
+        ],
+        "z_axis": [
+          -0.7456334476972397,
+          -0.5209746187882396,
+          0.4154710678899027
+        ]
+      },
+      "T_tool_functional": [
+        [
+          0.6663563323591423,
+          5.551115123125783e-17,
+          -0.7456334476972397,
+          0.04957842830845534
+        ],
+        [
+          -0.5829555184004259,
+          0.6234968405252261,
+          -0.5209746187882396,
+          -0.002434980963381596
+        ],
+        [
+          0.46490009882916034,
+          0.7818258692669748,
+          0.4154710678899027,
+          0.0007267298840504398
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "confidence": 0.7496209726850362,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "sharpie_marker_p3sam_typed_contact_refs",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/sharpie_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 246,
+        "patch_id": "x_negative_endpoint",
+        "connected_component_index": 0,
+        "connected_component_count": 12,
+        "original_face_count": 790,
+        "kept_face_count": 790,
+        "removed_disconnected_face_count": 0
+      }
+    },
+    "part_246_x_positive_endpoint": {
+      "role": "endpoint_contact_patch",
+      "center": {
+        "xyz_tool": [
+          0.09809060192317437,
+          -0.0007426059924718953,
+          -9.67135465691142e-05
+        ]
+      },
+      "normal": {
+        "vector_tool": [
+          0.9915897778611348,
+          -0.12321880012360366,
+          0.039583326507568226
+        ]
+      },
+      "axis": {
+        "vector_tool": [
+          0.12942068011452218,
+          0.9440724815753014,
+          -0.30327782162721184
+        ]
+      },
+      "frame": {
+        "origin": [
+          0.09809060192317437,
+          -0.0007426059924718953,
+          -9.67135465691142e-05
+        ],
+        "x_axis": [
+          0.12942068011452218,
+          0.9440724815753014,
+          -0.30327782162721184
+        ],
+        "y_axis": [
+          -6.938893903907227e-18,
+          0.3058500888153404,
+          0.9520796832049554
+        ],
+        "z_axis": [
+          0.9915897778611348,
+          -0.12321880012360366,
+          0.039583326507568226
+        ]
+      },
+      "T_tool_functional": [
+        [
+          0.12942068011452218,
+          -6.938893903907227e-18,
+          0.9915897778611348,
+          0.09809060192317437
+        ],
+        [
+          0.9440724815753014,
+          0.3058500888153404,
+          -0.12321880012360366,
+          -0.0007426059924718953
+        ],
+        [
+          -0.30327782162721184,
+          0.9520796832049554,
+          0.039583326507568226,
+          -9.67135465691142e-05
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "confidence": 0.7496209726850362,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "sharpie_marker_p3sam_typed_contact_refs",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/sharpie_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 246,
+        "patch_id": "x_positive_endpoint",
+        "connected_component_index": 0,
+        "connected_component_count": 12,
+        "original_face_count": 790,
+        "kept_face_count": 790,
+        "removed_disconnected_face_count": 0
+      }
+    },
+    "part_246_y_negative_contact": {
+      "role": "contact_patch",
+      "center": {
+        "xyz_tool": [
+          0.070509154973522,
+          -0.009118747147147598,
+          -0.001104781314251195
+        ]
+      },
+      "normal": {
+        "vector_tool": [
+          0.03214945514061384,
+          -0.999436728682985,
+          -0.009624858108827454
+        ]
+      },
+      "axis": {
+        "vector_tool": [
+          0.9994830726601435,
+          0.03214796443641339,
+          0.00030959398159786456
+        ]
+      },
+      "frame": {
+        "origin": [
+          0.070509154973522,
+          -0.009118747147147598,
+          -0.001104781314251195
+        ],
+        "x_axis": [
+          0.9994830726601435,
+          0.03214796443641339,
+          0.00030959398159786456
+        ],
+        "y_axis": [
+          5.421010862427522e-20,
+          -0.009629836034351946,
+          0.9999536320539826
+        ],
+        "z_axis": [
+          0.03214945514061384,
+          -0.999436728682985,
+          -0.009624858108827454
+        ]
+      },
+      "T_tool_functional": [
+        [
+          0.9994830726601435,
+          5.421010862427522e-20,
+          0.03214945514061384,
+          0.070509154973522
+        ],
+        [
+          0.03214796443641339,
+          -0.009629836034351946,
+          -0.999436728682985,
+          -0.009118747147147598
+        ],
+        [
+          0.00030959398159786456,
+          0.9999536320539826,
+          -0.009624858108827454,
+          -0.001104781314251195
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "confidence": 0.7496209726850362,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "sharpie_marker_p3sam_typed_contact_refs",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/sharpie_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 246,
+        "patch_id": "y_negative_contact",
+        "connected_component_index": 0,
+        "connected_component_count": 12,
+        "original_face_count": 790,
+        "kept_face_count": 790,
+        "removed_disconnected_face_count": 0
+      }
+    },
+    "part_246_y_positive_contact": {
+      "role": "contact_patch",
+      "center": {
+        "xyz_tool": [
+          0.07055809242322428,
+          0.009125173300628625,
+          0.0030084497635690026
+        ]
+      },
+      "normal": {
+        "vector_tool": [
+          0.025722356771675746,
+          0.9099258233002953,
+          0.41397265181819726
+        ]
+      },
+      "axis": {
+        "vector_tool": [
+          0.9996691254420688,
+          -0.02341318348942781,
+          -0.0106518766787716
+        ]
+      },
+      "frame": {
+        "origin": [
+          0.07055809242322428,
+          0.009125173300628625,
+          0.0030084497635690026
+        ],
+        "x_axis": [
+          0.9996691254420688,
+          -0.02341318348942781,
+          -0.0106518766787716
+        ],
+        "y_axis": [
+          0.0,
+          0.4141096701722506,
+          -0.9102269942546364
+        ],
+        "z_axis": [
+          0.02572235677167575,
+          0.9099258233002954,
+          0.4139726518181973
+        ]
+      },
+      "T_tool_functional": [
+        [
+          0.9996691254420688,
+          0.0,
+          0.02572235677167575,
+          0.07055809242322428
+        ],
+        [
+          -0.02341318348942781,
+          0.4141096701722506,
+          0.9099258233002954,
+          0.009125173300628625
+        ],
+        [
+          -0.0106518766787716,
+          -0.9102269942546364,
+          0.4139726518181973,
+          0.0030084497635690026
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "confidence": 0.7496209726850362,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "sharpie_marker_p3sam_typed_contact_refs",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/sharpie_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 246,
+        "patch_id": "y_positive_contact",
+        "connected_component_index": 0,
+        "connected_component_count": 12,
+        "original_face_count": 790,
+        "kept_face_count": 790,
+        "removed_disconnected_face_count": 0
+      }
+    },
+    "part_246_z_negative_contact": {
+      "role": "contact_patch",
+      "center": {
+        "xyz_tool": [
+          0.06990068851534163,
+          -0.003622719838603004,
+          -0.01026242656270908
+        ]
+      },
+      "normal": {
+        "vector_tool": [
+          0.03464683552279714,
+          -0.3661441508174798,
+          -0.929912930123247
+        ]
+      },
+      "axis": {
+        "vector_tool": [
+          0.9993996181649542,
+          0.012693357031995213,
+          0.032237895387293124
+        ]
+      },
+      "frame": {
+        "origin": [
+          0.06990068851534163,
+          -0.003622719838603004,
+          -0.01026242656270908
+        ],
+        "x_axis": [
+          0.9993996181649542,
+          0.012693357031995213,
+          0.032237895387293124
+        ],
+        "y_axis": [
+          0.0,
+          -0.9304715683509115,
+          0.3663641091736404
+        ],
+        "z_axis": [
+          0.03464683552279714,
+          -0.3661441508174798,
+          -0.929912930123247
+        ]
+      },
+      "T_tool_functional": [
+        [
+          0.9993996181649542,
+          0.0,
+          0.03464683552279714,
+          0.06990068851534163
+        ],
+        [
+          0.012693357031995213,
+          -0.9304715683509115,
+          -0.3661441508174798,
+          -0.003622719838603004
+        ],
+        [
+          0.032237895387293124,
+          0.3663641091736404,
+          -0.929912930123247,
+          -0.01026242656270908
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "confidence": 0.7496209726850362,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "sharpie_marker_p3sam_typed_contact_refs",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/sharpie_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 246,
+        "patch_id": "z_negative_contact",
+        "connected_component_index": 0,
+        "connected_component_count": 12,
+        "original_face_count": 790,
+        "kept_face_count": 790,
+        "removed_disconnected_face_count": 0
+      }
+    },
+    "part_246_z_positive_contact": {
+      "role": "contact_patch",
+      "center": {
+        "xyz_tool": [
+          0.06923588686574716,
+          0.0002732485896727282,
+          0.008523073423197147
+        ]
+      },
+      "normal": {
+        "vector_tool": [
+          0.016920128495149313,
+          0.03940132010253278,
+          0.9990801995965516
+        ]
+      },
+      "axis": {
+        "vector_tool": [
+          0.999856844379088,
+          -0.0006667708510085464,
+          -0.016906985684166445
+        ]
+      },
+      "frame": {
+        "origin": [
+          0.06923588686574716,
+          0.0002732485896727282,
+          0.008523073423197147
+        ],
+        "x_axis": [
+          0.999856844379088,
+          -0.0006667708510085464,
+          -0.016906985684166445
+        ],
+        "y_axis": [
+          -2.168404344971009e-19,
+          0.9992232440204791,
+          -0.03940696143056463
+        ],
+        "z_axis": [
+          0.016920128495149313,
+          0.03940132010253278,
+          0.9990801995965516
+        ]
+      },
+      "T_tool_functional": [
+        [
+          0.999856844379088,
+          -2.168404344971009e-19,
+          0.016920128495149313,
+          0.06923588686574716
+        ],
+        [
+          -0.0006667708510085464,
+          0.9992232440204791,
+          0.03940132010253278,
+          0.0002732485896727282
+        ],
+        [
+          -0.016906985684166445,
+          -0.03940696143056463,
+          0.9990801995965516,
+          0.008523073423197147
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "confidence": 0.7496209726850362,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "sharpie_marker_p3sam_typed_contact_refs",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/sharpie_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 246,
+        "patch_id": "z_positive_contact",
+        "connected_component_index": 0,
+        "connected_component_count": 12,
+        "original_face_count": 790,
+        "kept_face_count": 790,
+        "removed_disconnected_face_count": 0
+      }
+    },
+    "part_253_x_negative_endpoint": {
+      "role": "endpoint_contact_patch",
+      "center": {
+        "xyz_tool": [
+          0.04943151776941579,
+          0.007314147044087873,
+          -0.007623405081707592
+        ]
+      },
+      "normal": {
+        "vector_tool": [
+          -0.32917922345478895,
+          0.7072886008579624,
+          -0.6256068045842278
+        ]
+      },
+      "axis": {
+        "vector_tool": [
+          0.9442674614989665,
+          0.2465664887141757,
+          -0.21809155829022858
+        ]
+      },
+      "frame": {
+        "origin": [
+          0.04943151776941579,
+          0.007314147044087873,
+          -0.007623405081707592
+        ],
+        "x_axis": [
+          0.9442674614989665,
+          0.2465664887141757,
+          -0.21809155829022858
+        ],
+        "y_axis": [
+          -2.7755575615628914e-17,
+          -0.662531359061251,
+          -0.7490341769642103
+        ],
+        "z_axis": [
+          -0.32917922345478895,
+          0.7072886008579624,
+          -0.6256068045842278
+        ]
+      },
+      "T_tool_functional": [
+        [
+          0.9442674614989665,
+          -2.7755575615628914e-17,
+          -0.32917922345478895,
+          0.04943151776941579
+        ],
+        [
+          0.2465664887141757,
+          -0.662531359061251,
+          0.7072886008579624,
+          0.007314147044087873
+        ],
+        [
+          -0.21809155829022858,
+          -0.7490341769642103,
+          -0.6256068045842278,
+          -0.007623405081707592
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "confidence": 0.6168559531179787,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "sharpie_marker_p3sam_typed_contact_refs",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/sharpie_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 253,
+        "patch_id": "x_negative_endpoint",
+        "connected_component_index": 0,
+        "connected_component_count": 6,
+        "original_face_count": 245,
+        "kept_face_count": 245,
+        "removed_disconnected_face_count": 0
+      }
+    },
+    "part_253_x_positive_endpoint": {
+      "role": "endpoint_contact_patch",
+      "center": {
+        "xyz_tool": [
+          0.09494988382883211,
+          0.0055792669444165496,
+          -0.006291500919667759
+        ]
+      },
+      "normal": {
+        "vector_tool": [
+          0.16982997295930605,
+          0.6942919957618354,
+          -0.6993685758637493
+        ]
+      },
+      "axis": {
+        "vector_tool": [
+          0.9854733787802902,
+          -0.11964969668894865,
+          0.12052456097244749
+        ]
+      },
+      "frame": {
+        "origin": [
+          0.09494988382883211,
+          0.0055792669444165496,
+          -0.006291500919667759
+        ],
+        "x_axis": [
+          0.9854733787802902,
+          -0.11964969668894865,
+          0.12052456097244749
+        ],
+        "y_axis": [
+          1.387778780781446e-17,
+          -0.7096777964000919,
+          -0.7045263836768002
+        ],
+        "z_axis": [
+          0.16982997295930605,
+          0.6942919957618354,
+          -0.6993685758637493
+        ]
+      },
+      "T_tool_functional": [
+        [
+          0.9854733787802902,
+          1.387778780781446e-17,
+          0.16982997295930605,
+          0.09494988382883211
+        ],
+        [
+          -0.11964969668894865,
+          -0.7096777964000919,
+          0.6942919957618354,
+          0.0055792669444165496
+        ],
+        [
+          0.12052456097244749,
+          -0.7045263836768002,
+          -0.6993685758637493,
+          -0.006291500919667759
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "confidence": 0.6168559531179787,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "sharpie_marker_p3sam_typed_contact_refs",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/sharpie_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 253,
+        "patch_id": "x_positive_endpoint",
+        "connected_component_index": 0,
+        "connected_component_count": 6,
+        "original_face_count": 245,
+        "kept_face_count": 245,
+        "removed_disconnected_face_count": 0
+      }
+    },
+    "part_253_y_negative_contact": {
+      "role": "contact_patch",
+      "center": {
+        "xyz_tool": [
+          0.04655376666666666,
+          0.0016004233333333333,
+          -0.011317463333333333
+        ]
+      },
+      "normal": {
+        "vector_tool": [
+          -0.7774729634191919,
+          0.045853219061684415,
+          -0.627242595375873
+        ]
+      },
+      "axis": {
+        "vector_tool": [
+          0.6289163626049014,
+          0.05668422738842464,
+          -0.7754038349229372
+        ]
+      },
+      "frame": {
+        "origin": [
+          0.04655376666666666,
+          0.0016004233333333333,
+          -0.011317463333333333
+        ],
+        "x_axis": [
+          0.6289163626049014,
+          0.05668422738842464,
+          -0.7754038349229372
+        ],
+        "y_axis": [
+          -6.938893903907228e-18,
+          -0.9973386489387939,
+          -0.07290829399280611
+        ],
+        "z_axis": [
+          -0.7774729634191919,
+          0.045853219061684415,
+          -0.627242595375873
+        ]
+      },
+      "T_tool_functional": [
+        [
+          0.6289163626049014,
+          -6.938893903907228e-18,
+          -0.7774729634191919,
+          0.04655376666666666
+        ],
+        [
+          0.05668422738842464,
+          -0.9973386489387939,
+          0.045853219061684415,
+          0.0016004233333333333
+        ],
+        [
+          -0.7754038349229372,
+          -0.07290829399280611,
+          -0.627242595375873,
+          -0.011317463333333333
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "confidence": 0.6168559531179787,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "sharpie_marker_p3sam_typed_contact_refs",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/sharpie_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 253,
+        "patch_id": "y_negative_contact",
+        "connected_component_index": 0,
+        "connected_component_count": 6,
+        "original_face_count": 245,
+        "kept_face_count": 245,
+        "removed_disconnected_face_count": 0
+      }
+    },
+    "part_253_y_positive_contact": {
+      "role": "contact_patch",
+      "center": {
+        "xyz_tool": [
+          0.07006317651883161,
+          0.0093727792305305,
+          -0.004368229861662157
+        ]
+      },
+      "normal": {
+        "vector_tool": [
+          0.030431789594645764,
+          0.940307652216139,
+          -0.3389622772018146
+        ]
+      },
+      "axis": {
+        "vector_tool": [
+          0.9995368458351434,
+          -0.0286285040373554,
+          0.010320008455225007
+        ]
+      },
+      "frame": {
+        "origin": [
+          0.07006317651883161,
+          0.0093727792305305,
+          -0.004368229861662157
+        ],
+        "x_axis": [
+          0.9995368458351434,
+          -0.0286285040373554,
+          0.010320008455225007
+        ],
+        "y_axis": [
+          1.734723475976807e-18,
+          -0.3391193417373236,
+          -0.9407433614220428
+        ],
+        "z_axis": [
+          0.030431789594645764,
+          0.940307652216139,
+          -0.3389622772018146
+        ]
+      },
+      "T_tool_functional": [
+        [
+          0.9995368458351434,
+          1.734723475976807e-18,
+          0.030431789594645764,
+          0.07006317651883161
+        ],
+        [
+          -0.0286285040373554,
+          -0.3391193417373236,
+          0.940307652216139,
+          0.0093727792305305
+        ],
+        [
+          0.010320008455225007,
+          -0.9407433614220428,
+          -0.3389622772018146,
+          -0.004368229861662157
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "confidence": 0.6168559531179787,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "sharpie_marker_p3sam_typed_contact_refs",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/sharpie_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 253,
+        "patch_id": "y_positive_contact",
+        "connected_component_index": 0,
+        "connected_component_count": 6,
+        "original_face_count": 245,
+        "kept_face_count": 245,
+        "removed_disconnected_face_count": 0
+      }
+    },
+    "part_253_z_negative_contact": {
+      "role": "contact_patch",
+      "center": {
+        "xyz_tool": [
+          0.06987762168851562,
+          0.003773027431420543,
+          -0.010300585650012413
+        ]
+      },
+      "normal": {
+        "vector_tool": [
+          0.03514283293059651,
+          0.3697055047547638,
+          -0.9284841522867461
+        ]
+      },
+      "axis": {
+        "vector_tool": [
+          0.9993822998700809,
+          -0.013000529215704076,
+          0.03264973118571489
+        ]
+      },
+      "frame": {
+        "origin": [
+          0.06987762168851562,
+          0.003773027431420543,
+          -0.010300585650012413
+        ],
+        "x_axis": [
+          0.9993822998700809,
+          -0.013000529215704076,
+          0.03264973118571489
+        ],
+        "y_axis": [
+          1.734723475976807e-18,
+          -0.9290580315535392,
+          -0.36993401304268186
+        ],
+        "z_axis": [
+          0.03514283293059651,
+          0.3697055047547638,
+          -0.9284841522867461
+        ]
+      },
+      "T_tool_functional": [
+        [
+          0.9993822998700809,
+          1.734723475976807e-18,
+          0.03514283293059651,
+          0.06987762168851562
+        ],
+        [
+          -0.013000529215704076,
+          -0.9290580315535392,
+          0.3697055047547638,
+          0.003773027431420543
+        ],
+        [
+          0.03264973118571489,
+          -0.36993401304268186,
+          -0.9284841522867461,
+          -0.010300585650012413
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "confidence": 0.6168559531179787,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "sharpie_marker_p3sam_typed_contact_refs",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/sharpie_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 253,
+        "patch_id": "z_negative_contact",
+        "connected_component_index": 0,
+        "connected_component_count": 6,
+        "original_face_count": 245,
+        "kept_face_count": 245,
+        "removed_disconnected_face_count": 0
+      }
+    },
+    "part_253_z_positive_contact": {
+      "role": "contact_patch",
+      "center": {
+        "xyz_tool": [
+          0.0718880823658137,
+          0.010215425257240009,
+          -0.0008490316301384472
+        ]
+      },
+      "normal": {
+        "vector_tool": [
+          0.03170887740214245,
+          0.9989605498927894,
+          0.03274701286822988
+        ]
+      },
+      "axis": {
+        "vector_tool": [
+          0.9994971471164368,
+          -0.03169185394626962,
+          -0.0010388934268805044
+        ]
+      },
+      "frame": {
+        "origin": [
+          0.0718880823658137,
+          0.010215425257240009,
+          -0.0008490316301384472
+        ],
+        "x_axis": [
+          0.9994971471164368,
+          -0.03169185394626962,
+          -0.0010388934268805044
+        ],
+        "y_axis": [
+          0.0,
+          0.03276348808268785,
+          -0.9994631328111386
+        ],
+        "z_axis": [
+          0.03170887740214245,
+          0.9989605498927894,
+          0.03274701286822988
+        ]
+      },
+      "T_tool_functional": [
+        [
+          0.9994971471164368,
+          0.0,
+          0.03170887740214245,
+          0.0718880823658137
+        ],
+        [
+          -0.03169185394626962,
+          0.03276348808268785,
+          0.9989605498927894,
+          0.010215425257240009
+        ],
+        [
+          -0.0010388934268805044,
+          -0.9994631328111386,
+          0.03274701286822988,
+          -0.0008490316301384472
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "confidence": 0.6168559531179787,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "sharpie_marker_p3sam_typed_contact_refs",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "artifacts/tool_prior/p3sam/sharpie_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 253,
+        "patch_id": "z_positive_contact",
+        "connected_component_index": 0,
+        "connected_component_count": 6,
+        "original_face_count": 245,
+        "kept_face_count": 245,
+        "removed_disconnected_face_count": 0
+      }
+    }
+  },
+  "grasp_references": {
+    "part_000_grasp_center": {
+      "position_tool": [
+        0.07311741000000001,
+        -0.0011253349999999999,
+        0.01173414
+      ],
+      "orientation_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "confidence": 0.5617684611879882,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "sharpie_marker_p3sam_typed_contact_refs",
+        "method": "p3sam_geometry_grasp_candidate",
+        "source_artifact": "artifacts/tool_prior/p3sam/sharpie_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 0,
+        "connected_component_index": 0,
+        "connected_component_count": 12,
+        "original_face_count": 603,
+        "kept_face_count": 603,
+        "removed_disconnected_face_count": 0
+      }
+    },
+    "part_018_grasp_center": {
+      "position_tool": [
+        0.0014818250000000026,
+        9.190999999999973e-05,
+        -0.0010797100000000002
+      ],
+      "orientation_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "confidence": 0.75,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "sharpie_marker_p3sam_typed_contact_refs",
+        "method": "p3sam_geometry_grasp_candidate",
+        "source_artifact": "artifacts/tool_prior/p3sam/sharpie_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 18,
+        "connected_component_index": 0,
+        "connected_component_count": 6,
+        "original_face_count": 1782,
+        "kept_face_count": 1782,
+        "removed_disconnected_face_count": 0
+      }
+    },
+    "part_246_grasp_center": {
+      "position_tool": [
+        0.072781105,
+        0.00010156499999999964,
+        -0.0007334049999999995
+      ],
+      "orientation_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "confidence": 0.5996209726850362,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "sharpie_marker_p3sam_typed_contact_refs",
+        "method": "p3sam_geometry_grasp_candidate",
+        "source_artifact": "artifacts/tool_prior/p3sam/sharpie_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 246,
+        "connected_component_index": 0,
+        "connected_component_count": 12,
+        "original_face_count": 790,
+        "kept_face_count": 790,
+        "removed_disconnected_face_count": 0
+      }
+    },
+    "part_253_grasp_center": {
+      "position_tool": [
+        0.072775825,
+        0.005360925,
+        -0.00601753
+      ],
+      "orientation_xyzw": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "confidence": 0.4668559531179787,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "sharpie_marker_p3sam_typed_contact_refs",
+        "method": "p3sam_geometry_grasp_candidate",
+        "source_artifact": "artifacts/tool_prior/p3sam/sharpie_marker/face_labels/p3sam_face_labels.npy",
+        "part_label": 253,
+        "connected_component_index": 0,
+        "connected_component_count": 6,
+        "original_face_count": 245,
+        "kept_face_count": 245,
+        "removed_disconnected_face_count": 0
+      }
+    }
+  },
+  "metadata": {
+    "created_by": "parttoolgen.providers.tool_prior.p3sam_tool_prior_provider",
+    "geometry_mode": "prior",
+    "notes": "Functional refs are candidate contact/grasp frames derived from P3-SAM mesh segments."
+  }
+}

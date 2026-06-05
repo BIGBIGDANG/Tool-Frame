@@ -1,0 +1,205 @@
+{
+  "schema_version": "toolframe_eraser_wipe_benchmark_config_v1",
+  "benchmark": "eraser_wipe",
+  "variant": "tabletop_wipe",
+  "description": "Image-grounded flat-eraser tabletop wipe eval: the current ToolFrame wood-table scene, a visible raised white tabletop HDU board with stratified seeded pose/yaw variation, fixed near-hand eraser start pose shared by VLM render and rollout, generic VLM scene-ref grounding from public multi-view RGB-D evidence, task-conditioned P3SAM/VLM flat-eraser tool refs, whole-tool SE(3) fixed-goal rollout, and eraser-specific semantic contact/path success.",
+  "runner": "parttoolgen/src/parttoolgen/cli/runners/run_image_grounded_eraser_wipe_eval.py",
+  "runner_args": {
+    "output_root": "artifacts/image_grounded/eraser_wipe/tabletop_wipe_seed20_original_rgb",
+    "tool_refs_dir": "configs/tool_refs/flat_eraser",
+    "seed_start": 0,
+    "trials": 20,
+    "device": "cuda:0",
+    "rollout_max_steps": 1500,
+    "rollout_max_tracking_error_m": 0.018,
+    "capture_video_every": 1,
+    "approach_offset_m": 0.03,
+    "max_translation_step_m": 0.035,
+    "max_rotation_step_rad": 0.3,
+    "target_approach_axis_source": "opposite_scene_direction",
+    "initial_grasp_lift_m": 0.08,
+    "initial_grasp_lift_steps": 3,
+    "initial_grasp_hold_steps": 0
+  },
+  "scene_initialization": {
+    "table_asset": "urdf/parttoolgen_benchmark/tabletop_polyhaven_wood_table/tabletop_polyhaven_wood_table.urdf",
+    "tool_mesh": "simtoolreal/assets/urdf/dextoolbench/eraser/flat_eraser/flat_eraser.obj",
+    "trajectory": "simtoolreal/dextoolbench/trajectories/eraser/flat_eraser/wipe_c.json",
+    "nominal_start_pose_xyzw": [
+      0.02,
+      0.135,
+      0.5483764610180788,
+      0.7198971082016096,
+      -0.010326421680771691,
+      0.00572532125736636,
+      0.6939803594589194
+    ],
+    "start_pose_policy": "runtime mesh-table-contact projection keeps the shared fixed front-of-arm flat_eraser mesh on the tabletop with 3 mm clearance; xy and yaw do not vary by seed.",
+    "target": {
+      "role": "fixed_physical_hdu_board_on_tabletop",
+      "asset": "urdf/parttoolgen_benchmark/eraser_wipe_tabletop_hdu_board/tabletop_hdu_board_018x011x030.urdf",
+      "physical_role": "fixed raised white tabletop board containing the HDU text; the board top is the physical contact surface",
+      "nominal_center_world": [
+        0.14,
+        -0.04,
+        0.545
+      ],
+      "size_xyz": [
+        0.18,
+        0.11,
+        0.03
+      ],
+      "surface_normal_world": [
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "seed_variation_policy": {
+      "sampler": "deterministic_tabletop_wipe_stratified_pose_v5_nonoverlap",
+      "description": "Each seed deterministically spreads the single-asset raised white HDU tabletop board over a 5x4 table-safe grid across both table halves; the eraser start pose remains fixed in front of the robot hand and is shared by the VLM render, compile scaffold, and rollout.",
+      "target_grid_shape": [
+        5,
+        4
+      ],
+      "target_center_x_m": [
+        -0.215,
+        0.225
+      ],
+      "target_center_y_m": [
+        -0.14,
+        0.12
+      ],
+      "target_xy_jitter_m": [
+        -0.01,
+        0.01
+      ],
+      "target_yaw_deg": [
+        -45.0,
+        45.0
+      ],
+      "tool_safe_x_m": [
+        -0.28,
+        0.28
+      ],
+      "tool_safe_y_m": [
+        -0.185,
+        0.185
+      ],
+      "tool_target_distance_m": [
+        0.19,
+        0.23
+      ],
+      "tool_angle_degrees": [
+        0.0,
+        45.0,
+        90.0,
+        135.0,
+        180.0,
+        225.0,
+        270.0,
+        315.0
+      ],
+      "tool_angle_jitter_deg": [
+        -12.0,
+        12.0
+      ],
+      "tool_yaw_jitter_deg": [
+        -35.0,
+        35.0
+      ]
+    },
+    "target_grounding_policy": "The shared VLM scene-ref interface applies: natural task language and public top-down RGB-D evidence provide start_point, optional path_points, explicit end_point, and scene.direction when applicable. Evaluator-side coverage checks remain in the task contract.",
+    "tool_grounding_policy": "Use task-conditioned P3SAM/VLM flat_eraser refs: VLM selects the contact-point part from segmented parts, then selects the contact point marker and the tool motion-axis marker from evidence for that selected part.",
+    "trajectory_policy": "Reset/start-pose scaffold for SimToolReal initialization only; not a method input, target trajectory, oracle trajectory, or success template."
+  },
+  "mainline_params": {
+    "grounding_camera": "topdown",
+    "depth_sample_policy": "nearest",
+    "action_direction_z_policy": "anchor_height",
+    "target_anchor_policy": "raw_topdown_vlm_point",
+    "end_point_policy": "required_vlm_end_point_for_tool_contact_path",
+    "tool_motion_axis_ref": "tool.motion_axis",
+    "tool_motion_axis_target_ref": "scene.direction",
+    "tool_motion_axis_relation": "parallel",
+    "approach_offset_m": 0.03,
+    "target_approach_axis_source": "opposite_scene_direction",
+    "max_translation_step_m": 0.035,
+    "max_rotation_step_rad": 0.3,
+    "initial_grasp_lift_m": 0.08,
+    "initial_grasp_lift_steps": 3,
+    "initial_grasp_hold_steps": 0,
+    "rollout_max_tracking_error_m": 0.018,
+    "rollout_max_rotation_error_rad": 0.28,
+    "min_clearance_m": 0.003,
+    "swept_min_clearance_m": 0.006,
+    "allowed_contact_penetration_m": 0.006,
+    "table_clearance_rule": "all tool-part OBB corners must stay above the table/mark contact surface",
+    "end_surface_policy": "anchor_contact_plane"
+  },
+  "acceptance": {
+    "success_policy": "eraser_wipe_contact_coverage: a seed succeeds when the diagnostic path gate passes, lifted start/end refs lie on the visible target board surface, and rollout samples show the flat-eraser bottom contact footprint covering at least 30% of the visible tabletop HDU board long-axis extent. Policy-goal/semantic execution/tracking pass and visual HDU disappearance are diagnostic only.",
+    "min_contact_coverage_fraction": 0.3,
+    "requires_visual_patch_disappearance": false,
+    "requires_tracking_execution_passed": false,
+    "tool_grounding_contract": {
+      "schema_version": "toolframe_tool_grounding_contract_v1",
+      "task_type": "eraser_wipe",
+      "tool_id": "flat_eraser",
+      "label_source": "manual_review_2026_05_27",
+      "manual_review_status": "approved",
+      "review_file": "artifacts/tool_use_benchmark/tool_label_review/eraser_wipe__flat_eraser.json",
+      "allowed_contact_point_part_markers": [
+        "4"
+      ],
+      "allowed_contact_point_part_refs": [
+        "tool.parts.part_292"
+      ],
+      "allowed_contact_point_face_markers": [
+        "F3",
+        "F4"
+      ],
+      "allowed_contact_point_refs": [
+        "candidate.points.part_292_y_negative_contact",
+        "candidate.points.part_292_y_positive_contact"
+      ],
+      "allowed_contact_point_surface_refs": [
+        "candidate.surfaces.part_292_y_negative_contact",
+        "candidate.surfaces.part_292_y_positive_contact"
+      ],
+      "allowed_motion_axis_face_markers": [
+        "F1",
+        "F2",
+        "F5",
+        "F6"
+      ],
+      "allowed_motion_axis_surface_refs": [
+        "candidate.surfaces.part_292_x_negative_endpoint",
+        "candidate.surfaces.part_292_x_positive_endpoint",
+        "candidate.surfaces.part_292_z_negative_contact",
+        "candidate.surfaces.part_292_z_positive_contact"
+      ],
+      "candidate_filter_policy": {
+        "exclude_internal_tool_surfaces_from_vlm_selection": true,
+        "applies_to_all_tools": true
+      },
+      "notes": "Human-reviewed eraser contract: contact-point part marker 4; wiping contact uses the non-internal faces among F3/F4; all other non-internal faces may serve as motion-axis refs."
+    },
+    "per_seed_checks": [
+      "VLM overlay is present on the tabletop scene",
+      "lifted refs record the visible tabletop HDU board and a full-length wipe motion axis starting near the eraser-side edge",
+      "constraint program aligns `tool.motion_axis` to the wipe motion axis before contact and during wiping",
+      "constraint program uses public flat_eraser tool refs from the two-stage P3SAM/VLM grounding",
+      "fixed goals compile without hidden evaluator target refs",
+      "rollout video and rollout_summary are written when rollout is enabled"
+    ]
+  },
+  "contract_status": {
+    "environment_id": "tabletop_wood_table",
+    "benchmark_status": "fixed/current",
+    "success_check_status": "reviewed",
+    "tool_label_review_status": "approved",
+    "large_statistics_status": "allowed",
+    "notes": "Semantic contact-path success is reviewed; strict coverage and visual disappearance are diagnostic."
+  }
+}

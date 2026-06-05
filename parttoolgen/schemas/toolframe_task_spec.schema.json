@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "toolframe_task_spec.schema.json",
+  "title": "ToolFrame Unified Task Spec",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_version",
+    "task_id",
+    "task_family",
+    "split",
+    "pipeline"
+  ],
+  "properties": {
+    "schema_version": { "const": "toolframe_task_spec_v1" },
+    "task_id": { "type": "string", "minLength": 1 },
+    "task_family": { "type": "string", "minLength": 1 },
+    "split": { "type": "string", "minLength": 1 },
+    "status": { "type": "string" },
+    "runnable": { "type": "boolean" },
+    "instruction": { "type": "string" },
+    "tool": { "type": "object", "additionalProperties": true },
+    "scene": { "type": "object", "additionalProperties": true },
+    "mainline_params": { "type": "object", "additionalProperties": true },
+    "acceptance": { "type": "object", "additionalProperties": true },
+    "contract_status": { "type": "object", "additionalProperties": true },
+    "pipeline": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["mode"],
+      "properties": {
+        "mode": {
+          "enum": [
+            "registry_launcher",
+            "registry_runner",
+            "command_stages"
+          ]
+        },
+        "stages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "name": { "type": "string" },
+              "script": {
+                "type": "string",
+                "pattern": "^parttoolgen/src/parttoolgen/cli/"
+              },
+              "module": { "type": "string" },
+              "command": { "type": "array" },
+              "args": {
+                "oneOf": [
+                  { "type": "object", "additionalProperties": true },
+                  { "type": "array" }
+                ]
+              },
+              "allow_failure": { "type": "boolean" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "schema_version": "parttoolgen_contact_point_motion_axis_mesh_evidence_v1",
+  "tool_id": "staples_marker",
+  "task_id": "marker_trace_draw_l",
+  "selected_part": {
+    "marker": "2",
+    "part_ref": "tool.parts.part_001"
+  },
+  "view_indices": [],
+  "image": null,
+  "render_sources": [],
+  "contact_point": {
+    "marker": "F2",
+    "point_ref": "candidate.points.part_001_x_positive_endpoint",
+    "surface_ref": "candidate.surfaces.part_001_x_positive_endpoint",
+    "patch_id": "x_positive_endpoint",
+    "xyz_tool": [
+      0.11126841037761323,
+      -1.6131017863484365e-05,
+      -0.00012902267681940018
+    ]
+  },
+  "contact_point_surface": {
+    "frame_source": "contact_point_bbox_face",
+    "patch_id": "x_positive_endpoint",
+    "surface_ref": "candidate.surfaces.part_001_x_positive_endpoint",
+    "raw_mesh_patch_center_xyz_tool": [
+      0.11126841037761323,
+      -1.6131017863484365e-05,
+      -0.00012902267681940018
+    ],
+    "contact_point_xyz_tool": [
+      0.11126841037761323,
+      -1.6131017863484365e-05,
+      -0.00012902267681940018
+    ],
+    "surface_center_xyz_tool": [
+      0.11126841037761323,
+      -1.6131017863484365e-05,
+      -0.00012902267681940018
+    ],
+    "rectangle_corners_xyz_tool": null,
+    "long_edge_m": null,
+    "short_edge_m": null,
+    "source_surface_ref": "candidate.surfaces.part_001_x_positive_endpoint"
+  },
+  "motion_axis_surface": {
+    "frame_source": "contact_point_bbox_face",
+    "patch_id": "y_negative_contact",
+    "surface_ref": "candidate.surfaces.part_001_y_negative_contact",
+    "surface_center_xyz_tool": [
+      0.09971189509717208,
+      -0.0019621422197635984,
+      -2.105662721597312e-05
+    ],
+    "normal_role": "mesh_patch_normal",
+    "motion_axis_ref": "tool.motion_axis",
+    "motion_axis_tool": [
+      0.08125769217434267,
+      -0.9966658637905998,
+      -0.007371798765388733
+    ],
+    "mesh_normal_tool": [
+      0.08125769217434267,
+      -0.9966658637905998,
+      -0.007371798765388733
+    ]
+  },
+  "motion_axis": {
+    "source": "selected_motion_axis_surface",
+    "marker": "F3",
+    "role": "mesh_patch_normal",
+    "ref": "tool.motion_axis",
+    "vector_tool": [
+      0.08125769217434267,
+      -0.9966658637905998,
+      -0.007371798765388733
+    ],
+    "surface_ref": "candidate.surfaces.part_001_y_negative_contact",
+    "mesh_normal_tool": [
+      0.08125769217434267,
+      -0.9966658637905998,
+      -0.007371798765388733
+    ]
+  },
+  "metadata": {
+    "source_prior": "artifacts/tool_prior/p3sam/staples_marker/tool_prior",
+    "visual_evidence": "configs/tool_refs/staples_marker/evidence/02_contact_marker_selection/visual_evidence.json",
+    "created_by": "parttoolgen.scripts.select_p3sam_tool_refs"
+  }
+}

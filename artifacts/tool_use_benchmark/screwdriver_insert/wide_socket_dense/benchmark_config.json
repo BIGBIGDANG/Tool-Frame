@@ -1,0 +1,71 @@
+{
+  "schema_version": "toolframe_screwdriver_insert_benchmark_config_v1",
+  "benchmark": "screwdriver_insert",
+  "variant": "wide_socket_dense",
+  "description": "Wide-socket screwdriver insertion stress smoke with a tighter translation tracking threshold. It must not add task-default semantic subgoals.",
+  "runner": "parttoolgen/src/parttoolgen/cli/runners/run_image_grounded_screwdriver_insert_eval.py",
+  "runner_args": {
+    "output_root": "artifacts/image_grounded/screwdriver_insert/wide_socket_dense_subgoals_original_rgb_smoke",
+    "tool_refs_dir": "configs/tool_refs/long_screwdriver",
+    "seed_start": 0,
+    "trials": 3,
+    "device": "cuda:0",
+    "rollout_max_steps": 1500,
+    "rollout_max_tracking_error_m": 0.018,
+    "capture_video_every": 1,
+    "approach_offset_m": 0.045,
+    "target_approach_axis_source": "opposite_scene_direction",
+    "terminal_inside_depth_m": 0.035,
+    "success_min_inside_depth_m": 0.005,
+    "socket_asset": "urdf/parttoolgen_benchmark/screwdriver_insert_socket/deep_socket_wide_048x055.urdf",
+    "socket_size_xyz": [
+      0.048,
+      0.048,
+      0.055
+    ],
+    "socket_top_local_z_m": 0.055,
+    "socket_inner_diameter_m": 0.024,
+    "socket_tip_radial_tolerance_m": 0.012,
+    "max_translation_step_m": 0.012,
+    "initial_grasp_lift_m": 0.08,
+    "initial_grasp_lift_steps": 3,
+    "initial_grasp_hold_steps": 0
+  },
+  "scene_initialization": {
+    "target": {
+      "role": "public_visible_wide_ring_socket",
+      "asset": "urdf/parttoolgen_benchmark/screwdriver_insert_socket/deep_socket_wide_048x055.urdf",
+      "inner_diameter_m": 0.024,
+      "tip_radial_tolerance_m": 0.012,
+      "terminal_inside_depth_m": 0.035,
+      "success_min_inside_depth_m": 0.005,
+      "socket_axis_world": [
+        0.0,
+        0.0,
+        -1.0
+      ]
+    },
+    "tracking_density_diagnostic": {
+      "max_translation_step_m": 0.012
+    }
+  },
+  "acceptance": {
+    "success_policy": "screwdriver_insert_tip_path with public wide socket radius, measured tip XY radial alignment, measured tip inside-socket depth, compiled terminal socket goal, and a tighter translation tracking threshold. Tracking/policy-goal pass and full terminal endpoint error are diagnostic.",
+    "requires_tracking_execution_passed": false,
+    "tool_grounding_contract": {
+      "schema_version": "toolframe_tool_grounding_contract_v1",
+      "task_type": "screwdriver_insert",
+      "tool_id": "long_screwdriver",
+      "label_source": "manual_review_required",
+      "manual_review_status": "pending",
+      "notes": "Evaluator-side audit labels only; not used for method selection, compiler constraints, or task success. Tip radial alignment and inside-socket depth are the required success metrics."
+    }
+  },
+  "contract_status": {
+    "environment_id": "tabletop_wood_table",
+    "benchmark_status": "stress/provisional",
+    "success_check_status": "provisional_pending_long_screwdriver_label_review",
+    "large_statistics_status": "not_headline_split",
+    "notes": "Tighter-translation diagnostic variant of wide socket; no task-default semantic subgoals."
+  }
+}

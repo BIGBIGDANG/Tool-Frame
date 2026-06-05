@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://parttoolgen.local/schemas/affordance_binding.schema.json",
+  "title": "AffordanceBinding",
+  "description": "Legacy V0 task-conditioned symbolic affordance slot binding. Instances contain refs only, never raw poses, coordinates, axes, or vectors. Current image-grounded benchmarks use tool.contact_point, tool.motion_axis, and tool.motion_axis instead of the legacy function_* public interface.",
+  "oneOf": [
+    { "$ref": "#/$defs/v0_1" },
+    { "$ref": "#/$defs/v0_2" }
+  ],
+  "$defs": {
+    "v0_1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "slot_bindings"],
+      "properties": {
+        "schema_version": { "const": "v0.1" },
+        "slot_bindings": { "$ref": "#/$defs/legacy_slots" }
+      }
+    },
+    "v0_2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "slot_bindings",
+        "functional_frame_binding",
+        "target_binding"
+      ],
+      "properties": {
+        "schema_version": { "const": "v0.2" },
+        "slot_bindings": { "$ref": "#/$defs/legacy_slots" },
+        "functional_frame_binding": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "contact_ref",
+            "primary_ref",
+            "secondary_ref",
+            "tertiary_ref",
+            "parent_part_ref",
+            "construction"
+          ],
+          "properties": {
+            "contact_ref": { "$ref": "#/$defs/ref" },
+            "primary_ref": { "$ref": "#/$defs/ref" },
+            "axis_source_ref": { "$ref": "#/$defs/nullable_ref" },
+            "secondary_ref": { "$ref": "#/$defs/nullable_ref" },
+            "tertiary_ref": { "$ref": "#/$defs/nullable_ref" },
+            "parent_part_ref": { "$ref": "#/$defs/nullable_ref" },
+            "construction": {
+              "enum": [
+                "function_point_center_axis_v1",
+                "multi_keypoint_frame_v1"
+              ]
+            }
+          }
+        },
+        "target_binding": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "target_pre_contact_ref",
+            "target_contact_ref",
+            "target_post_contact_ref",
+            "motion_axis_ref"
+          ],
+          "properties": {
+            "target_pre_contact_ref": { "$ref": "#/$defs/nullable_ref" },
+            "target_contact_ref": { "$ref": "#/$defs/ref" },
+            "target_post_contact_ref": { "$ref": "#/$defs/nullable_ref" },
+            "motion_axis_ref": { "$ref": "#/$defs/nullable_ref" }
+          }
+        }
+      }
+    },
+    "legacy_slots": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "grasp_ref",
+        "function_keypoint_ref",
+        "function_axis_ref",
+        "target_pre_contact_ref",
+        "target_contact_ref",
+        "target_post_contact_ref",
+        "motion_axis_ref"
+      ],
+      "properties": {
+        "grasp_ref": { "$ref": "#/$defs/nullable_ref" },
+        "function_keypoint_ref": { "$ref": "#/$defs/ref" },
+        "function_axis_ref": { "$ref": "#/$defs/nullable_ref" },
+        "target_pre_contact_ref": { "$ref": "#/$defs/nullable_ref" },
+        "target_contact_ref": { "$ref": "#/$defs/ref" },
+        "target_post_contact_ref": { "$ref": "#/$defs/nullable_ref" },
+        "motion_axis_ref": { "$ref": "#/$defs/nullable_ref" }
+      }
+    },
+    "ref": {
+      "type": "string",
+      "minLength": 1,
+      "description": "A symbolic ref selected from the prompt allowed_refs table."
+    },
+    "nullable_ref": {
+      "oneOf": [
+        { "$ref": "#/$defs/ref" },
+        { "type": "null" }
+      ]
+    }
+  }
+}

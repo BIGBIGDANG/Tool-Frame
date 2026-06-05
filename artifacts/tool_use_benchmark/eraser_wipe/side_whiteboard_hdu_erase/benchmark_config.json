@@ -1,0 +1,133 @@
+{
+  "schema_version": "toolframe_eraser_wipe_side_board_hdu_benchmark_config_v1",
+  "benchmark": "eraser_wipe",
+  "variant": "side_whiteboard_hdu_erase",
+  "description": "Side-board flat-eraser HDU erase benchmark: a visual-only HDU decal is seeded on the canonical left-side whiteboard, VLM marks public start/path/end refs from whiteboard-front RGB-D evidence, the compiler uses flat_eraser tool.contact_point and tool.motion_axis, rollout produces contact samples, and task success is erased HDU area fraction.",
+  "runner": "parttoolgen/src/parttoolgen/cli/runners/run_image_grounded_side_board_hdu_erase_eval.py",
+  "runner_args": {
+    "output_root": "artifacts/image_grounded/eraser_wipe/side_whiteboard_hdu_erase",
+    "tool_refs_dir": "configs/tool_refs/flat_eraser",
+    "seed_start": 0,
+    "trials": 1,
+    "device": "cuda:0",
+    "rollout_max_steps": 1500,
+    "rollout_max_tracking_error_m": 0.018,
+    "capture_video_every": 1,
+    "video_stride": 8,
+    "approach_offset_m": 0.03,
+    "min_erased_fraction": 0.7
+  },
+  "scene_initialization": {
+    "environment_id": "side_left_vertical_whiteboard_soft02",
+    "table_asset": "urdf/parttoolgen_benchmark/tabletop_polyhaven_wood_table/tabletop_polyhaven_wood_table.urdf",
+    "whiteboard_asset": "urdf/parttoolgen_benchmark/marker_trace_whiteboard/left_side_vertical_whiteboard_002x0475x101.urdf",
+    "whiteboard_center_world": [
+      0.38,
+      0.0,
+      0.505
+    ],
+    "public_whiteboard_surface_normal_world": [
+      -1.0,
+      0.0,
+      0.0
+    ],
+    "public_evidence_camera": "whiteboard_front",
+    "public_evidence_lighting": "soft02",
+    "tool_mesh": "simtoolreal/assets/urdf/dextoolbench/eraser/flat_eraser/flat_eraser.obj",
+    "nominal_start_pose_xyzw": [
+      0.02,
+      0.135,
+      0.5483764610180788,
+      0.7198971082016096,
+      -0.010326421680771691,
+      0.00572532125736636,
+      0.6939803594589194
+    ],
+    "start_pose_policy": "runtime mesh-table-contact projection keeps the shared fixed front-of-arm flat_eraser mesh on the tabletop with 3 mm clearance; xy and yaw do not vary by seed.",
+    "target": {
+      "role": "visual_only_hdu_pattern_on_whiteboard",
+      "asset": "urdf/parttoolgen_benchmark/eraser_wipe_hdu_sticker/hdu_sticker_0144x0065.urdf",
+      "physical_role": "visual-only decal; the whiteboard is the physical contact surface",
+      "size_yz_m": [
+        0.144,
+        0.065
+      ],
+      "stroke_width_m": 0.008,
+      "seeded_center_window_world": {
+        "x": 0.359,
+        "y": [
+          0.02,
+          0.08
+        ],
+        "z": [
+          0.6,
+          0.68
+        ]
+      },
+      "collision_policy": "visual_only_no_collision"
+    },
+    "task_language": "Use this eraser to erase the whole HDU pattern on the whiteboard.",
+    "target_grounding_policy": "The shared task-generic VLM scene-ref interface applies. VLM start/path/end refs describe public wipe intent from visible HDU evidence; no hidden target refs or oracle trajectories are used.",
+    "tool_grounding_policy": "Reuse the approved flat_eraser eraser_wipe tool labels: tool.contact_point is an erasing face/contact point and tool.motion_axis is the wipe-alignment axis. The shared front-of-arm start pose is a reset scaffold only, not a method input or success template."
+  },
+  "mainline_params": {
+    "grounding_camera": "whiteboard_front",
+    "depth_sample_policy": "nearest",
+    "direction_source": "path_geometry",
+    "end_surface_policy": "anchor_contact_plane",
+    "tool_contact_point_ref": "tool.contact_point",
+    "tool_motion_axis_ref": "tool.motion_axis",
+    "tool_motion_axis_target_ref": "scene.direction",
+    "tool_motion_axis_relation": "parallel",
+    "target_approach_axis_source": "opposite_scene_direction",
+    "approach_offset_m": 0.03,
+    "rollout_max_tracking_error_m": 0.018,
+    "compile_min_clearance_m": 0.0,
+    "compile_swept_min_clearance_m": 0.0
+  },
+  "acceptance": {
+    "success_policy": "draft_side_whiteboard_hdu_sticker_erase_success_smoke_only",
+    "requires_tracking_execution_passed": false,
+    "required_predicates": [
+      "hdu_erased_area_fraction >= 0.70",
+      "coverage generated from selected flat_eraser tool.contact_point/contact-face footprint",
+      "coverage samples pass the whiteboard contact gate"
+    ],
+    "diagnostic_predicates": [
+      "policy_goal_passed",
+      "tracking_execution_passed",
+      "semantic_execution_passed",
+      "accepted_contact_sample_count"
+    ],
+    "success_checker_module": "parttoolgen.evaluation.side_board_hdu_erase_success",
+    "tool_grounding_contract": {
+      "schema_version": "toolframe_tool_grounding_contract_v1",
+      "task_type": "eraser_wipe",
+      "tool_id": "flat_eraser",
+      "label_source": "manual_review_2026_05_27",
+      "manual_review_status": "approved",
+      "review_file": "artifacts/tool_use_benchmark/tool_label_review/eraser_wipe__flat_eraser.json"
+    }
+  },
+  "contract_status": {
+    "environment_id": "side_left_vertical_whiteboard_soft02",
+    "benchmark_status": "draft/smoke_review",
+    "success_check_status": "draft_threshold_human_accepted_in_chat_pending_publish_smoke",
+    "tool_label_review_status": "approved_flat_eraser_labels_reused",
+    "large_statistics_status": "not_approved_until_publish_smoke_review",
+    "notes": "The HDU erased-area threshold is the intended task gate for explicit smoke review only; do not report large statistics until publish smoke and contract review are approved."
+  },
+  "outputs": {
+    "per_trial_evidence_manifest": "seed_<NNN>/evidence_manifest.json",
+    "manifest_schema": "toolframe_trial_evidence_manifest_v1",
+    "manifest_groups": [
+      "public_scene_evidence",
+      "vlm_scene_selection",
+      "tool_selection",
+      "lifting",
+      "compile",
+      "rollout",
+      "task_success"
+    ]
+  }
+}

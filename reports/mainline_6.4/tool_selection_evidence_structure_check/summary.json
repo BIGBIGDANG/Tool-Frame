@@ -1,0 +1,57 @@
+[
+  {
+    "task_family": "hammer_strike",
+    "split": "down",
+    "tool": "claw_hammer",
+    "item_count": 23,
+    "copied_item_count": 19,
+    "structured_isolated_overview_exists": true,
+    "structured_part_cards": 3,
+    "structured_face_highlights": 6,
+    "flat_alias_exists": false
+  },
+  {
+    "task_family": "brush_sweep",
+    "split": "forward",
+    "tool": "red_brush",
+    "item_count": 23,
+    "copied_item_count": 19,
+    "structured_isolated_overview_exists": true,
+    "structured_part_cards": 3,
+    "structured_face_highlights": 6,
+    "flat_alias_exists": false
+  },
+  {
+    "task_family": "eraser_wipe",
+    "split": "tabletop_wipe",
+    "tool": "flat_eraser",
+    "item_count": 24,
+    "copied_item_count": 20,
+    "structured_isolated_overview_exists": true,
+    "structured_part_cards": 4,
+    "structured_face_highlights": 6,
+    "flat_alias_exists": false
+  },
+  {
+    "task_family": "screwdriver_insert",
+    "split": "deep_socket",
+    "tool": "long_screwdriver",
+    "item_count": 25,
+    "copied_item_count": 21,
+    "structured_isolated_overview_exists": true,
+    "structured_part_cards": 5,
+    "structured_face_highlights": 6,
+    "flat_alias_exists": false
+  },
+  {
+    "task_family": "marker_trace",
+    "split": "write_l",
+    "tool": "staples_marker",
+    "item_count": 25,
+    "copied_item_count": 21,
+    "structured_isolated_overview_exists": true,
+    "structured_part_cards": 5,
+    "structured_face_highlights": 6,
+    "flat_alias_exists": false
+  }
+]

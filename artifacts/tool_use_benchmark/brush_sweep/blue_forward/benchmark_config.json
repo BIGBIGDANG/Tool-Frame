@@ -1,0 +1,54 @@
+{
+  "schema_version": "toolframe_brush_sweep_benchmark_config_v1",
+  "benchmark": "brush_sweep",
+  "variant": "blue_forward",
+  "description": "Same-difficulty brush sweep variant using the DexToolBench blue_brush asset. It keeps the red-brush forward-sweep task contract and success predicate, changing only the tool asset/tool refs once blue_brush refs are available.",
+  "runner": "parttoolgen/src/parttoolgen/cli/runners/run_image_grounded_brush_seed_eval.py",
+  "runner_args": {
+    "output_root": "artifacts/image_grounded/brush_sweep/blue_forward_original_rgb",
+    "seed_start": 0,
+    "trials": 5,
+    "device": "cuda:0",
+    "rollout_max_steps": 1500,
+    "rollout_max_tracking_error_m": 0.012,
+    "capture_video_every": 1,
+    "initial_grasp_lift_m": 0.08,
+    "initial_grasp_lift_steps": 3,
+    "initial_grasp_hold_steps": 0,
+    "grasp_observation_offset_m": 0.0,
+    "approach_offset_m": 0.12,
+    "block_asset": "urdf/parttoolgen_benchmark/brush_sweep_block/sweep_block_045_feather.urdf",
+    "block_friction": 0.1,
+    "block_position_mode": "random",
+    "line_x_min": 0.16,
+    "line_x_max": 0.32,
+    "line_y": -0.13,
+    "sweep_direction": "forward",
+    "start_orientation_mode": "fixed",
+    "tool_id": "blue_brush",
+    "tool_refs_dir": "configs/tool_refs/blue_brush",
+    "tool_mesh": "simtoolreal/assets/urdf/dextoolbench/brush/blue_brush/blue_brush.obj",
+    "tool_start_pose_source": "simtoolreal/dextoolbench/trajectories/brush/blue_brush/sweep_forward.json"
+  },
+  "acceptance": {
+    "success_policy": "brush_sweep_directional_displacement",
+    "requires_tracking_execution_passed": false,
+    "tool_grounding_contract": {
+      "schema_version": "toolframe_tool_grounding_contract_v1",
+      "task_type": "brush_sweep",
+      "tool_id": "blue_brush",
+      "label_source": "manual_review_required",
+      "manual_review_status": "pending_tool_refs",
+      "notes": "Same task-level success as red_brush; blue_brush tool refs must be generated/reviewed before rollout statistics."
+    },
+    "min_xy_displacement_m": 0.06,
+    "min_direction_cosine": 0.6
+  },
+  "contract_status": {
+    "environment_id": "tabletop_wood_table",
+    "benchmark_status": "same_difficulty_variant/pending_tool_refs",
+    "success_check_status": "inherits_brush_sweep_directional_displacement",
+    "large_statistics_status": "blocked_until_blue_brush_tool_refs_and_smoke",
+    "notes": "Uses existing SimToolReal/DexToolBench blue_brush OBJ/URDF; external ToolUse GLB assets are not involved."
+  }
+}

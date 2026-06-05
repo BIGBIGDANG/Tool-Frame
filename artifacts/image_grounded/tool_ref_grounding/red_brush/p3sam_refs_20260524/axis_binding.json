@@ -1,0 +1,86 @@
+{
+  "schema_version": "parttoolgen_contact_point_motion_axis_binding_v1",
+  "artifact_id": "red_brush_red_brush_sweep_block_seed_000_p3sam_rebuilt_20260524_p3sam_axis_binding",
+  "tool_id": "red_brush",
+  "task_id": "red_brush_sweep_block_seed_000_p3sam_rebuilt_20260524",
+  "task_instruction": "Use the brush to sweep the block forward across the support surface.",
+  "selected_contact_point_part_ref": "tool.parts.part_002",
+  "selected_contact_point_source_ref": "candidate.points.part_002_y_positive_contact",
+  "selected_contact_point_face_marker": "F4",
+  "selected_contact_marker": "F4",
+  "selected_contact_surface_ref": "candidate.surfaces.part_002_y_positive_contact",
+  "candidate_contact_point_source_refs": [
+    "candidate.points.part_002_y_negative_contact",
+    "candidate.points.part_002_y_positive_contact"
+  ],
+  "active_contact_selection": {
+    "selection_mode": "p3sam_vlm_primary_contact",
+    "candidate_contact_point_source_refs": [
+      "candidate.points.part_002_y_negative_contact",
+      "candidate.points.part_002_y_positive_contact"
+    ],
+    "active_contact_point_source_ref": "candidate.points.part_002_y_positive_contact",
+    "active_contact_point_face_marker": "F4",
+    "active_contact_surface_ref": "candidate.surfaces.part_002_y_positive_contact",
+    "active_contact_normal_ref": "tool.contact_normal"
+  },
+  "selected_motion_axis_marker": "A",
+  "selected_motion_axis_role": "normal",
+  "selected_motion_axis_ref": "tool.contact_normal",
+  "selected_axis_polarity": "positive",
+  "motion_axis": {
+    "source": "selected_contact_surface",
+    "axis_marker": "A",
+    "axis_role": "normal",
+    "axis_ref": "tool.motion_axis",
+    "contact_marker": "F4",
+    "derived_contact_ref": "candidate.points.part_002_y_positive_contact",
+    "surface_ref": "candidate.surfaces.part_002_y_positive_contact",
+    "polarity": "positive"
+  },
+  "axis_candidate_table": [
+    {
+      "axis_marker": "A",
+      "axis_role": "normal",
+      "axis_ref": "tool.contact_normal",
+      "vector_tool": [
+        0.11062908535097059,
+        0.9704888965341569,
+        -0.21427204012264855
+      ]
+    }
+  ],
+  "confidence": 1.0,
+  "reason": "reference P3SAM contact-face selection",
+  "visual_evidence": {
+    "visual_evidence": "artifacts/visualizations/p3sam_red_brush_tool_ref_evidence_rebuilt_20260524/visual_evidence.json",
+    "axis_mesh_overlay_report": "artifacts/image_grounded/tool_ref_grounding/p3sam_tool_refs/red_brush_rebuilt_20260524/axis_mesh_overlay_report.json",
+    "prompt_images": []
+  },
+  "raw_response": {
+    "part": {
+      "selected_marker": "3",
+      "confidence": 1.0,
+      "reason": "reference P3SAM part selection"
+    },
+    "contact": {
+      "selected_contact_marker": "F4",
+      "candidate_contact_markers": [
+        "F3",
+        "F4"
+      ],
+      "confidence": 1.0,
+      "reason": "reference P3SAM contact-face selection"
+    }
+  },
+  "metadata": {
+    "created_by": "parttoolgen.cli.tool_prior.select_p3sam_tool_refs",
+    "tool_side_grounding_source": "p3sam"
+  },
+  "selected_contact_point_surface_ref": "candidate.surfaces.part_002_y_positive_contact",
+  "contact_normal": {
+    "axis_marker": "F4",
+    "axis_role": "mesh_patch_normal",
+    "axis_ref": "tool.contact_normal"
+  }
+}

@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<robot name="hdu_ink_stroke_024x010">
+  <link name="ink_visual_link">
+    <visual name="H_left_vertical">
+      <origin xyz="0 -0.096000 0.000000" rpy="0 0 0"/>
+      <geometry><box size="0.002000 0.012000 0.100000"/></geometry>
+      <material name="hdu_blue_ink"><color rgba="0.02 0.08 0.95 1.0"/></material>
+    </visual>
+    <visual name="H_right_vertical">
+      <origin xyz="0 -0.052000 0.000000" rpy="0 0 0"/>
+      <geometry><box size="0.002000 0.012000 0.100000"/></geometry>
+      <material name="hdu_blue_ink"><color rgba="0.02 0.08 0.95 1.0"/></material>
+    </visual>
+    <visual name="H_crossbar">
+      <origin xyz="0 -0.074000 0.000000" rpy="0 0 0"/>
+      <geometry><box size="0.002000 0.056000 0.012000"/></geometry>
+      <material name="hdu_blue_ink"><color rgba="0.02 0.08 0.95 1.0"/></material>
+    </visual>
+    <visual name="D_left_vertical">
+      <origin xyz="0 -0.022000 0.000000" rpy="0 0 0"/>
+      <geometry><box size="0.002000 0.012000 0.100000"/></geometry>
+      <material name="hdu_blue_ink"><color rgba="0.02 0.08 0.95 1.0"/></material>
+    </visual>
+    <visual name="D_top_bar">
+      <origin xyz="0 -0.000000 0.044000" rpy="0 0 0"/>
+      <geometry><box size="0.002000 0.044000 0.012000"/></geometry>
+      <material name="hdu_blue_ink"><color rgba="0.02 0.08 0.95 1.0"/></material>
+    </visual>
+    <visual name="D_bottom_bar">
+      <origin xyz="0 -0.000000 -0.044000" rpy="0 0 0"/>
+      <geometry><box size="0.002000 0.044000 0.012000"/></geometry>
+      <material name="hdu_blue_ink"><color rgba="0.02 0.08 0.95 1.0"/></material>
+    </visual>
+    <visual name="D_right_vertical">
+      <origin xyz="0 0.022000 0.000000" rpy="0 0 0"/>
+      <geometry><box size="0.002000 0.012000 0.088000"/></geometry>
+      <material name="hdu_blue_ink"><color rgba="0.02 0.08 0.95 1.0"/></material>
+    </visual>
+    <visual name="U_left_vertical">
+      <origin xyz="0 0.052000 0.006000" rpy="0 0 0"/>
+      <geometry><box size="0.002000 0.012000 0.088000"/></geometry>
+      <material name="hdu_blue_ink"><color rgba="0.02 0.08 0.95 1.0"/></material>
+    </visual>
+    <visual name="U_right_vertical">
+      <origin xyz="0 0.096000 0.006000" rpy="0 0 0"/>
+      <geometry><box size="0.002000 0.012000 0.088000"/></geometry>
+      <material name="hdu_blue_ink"><color rgba="0.02 0.08 0.95 1.0"/></material>
+    </visual>
+    <visual name="U_bottom_bar">
+      <origin xyz="0 0.074000 -0.044000" rpy="0 0 0"/>
+      <geometry><box size="0.002000 0.056000 0.012000"/></geometry>
+      <material name="hdu_blue_ink"><color rgba="0.02 0.08 0.95 1.0"/></material>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.0001"/>
+      <inertia ixx="1e-9" ixy="0" ixz="0" iyy="1e-9" iyz="0" izz="1e-9"/>
+    </inertial>
+  </link>
+</robot>

@@ -1,0 +1,39 @@
+{
+  "schema_version": "parttoolgen_p3sam_part_selection_v0",
+  "tool_id": "staples_marker",
+  "task_id": "marker_trace_draw_c",
+  "task_instruction": "Use the writing tip of the marker to draw a continuous C-shaped path on a whiteboard.",
+  "selection_source": "reference",
+  "selected_marker": "2",
+  "selected_function_marker": "2",
+  "selected_part": {
+    "marker": "2",
+    "part_ref": "tool.parts.part_001"
+  },
+  "selected_function_part_ref": "tool.parts.part_001",
+  "selected_part_row": {
+    "tool_id": "staples_marker",
+    "marker": "2",
+    "part_id": "part_001",
+    "part_ref": "tool.parts.part_001",
+    "source_label": "p3sam_segment_86",
+    "point_count": 208,
+    "role_candidates": [
+      "tool_part_candidate",
+      "functional_candidate",
+      "grasp_candidate",
+      "contact_patch"
+    ],
+    "part_label": 86
+  },
+  "visual_evidence": "artifacts/image_grounded/tool_ref_grounding/staples_marker/marker_trace_path_tool_refs/evidence/01_part_selection/visual_evidence.json",
+  "raw_response": {
+    "selected_marker": "2",
+    "confidence": 1.0,
+    "reason": "reference P3SAM part selection"
+  },
+  "metadata": {
+    "created_by": "parttoolgen.cli.tool_prior.select_p3sam_tool_refs",
+    "created_unix_s": 1780547290.9595392
+  }
+}

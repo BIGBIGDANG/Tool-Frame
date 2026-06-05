@@ -1,0 +1,55 @@
+{
+  "schema_version": "parttoolgen_p3sam_tool_ref_selection_v0",
+  "stage": "contact",
+  "tool_id": "red_brush",
+  "task_id": "brush_sweep_forward",
+  "selection_source": "reference",
+  "p3sam_prior_dir": "artifacts/tool_prior/p3sam/red_brush/tool_prior",
+  "visual_evidence": "configs/tool_refs/red_brush/evidence/02_contact_marker_selection/visual_evidence.json",
+  "selected_part": {
+    "marker": "3",
+    "part_ref": "tool.parts.part_002"
+  },
+  "contact_point": {
+    "marker": "F3",
+    "point_ref": "candidate.points.part_002_y_negative_contact",
+    "surface_ref": "candidate.surfaces.part_002_y_negative_contact"
+  },
+  "contact_point_candidates": [
+    {
+      "marker": "F3",
+      "point_ref": "candidate.points.part_002_y_negative_contact",
+      "surface_ref": "candidate.surfaces.part_002_y_negative_contact"
+    },
+    {
+      "marker": "F4",
+      "point_ref": "candidate.points.part_002_y_positive_contact",
+      "surface_ref": "candidate.surfaces.part_002_y_positive_contact"
+    }
+  ],
+  "motion_axis": {
+    "marker": "F4",
+    "surface_ref": "candidate.surfaces.part_002_y_positive_contact"
+  },
+  "motion_axis_candidates": [
+    {
+      "marker": "F3",
+      "surface_ref": "candidate.surfaces.part_002_y_negative_contact"
+    },
+    {
+      "marker": "F4",
+      "surface_ref": "candidate.surfaces.part_002_y_positive_contact"
+    }
+  ],
+  "outputs": {
+    "part_selection": "configs/tool_refs/red_brush/part_selection.json",
+    "axis_binding": "configs/tool_refs/red_brush/axis_binding.json",
+    "axis_mesh_overlay_report": "configs/tool_refs/red_brush/axis_mesh_overlay_report.json",
+    "contact_point_selection": "configs/tool_refs/red_brush/contact_point_selection.json",
+    "tool_part_graph": "configs/tool_refs/red_brush/tool_part_graph.json"
+  },
+  "metadata": {
+    "created_by": "parttoolgen.cli.tool_prior.select_p3sam_tool_refs",
+    "created_unix_s": 1780629846.363216
+  }
+}

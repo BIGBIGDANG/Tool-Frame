@@ -1,0 +1,67 @@
+{
+  "schema_version": "toolframe_task_success_contract_draft_v1",
+  "task": "eraser_wipe/side_whiteboard_hdu_erase",
+  "environment_id": "side_left_vertical_whiteboard_soft02",
+  "task_language": "Use this eraser to erase the whole HDU pattern on the whiteboard.",
+  "visible_public_scene_refs": {
+    "evidence_camera": "whiteboard_front",
+    "evidence_lighting": "soft02",
+    "target": "visible HDU pattern/decal on the canonical side whiteboard",
+    "vlm_refs": [
+      "start_point",
+      "optional path_points",
+      "end_point",
+      "scene.direction"
+    ]
+  },
+  "tool_refs": {
+    "source": "approved flat_eraser eraser_wipe tool-label review",
+    "required": [
+      "tool.contact_point",
+      "tool.motion_axis"
+    ],
+    "review_file": "artifacts/tool_use_benchmark/tool_label_review/eraser_wipe__flat_eraser.json"
+  },
+  "required_success_predicates": [
+    {
+      "name": "hdu_erased_area_fraction",
+      "definition": "Fraction of visible HDU pattern area covered by selected flat-eraser contact-face footprint while the eraser is in contact with the side whiteboard.",
+      "threshold": ">= 0.70",
+      "status": "human proposed and accepted in chat; pending publish smoke confirmation"
+    },
+    {
+      "name": "functional_contact_source",
+      "definition": "Coverage must be generated from flat_eraser tool.contact_point/contact-face footprint, not whole-tool root pose alone.",
+      "threshold": "required",
+      "status": "draft"
+    }
+  ],
+  "diagnostic_only_predicates": [
+    "policy_goal_passed",
+    "tracking_execution_passed",
+    "semantic_execution_passed",
+    "rotation_error",
+    "accepted_contact_sample_count"
+  ],
+  "forbidden_inputs": [
+    "hidden evaluator refs",
+    "oracle target axes",
+    "oracle trajectories",
+    "direct robot trajectory from VLM",
+    "tool_family fallback",
+    "task_family fallback",
+    "primitive fallback",
+    "sticker collision as success signal"
+  ],
+  "checker": {
+    "module": "parttoolgen.evaluation.side_board_hdu_erase_success",
+    "outputs": [
+      "hdu_erase_success/erased_area_metrics.json",
+      "hdu_erase_success/erased_area_overlay.png",
+      "hdu_erase_success/eraser_contact_coverage_mask.png"
+    ],
+    "per_trial_evidence_manifest": "evidence_manifest.json",
+    "manifest_note": "Each seed records public scene evidence, VLM selections, tool selections, lifted refs, compile artifacts, rollout evidence, and estimated erased-area success."
+  },
+  "large_statistics_status": "not_approved_until_publish_smoke_review"
+}

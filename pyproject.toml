@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "toolframe-parttoolgen"
+version = "0.6.4"
+description = "ToolFrame image-grounded tool-use benchmark and geometry-constrained optimizer code."
+readme = "README.md"
+requires-python = ">=3.8,<3.11"
+
+[tool.setuptools]
+package-dir = {"" = "parttoolgen/src"}
+
+[tool.setuptools.packages.find]
+where = ["parttoolgen/src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["parttoolgen/src"]
+testpaths = ["parttoolgen/tests"]
+addopts = "-ra --strict-config --strict-markers"
+markers = [
+  "slow: long-running local checks",
+  "gpu: checks requiring GPU access",
+  "vlm: checks requiring VLM credentials or network model calls",
+  "isaac: checks requiring IsaacGym or SimToolReal rollout assets",
+  "smoke: lightweight CLI or integration smoke checks",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py38"

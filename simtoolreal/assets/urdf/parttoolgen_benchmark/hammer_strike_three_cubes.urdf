@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<robot name="parttoolgen_hammer_strike_three_cubes">
+  <link name="table_with_target_cubes">
+    <visual>
+      <material name="wood">
+        <color rgba="0.52 0.50 0.46 1.0"/>
+      </material>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <box size="0.55 0.45 0.04"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <box size="0.55 0.45 0.04"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <material name="target_blue">
+        <color rgba="0.18 0.42 0.84 1.0"/>
+      </material>
+      <origin xyz="-0.12 0.04 0.045"/>
+      <geometry>
+        <box size="0.045 0.045 0.045"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.12 0.04 0.045"/>
+      <geometry>
+        <box size="0.045 0.045 0.045"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <material name="target_red">
+        <color rgba="0.86 0.12 0.12 1.0"/>
+      </material>
+      <origin xyz="0 0.04 0.045"/>
+      <geometry>
+        <box size="0.045 0.045 0.045"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0.04 0.045"/>
+      <geometry>
+        <box size="0.045 0.045 0.045"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <material name="target_green">
+        <color rgba="0.20 0.64 0.24 1.0"/>
+      </material>
+      <origin xyz="0.12 0.04 0.045"/>
+      <geometry>
+        <box size="0.045 0.045 0.045"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.12 0.04 0.045"/>
+      <geometry>
+        <box size="0.045 0.045 0.045"/>
+      </geometry>
+    </collision>
+
+    <inertial>
+      <mass value="500"/>
+      <friction value="1.0"/>
+      <inertia ixx="1000.0" ixy="0.0" ixz="0.0" iyy="1000.0" iyz="0.0" izz="1000.0"/>
+    </inertial>
+  </link>
+</robot>

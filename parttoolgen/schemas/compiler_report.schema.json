@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "compiler_report.schema.json",
+  "title": "CompilerReport",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "report_id",
+    "program_id",
+    "subgoals_id",
+    "passed",
+    "stages",
+    "metadata"
+  ],
+  "properties": {
+    "schema_version": { "const": "v0.1" },
+    "report_id": { "type": "string", "minLength": 1 },
+    "program_id": { "type": "string", "minLength": 1 },
+    "subgoals_id": { "type": "string", "minLength": 1 },
+    "passed": { "type": "boolean" },
+    "stages": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/stage_report" }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["generated_by", "source"],
+      "properties": {
+        "generated_by": { "type": "string", "minLength": 1 },
+        "source": { "type": "string", "minLength": 1 }
+      }
+    }
+  },
+  "$defs": {
+    "stage_report": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "name",
+        "success",
+        "final_cost",
+        "constraint_errors",
+        "warnings",
+        "source_constraints"
+      ],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "success": { "type": "boolean" },
+        "final_cost": { "type": "number", "minimum": 0 },
+        "constraint_errors": {
+          "type": "object",
+          "additionalProperties": { "type": "number" }
+        },
+        "warnings": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "source_constraints": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

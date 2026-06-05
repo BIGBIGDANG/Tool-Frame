@@ -1,0 +1,214 @@
+{
+  "schema_version": "parttoolgen_contact_point_motion_axis_binding_v1",
+  "artifact_id": "flat_eraser_flat_eraser_tabletop_wipe_forward_seed_000_p3sam_axis_binding",
+  "tool_id": "flat_eraser",
+  "task_id": "flat_eraser_tabletop_wipe_forward_seed_000",
+  "task_instruction": "Use the flat eraser to wipe the whole visible blue mark on the tabletop. Start at the edge of the mark closest to the eraser and wipe across the full mark.",
+  "selected_contact_point_part_ref": "tool.parts.part_292",
+  "selected_contact_point_source_ref": "candidate.points.part_292_y_negative_contact",
+  "selected_contact_point_face_marker": "F3",
+  "selected_contact_marker": "F3",
+  "selected_contact_surface_ref": "candidate.surfaces.part_292_y_negative_contact",
+  "selected_motion_axis_marker": "F1",
+  "selected_motion_axis_face_marker": "F1",
+  "selected_motion_axis_surface_ref": "candidate.surfaces.part_292_x_negative_endpoint",
+  "candidate_contact_point_source_refs": [
+    "candidate.points.part_292_y_negative_contact",
+    "candidate.points.part_292_y_positive_contact"
+  ],
+  "candidate_contact_point_face_markers": [
+    "F3",
+    "F4"
+  ],
+  "candidate_contact_surface_refs": [
+    "candidate.surfaces.part_292_y_negative_contact",
+    "candidate.surfaces.part_292_y_positive_contact"
+  ],
+  "candidate_contact_rows": [
+    {
+      "tool_id": "flat_eraser",
+      "part_marker": "4",
+      "part_id": "part_292",
+      "part_ref": "tool.parts.part_292",
+      "point_ref": "candidate.points.part_292_y_negative_contact",
+      "surface_ref": "candidate.surfaces.part_292_y_negative_contact",
+      "polarity": "negative",
+      "patch_id": "y_negative_contact",
+      "role": null,
+      "xyz_tool": [
+        0.035063814424676265,
+        -0.011453846549753026,
+        -3.370766846163045e-05
+      ],
+      "normal_tool": [
+        0.0028342577105412788,
+        -0.9999958525353612,
+        -0.0005117570774596213
+      ],
+      "face_marker": "F3",
+      "contact_marker": "F3",
+      "selection_semantics": "contact_point_bbox_face",
+      "derived_point_ref": "candidate.points.part_292_y_negative_contact",
+      "source_contact_normal_ref": "candidate.surfaces.part_292_y_negative_contact"
+    },
+    {
+      "tool_id": "flat_eraser",
+      "part_marker": "4",
+      "part_id": "part_292",
+      "part_ref": "tool.parts.part_292",
+      "point_ref": "candidate.points.part_292_y_positive_contact",
+      "surface_ref": "candidate.surfaces.part_292_y_positive_contact",
+      "polarity": "positive",
+      "patch_id": "y_positive_contact",
+      "role": null,
+      "xyz_tool": [
+        0.03458047187601088,
+        -0.011312499685094795,
+        0.00020149098057854918
+      ],
+      "normal_tool": [
+        -0.0012222631830563085,
+        -0.9999986383525777,
+        -0.0011087676500339697
+      ],
+      "face_marker": "F4",
+      "contact_marker": "F4",
+      "selection_semantics": "contact_point_bbox_face",
+      "derived_point_ref": "candidate.points.part_292_y_positive_contact",
+      "source_contact_normal_ref": "candidate.surfaces.part_292_y_positive_contact"
+    }
+  ],
+  "active_contact_selection": {
+    "selection_mode": "p3sam_vlm_contact_point_candidate_set",
+    "candidate_contact_point_source_refs": [
+      "candidate.points.part_292_y_negative_contact",
+      "candidate.points.part_292_y_positive_contact"
+    ],
+    "candidate_contact_point_face_markers": [
+      "F3",
+      "F4"
+    ],
+    "active_contact_point_source_ref": "candidate.points.part_292_y_negative_contact",
+    "active_contact_point_face_marker": "F3",
+    "active_contact_surface_ref": "candidate.surfaces.part_292_y_negative_contact",
+    "active_contact_axis_ref": "tool.contact_normal",
+    "active_use_motion_axis_ref": "tool.contact_normal"
+  },
+  "selected_motion_axis_role": "contact_point_bbox_endpoint_axis",
+  "selected_motion_axis_ref": "tool.contact_normal",
+  "selected_axis_polarity": "negative",
+  "contact_axis": {
+    "source": "selected_function_point_surface",
+    "axis_marker": "C",
+    "axis_role": "mesh_patch_normal",
+    "axis_ref": "tool.contact_normal",
+    "contact_marker": "F3",
+    "derived_contact_ref": "candidate.points.part_292_y_negative_contact",
+    "surface_ref": "candidate.surfaces.part_292_y_negative_contact",
+    "polarity": "negative",
+    "vector_tool": [
+      0.0028342577105412788,
+      -0.9999958525353612,
+      -0.0005117570774596213
+    ]
+  },
+  "motion_axis": {
+    "source": "selected_motion_axis_surface",
+    "axis_marker": "U",
+    "axis_role": "contact_point_bbox_endpoint_axis",
+    "axis_ref": "tool.motion_axis",
+    "contact_marker": "F1",
+    "derived_contact_ref": "candidate.points.part_292_y_negative_contact",
+    "surface_ref": "candidate.surfaces.part_292_x_negative_endpoint",
+    "polarity": "negative"
+  },
+  "axis_candidate_table": [
+    {
+      "axis_marker": "U",
+      "axis_role": "contact_point_bbox_endpoint_axis",
+      "axis_ref": "tool.contact_normal",
+      "vector_tool": [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "mesh_normal_tool": [
+        0.013219152451107892,
+        -0.9999060071010611,
+        -0.0036374402657440024
+      ],
+      "source_contact_marker": "F1"
+    }
+  ],
+  "confidence": 0.71,
+  "reason": "The flat erasing action is performed by the large rectangular pad face, so the active contact reference is the broad eraser surface at its center (F3/F4 are the same semantically valid wiping face with opposite polarity). The wipe motion should run along the eraser\u2019s long axis, which is represented by an endpoint face normal, so F1 is used for the motion-axis alignment.",
+  "visual_evidence": {
+    "visual_evidence": "artifacts/image_grounded/tool_ref_grounding/flat_eraser/tabletop_wipe_forward_seed_000_visualizations/flat_eraser_tabletop_wipe_forward_seed_000_part_004_faces/visual_evidence.json",
+    "axis_mesh_overlay_report": "artifacts/image_grounded/tool_ref_grounding/flat_eraser/tabletop_wipe_forward_seed_000_tool_refs/axis_mesh_overlay_report.json",
+    "prompt_images": []
+  },
+  "raw_response": {
+    "part": {
+      "selected_marker": "4",
+      "confidence": 0.96,
+      "reason": "Marker 4 is the broad flat pad on the underside, the surface intended to contact and wipe across the blue mark.",
+      "_raw_response": {
+        "raw_text": "{\"selected_marker\":\"4\",\"confidence\":0.96,\"reason\":\"Marker 4 is the broad flat pad on the underside, the surface intended to contact and wipe across the blue mark.\"}",
+        "metadata": {
+          "client": "openai_compatible",
+          "endpoint": "chat/completions",
+          "model": "gpt-5.4",
+          "base_url": "https://xcode.best/v1",
+          "image_paths": [
+            "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/tools/flat_eraser/overview/flat_eraser_flat_eraser_whole_mesh_part_choice_overview.png"
+          ],
+          "latency_s": 9.012,
+          "max_new_tokens": 512,
+          "context_id": "flat_eraser:p3sam_part_selection"
+        }
+      }
+    },
+    "contact": {
+      "selected_contact_point_face_marker": "F3",
+      "candidate_function_point_markers": [
+        "F3",
+        "F4"
+      ],
+      "selected_motion_axis_marker": "F1",
+      "confidence": 0.71,
+      "reason": "The flat erasing action is performed by the large rectangular pad face, so the active contact reference is the broad eraser surface at its center (F3/F4 are the same semantically valid wiping face with opposite polarity). The wipe motion should run along the eraser\u2019s long axis, which is represented by an endpoint face normal, so F1 is used for the motion-axis alignment.",
+      "_raw_response": {
+        "raw_text": "{\"selected_function_point_marker\":\"F3\",\"candidate_function_point_markers\":[\"F3\",\"F4\"],\"selected_motion_axis_marker\":\"F1\",\"confidence\":0.71,\"reason\":\"The flat erasing action is performed by the large rectangular pad face, so the active contact reference is the broad eraser surface at its center (F3/F4 are the same semantically valid wiping face with opposite polarity). The wipe motion should run along the eraser\u2019s long axis, which is represented by an endpoint face normal, so F1 is used for the motion-axis alignment.\"}",
+        "metadata": {
+          "client": "openai_compatible",
+          "endpoint": "chat/completions",
+          "model": "gpt-5.4",
+          "base_url": "https://xcode.best/v1",
+          "image_paths": [
+            "artifacts/image_grounded/tool_ref_grounding/flat_eraser/tabletop_wipe_forward_seed_000_visualizations/flat_eraser_tabletop_wipe_forward_seed_000_part_004_faces/flat_eraser/overview/flat_eraser_whole_mesh_part_choice_overview.png",
+            "artifacts/image_grounded/tool_ref_grounding/flat_eraser/tabletop_wipe_forward_seed_000_visualizations/flat_eraser_tabletop_wipe_forward_seed_000_part_004_faces/flat_eraser/part_cards/candidate_004_card.png",
+            "artifacts/image_grounded/tool_ref_grounding/flat_eraser/tabletop_wipe_forward_seed_000_visualizations/flat_eraser_tabletop_wipe_forward_seed_000_part_004_faces/flat_eraser/contact_point_choices/candidate_004_F1_face.png",
+            "artifacts/image_grounded/tool_ref_grounding/flat_eraser/tabletop_wipe_forward_seed_000_visualizations/flat_eraser_tabletop_wipe_forward_seed_000_part_004_faces/flat_eraser/contact_point_choices/candidate_004_F2_face.png",
+            "artifacts/image_grounded/tool_ref_grounding/flat_eraser/tabletop_wipe_forward_seed_000_visualizations/flat_eraser_tabletop_wipe_forward_seed_000_part_004_faces/flat_eraser/contact_point_choices/candidate_004_F3_face.png",
+            "artifacts/image_grounded/tool_ref_grounding/flat_eraser/tabletop_wipe_forward_seed_000_visualizations/flat_eraser_tabletop_wipe_forward_seed_000_part_004_faces/flat_eraser/contact_point_choices/candidate_004_F4_face.png",
+            "artifacts/image_grounded/tool_ref_grounding/flat_eraser/tabletop_wipe_forward_seed_000_visualizations/flat_eraser_tabletop_wipe_forward_seed_000_part_004_faces/flat_eraser/contact_point_choices/candidate_004_F5_face.png",
+            "artifacts/image_grounded/tool_ref_grounding/flat_eraser/tabletop_wipe_forward_seed_000_visualizations/flat_eraser_tabletop_wipe_forward_seed_000_part_004_faces/flat_eraser/contact_point_choices/candidate_004_F6_face.png"
+          ],
+          "latency_s": 51.758,
+          "max_new_tokens": 512,
+          "context_id": "flat_eraser:p3sam_contact_selection"
+        }
+      }
+    }
+  },
+  "metadata": {
+    "created_by": "parttoolgen.cli.tool_prior.select_p3sam_tool_refs",
+    "tool_side_grounding_source": "p3sam"
+  },
+  "selected_contact_point_surface_ref": "candidate.surfaces.part_292_y_negative_contact",
+  "contact_normal": {
+    "axis_marker": "F3",
+    "axis_role": "mesh_patch_normal",
+    "axis_ref": "tool.contact_normal"
+  }
+}

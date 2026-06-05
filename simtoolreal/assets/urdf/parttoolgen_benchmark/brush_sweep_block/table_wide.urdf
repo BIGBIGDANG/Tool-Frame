@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<robot name="parttoolgen_brush_sweep_block_wide_table">
+  <link name="box">
+    <visual>
+      <material name="light_wood">
+        <color rgba="0.52 0.50 0.46 1.0"/>
+      </material>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <box size="0.80 0.60 0.30"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <box size="0.80 0.60 0.30"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="500"/>
+      <friction value="1.0"/>
+      <inertia ixx="1000.0" ixy="0.0" ixz="0.0" iyy="1000.0" iyz="0.0" izz="1000.0"/>
+    </inertial>
+  </link>
+</robot>

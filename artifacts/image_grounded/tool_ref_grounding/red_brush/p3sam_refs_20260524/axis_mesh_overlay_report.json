@@ -1,0 +1,62 @@
+{
+  "schema_version": "parttoolgen_contact_point_motion_axis_mesh_evidence_v1",
+  "tool_id": "red_brush",
+  "task_id": "red_brush_sweep_block_seed_000_p3sam_rebuilt_20260524",
+  "selected_contact_point_part_marker": "3",
+  "selected_part_ref": "tool.parts.part_002",
+  "selected_contact_marker": "F4",
+  "selected_contact_point_source_ref": "candidate.points.part_002_y_positive_contact",
+  "selected_motion_axis_marker": "A",
+  "selected_motion_axis_role": "normal",
+  "selected_motion_axis_ref": "tool.contact_normal",
+  "view_indices": [],
+  "image": null,
+  "render_sources": [],
+  "axis_candidates": [
+    {
+      "axis_marker": "A",
+      "axis_role": "normal",
+      "vector_tool": [
+        0.11062908535097059,
+        0.9704888965341569,
+        -0.21427204012264855
+      ],
+      "axis_ref": "tool.motion_axis"
+    }
+  ],
+  "contact_point_surface": {
+    "frame_source": "contact_point_bbox_face",
+    "patch_id": "y_positive_contact",
+    "raw_mesh_patch_center_xyz_tool": [
+      0.16621045182151986,
+      0.03317043655672021,
+      0.05116884335349644
+    ],
+    "contact_point_xyz_tool": [
+      0.16621045182151986,
+      0.03317043655672021,
+      0.05116884335349644
+    ],
+    "surface_center_xyz_tool": [
+      0.16621045182151986,
+      0.03317043655672021,
+      0.05116884335349644
+    ],
+    "rectangle_corners_xyz_tool": null,
+    "long_edge_m": null,
+    "short_edge_m": null,
+    "normal_role": "normal",
+    "contact_normal_tool": [
+      0.11062908535097059,
+      0.9704888965341569,
+      -0.21427204012264855
+    ],
+    "contact_normal_ref": "tool.contact_normal",
+    "source_contact_normal_ref": null
+  },
+  "metadata": {
+    "source_prior": "artifacts/tool_prior/p3sam/red_brush_rebuilt_20260524/tool_prior",
+    "visual_evidence": "artifacts/visualizations/p3sam_red_brush_tool_ref_evidence_rebuilt_20260524/visual_evidence.json",
+    "created_by": "parttoolgen.cli.tool_prior.select_p3sam_tool_refs"
+  }
+}

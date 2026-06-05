@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "functional_tool_parts.schema.json",
+  "title": "FunctionalToolParts",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "tool_id",
+    "tool_frame",
+    "functional_parts",
+    "grasp_references",
+    "metadata"
+  ],
+  "properties": {
+    "schema_version": { "const": "v0.1" },
+    "tool_id": { "type": "string", "minLength": 1 },
+    "tool_frame": { "const": "tool" },
+    "functional_parts": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "$ref": "#/$defs/functional_part" }
+    },
+    "grasp_references": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "$ref": "#/$defs/grasp_reference" }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["created_by", "geometry_mode"],
+      "properties": {
+        "created_by": { "type": "string", "minLength": 1 },
+        "geometry_mode": {
+          "type": "string",
+          "enum": ["observed", "prior", "mixed"]
+        },
+        "notes": { "type": "string" }
+      }
+    }
+  },
+  "$defs": {
+    "vec3": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": { "type": "number" }
+    },
+    "quat": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": { "type": "number" }
+    },
+    "mat4": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "array",
+        "minItems": 4,
+        "maxItems": 4,
+        "items": { "type": "number" }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["observation_id", "method"],
+      "properties": {
+        "observation_id": { "type": "string", "minLength": 1 },
+        "method": { "type": "string", "minLength": 1 },
+        "source_artifact": { "type": "string" }
+      }
+    },
+    "grounding_metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["confidence", "source", "provenance"],
+      "properties": {
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "source": { "type": "string", "minLength": 1 },
+        "provenance": { "$ref": "#/$defs/provenance" }
+      }
+    },
+    "frame": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["origin", "x_axis", "y_axis", "z_axis"],
+      "properties": {
+        "origin": { "$ref": "#/$defs/vec3" },
+        "x_axis": { "$ref": "#/$defs/vec3" },
+        "y_axis": { "$ref": "#/$defs/vec3" },
+        "z_axis": { "$ref": "#/$defs/vec3" }
+      }
+    },
+    "functional_part": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "center",
+        "normal",
+        "frame",
+        "T_tool_functional",
+        "confidence",
+        "source",
+        "provenance"
+      ],
+      "properties": {
+        "role": { "type": "string", "minLength": 1 },
+        "center": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["xyz_tool"],
+          "properties": {
+            "xyz_tool": { "$ref": "#/$defs/vec3" }
+          }
+        },
+        "normal": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["vector_tool"],
+          "properties": {
+            "vector_tool": { "$ref": "#/$defs/vec3" }
+          }
+        },
+        "axis": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["vector_tool"],
+          "properties": {
+            "vector_tool": { "$ref": "#/$defs/vec3" }
+          }
+        },
+        "frame": { "$ref": "#/$defs/frame" },
+        "T_tool_functional": { "$ref": "#/$defs/mat4" },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "source": { "type": "string", "minLength": 1 },
+        "provenance": { "$ref": "#/$defs/provenance" }
+      }
+    },
+    "grasp_reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "position_tool",
+        "orientation_xyzw",
+        "confidence",
+        "source",
+        "provenance"
+      ],
+      "properties": {
+        "position_tool": { "$ref": "#/$defs/vec3" },
+        "orientation_xyzw": { "$ref": "#/$defs/quat" },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "source": { "type": "string", "minLength": 1 },
+        "provenance": { "$ref": "#/$defs/provenance" }
+      }
+    }
+  }
+}

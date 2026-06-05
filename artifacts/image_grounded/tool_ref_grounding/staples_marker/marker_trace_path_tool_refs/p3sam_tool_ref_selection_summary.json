@@ -1,0 +1,40 @@
+{
+  "schema_version": "parttoolgen_p3sam_tool_ref_selection_v0",
+  "stage": "contact",
+  "tool_id": "staples_marker",
+  "task_id": "marker_trace_draw_c",
+  "selection_source": "reference",
+  "p3sam_prior_dir": "artifacts/tool_prior/p3sam/staples_marker/tool_prior",
+  "visual_evidence": "artifacts/image_grounded/tool_ref_grounding/staples_marker/marker_trace_path_tool_refs/evidence/02_contact_marker_selection/visual_evidence.json",
+  "selected_part": {
+    "marker": "2",
+    "part_ref": "tool.parts.part_001"
+  },
+  "contact_point": {
+    "marker": "F2",
+    "point_ref": "candidate.points.part_001_x_positive_endpoint",
+    "surface_ref": "candidate.surfaces.part_001_x_positive_endpoint"
+  },
+  "contact_point_candidates": [
+    {
+      "marker": "F2",
+      "point_ref": "candidate.points.part_001_x_positive_endpoint",
+      "surface_ref": "candidate.surfaces.part_001_x_positive_endpoint"
+    }
+  ],
+  "motion_axis": {
+    "marker": "F3",
+    "surface_ref": "candidate.surfaces.part_001_y_negative_contact"
+  },
+  "outputs": {
+    "part_selection": "artifacts/image_grounded/tool_ref_grounding/staples_marker/marker_trace_path_tool_refs/part_selection.json",
+    "axis_binding": "artifacts/image_grounded/tool_ref_grounding/staples_marker/marker_trace_path_tool_refs/axis_binding.json",
+    "axis_mesh_overlay_report": "artifacts/image_grounded/tool_ref_grounding/staples_marker/marker_trace_path_tool_refs/axis_mesh_overlay_report.json",
+    "contact_point_selection": "artifacts/image_grounded/tool_ref_grounding/staples_marker/marker_trace_path_tool_refs/contact_point_selection.json",
+    "tool_part_graph": "artifacts/image_grounded/tool_ref_grounding/staples_marker/marker_trace_path_tool_refs/tool_part_graph.json"
+  },
+  "metadata": {
+    "created_by": "parttoolgen.cli.tool_prior.select_p3sam_tool_refs",
+    "created_unix_s": 1780547326.1969879
+  }
+}

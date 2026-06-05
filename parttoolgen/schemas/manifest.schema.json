@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "manifest.schema.json",
+  "title": "PartToolGenRunManifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_id",
+    "task_instruction",
+    "geometry_mode",
+    "artifacts",
+    "checks",
+    "pipeline"
+  ],
+  "properties": {
+    "schema_version": { "const": "v0.1" },
+    "run_id": { "type": "string", "minLength": 1 },
+    "task_instruction": { "type": "string", "minLength": 1 },
+    "geometry_mode": { "type": "string", "enum": ["observed", "mixed"] },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "observed_scene_graph",
+        "grounding_candidates",
+        "functional_tool_parts",
+        "planner_program",
+        "program_ir",
+        "tool_pose_subgoals",
+        "simtoolreal_fixed_goals",
+        "sanity_report"
+      ],
+      "properties": {
+        "observation_bundle": { "type": "string", "minLength": 1 },
+        "observed_scene_graph": { "type": "string", "minLength": 1 },
+        "grounding_candidates": { "type": "string", "minLength": 1 },
+        "target_part_graph": { "type": "string", "minLength": 1 },
+        "tool_part_graph": { "type": "string", "minLength": 1 },
+        "provider_contract": { "type": "string", "minLength": 1 },
+        "functional_tool_parts": { "type": "string", "minLength": 1 },
+        "planner_program": { "type": "string", "minLength": 1 },
+        "program_ir": { "type": "string", "minLength": 1 },
+        "tool_pose_subgoals": { "type": "string", "minLength": 1 },
+        "simtoolreal_fixed_goals": { "type": "string", "minLength": 1 },
+        "compiler_report": { "type": "string", "minLength": 1 },
+        "execution_report": { "type": "string", "minLength": 1 },
+        "sanity_report": { "type": "string", "minLength": 1 },
+        "preview": { "type": "string", "minLength": 1 },
+        "visual_evidence": { "type": "string", "minLength": 1 }
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["schema_validation", "fixed_goal_sanity"]
+    },
+    "pipeline": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "observation_source",
+        "grounding_source",
+        "scene_source",
+        "tool_part_source",
+        "constraint_source",
+        "compiler",
+        "executor_target",
+        "target_geometry_source"
+      ],
+      "properties": {
+        "observation_source": { "type": "string", "minLength": 1 },
+        "grounding_source": { "type": "string", "minLength": 1 },
+        "scene_source": { "type": "string", "minLength": 1 },
+        "tool_part_source": { "type": "string", "minLength": 1 },
+        "constraint_source": { "type": "string", "minLength": 1 },
+        "compiler": { "type": "string", "minLength": 1 },
+        "executor_target": { "type": "string", "minLength": 1 },
+        "target_geometry_source": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

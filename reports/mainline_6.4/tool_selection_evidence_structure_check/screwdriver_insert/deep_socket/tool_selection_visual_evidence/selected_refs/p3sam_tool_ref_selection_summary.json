@@ -1,0 +1,40 @@
+{
+  "schema_version": "parttoolgen_p3sam_tool_ref_selection_v0",
+  "stage": "contact",
+  "tool_id": "long_screwdriver",
+  "task_id": "screwdriver_insert_deep_socket",
+  "selection_source": "reference",
+  "p3sam_prior_dir": "artifacts/tool_prior/p3sam/long_screwdriver/tool_prior",
+  "visual_evidence": "configs/tool_refs/long_screwdriver/evidence/02_contact_marker_selection/visual_evidence.json",
+  "selected_part": {
+    "marker": "1",
+    "part_ref": "tool.parts.part_000"
+  },
+  "contact_point": {
+    "marker": "F2",
+    "point_ref": "candidate.points.part_000_x_positive_endpoint",
+    "surface_ref": "candidate.surfaces.part_000_x_positive_endpoint"
+  },
+  "contact_point_candidates": [
+    {
+      "marker": "F2",
+      "point_ref": "candidate.points.part_000_x_positive_endpoint",
+      "surface_ref": "candidate.surfaces.part_000_x_positive_endpoint"
+    }
+  ],
+  "motion_axis": {
+    "marker": "F2",
+    "surface_ref": "candidate.surfaces.part_000_x_positive_endpoint"
+  },
+  "outputs": {
+    "part_selection": "configs/tool_refs/long_screwdriver/part_selection.json",
+    "axis_binding": "configs/tool_refs/long_screwdriver/axis_binding.json",
+    "axis_mesh_overlay_report": "configs/tool_refs/long_screwdriver/axis_mesh_overlay_report.json",
+    "contact_point_selection": "configs/tool_refs/long_screwdriver/contact_point_selection.json",
+    "tool_part_graph": "configs/tool_refs/long_screwdriver/tool_part_graph.json"
+  },
+  "metadata": {
+    "created_by": "parttoolgen.scripts.select_p3sam_tool_refs",
+    "created_unix_s": 1780558122.969382
+  }
+}
