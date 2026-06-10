@@ -41,25 +41,18 @@ if [[ -n "${_PTG_USER_CORE_VENV_SET}" ]]; then
   export PARTTOOLGEN_CORE_VENV="${_PTG_USER_CORE_VENV_VALUE}"
 fi
 export PARTTOOLGEN_SRC="${PARTTOOLGEN_SRC:-${PARTTOOLGEN_ROOT}/parttoolgen/src}"
-export PARTTOOLGEN_LEGACY_515_ROOT="${PARTTOOLGEN_LEGACY_515_ROOT:-}"
 _PTG_LOCAL_ISAACGYM="${PARTTOOLGEN_ROOT}/artifacts/third_party/isaacgym/python"
-_PTG_LEGACY_ISAACGYM="${PARTTOOLGEN_LEGACY_515_ROOT}/artifacts/third_party/isaacgym/python"
 if [[ -z "${PARTTOOLGEN_ISAACGYM:-}" ]]; then
   if [[ -d "${_PTG_LOCAL_ISAACGYM}" ]]; then
     export PARTTOOLGEN_ISAACGYM="${_PTG_LOCAL_ISAACGYM}"
-  elif [[ -n "${PARTTOOLGEN_LEGACY_515_ROOT}" && -d "${_PTG_LEGACY_ISAACGYM}" ]]; then
-    export PARTTOOLGEN_ISAACGYM="${_PTG_LEGACY_ISAACGYM}"
   else
     export PARTTOOLGEN_ISAACGYM=""
   fi
 fi
 _PTG_LOCAL_SIMTOOLREAL_SITE="${PARTTOOLGEN_ROOT}/.venv_simtoolreal/lib/python3.8/site-packages"
-_PTG_LEGACY_SIMTOOLREAL_SITE="${PARTTOOLGEN_LEGACY_515_ROOT}/.venv_simtoolreal/lib/python3.8/site-packages"
 if [[ -z "${PARTTOOLGEN_SIMTOOLREAL_SITE:-}" ]]; then
   if [[ -d "${_PTG_LOCAL_SIMTOOLREAL_SITE}" ]]; then
     export PARTTOOLGEN_SIMTOOLREAL_SITE="${_PTG_LOCAL_SIMTOOLREAL_SITE}"
-  elif [[ -n "${PARTTOOLGEN_LEGACY_515_ROOT}" && -d "${_PTG_LEGACY_SIMTOOLREAL_SITE}" ]]; then
-    export PARTTOOLGEN_SIMTOOLREAL_SITE="${_PTG_LEGACY_SIMTOOLREAL_SITE}"
   else
     export PARTTOOLGEN_SIMTOOLREAL_SITE=""
   fi
@@ -78,8 +71,6 @@ elif [[ -n "${PARTTOOLGEN_CORE_VENV:-}" ]]; then
     _ptg_fail "Configured fallback PARTTOOLGEN_CORE_VENV has no executable python: ${PARTTOOLGEN_CORE_VENV}/bin/python"
     return 2 2>/dev/null || exit 2
   fi
-elif [[ -n "${PARTTOOLGEN_LEGACY_515_ROOT}" && -x "${PARTTOOLGEN_LEGACY_515_ROOT}/.venv_parttoolgen_py38/bin/python" ]]; then
-  export PARTTOOLGEN_CORE_VENV="${PARTTOOLGEN_LEGACY_515_ROOT}/.venv_parttoolgen_py38"
 else
   _ptg_fail \
     "Missing project Python 3.8 env: ${_PTG_LOCAL_PY38_VENV}" \

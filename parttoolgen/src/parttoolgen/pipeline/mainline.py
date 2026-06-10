@@ -97,7 +97,7 @@ def _lift_tool_pose_subgoals_to_table_clearance(
     if isinstance(compiler_bbox_projection, dict) and compiler_bbox_projection.get("enabled"):
         report = {
             "enabled": False,
-            "reason": "skipped_after_compiler_bbox_table_projection",
+            "reason": "skipped_after_compiler_generation_time_table_clearance",
             "compiler_projection": compiler_bbox_projection,
             "adjusted_goals": [],
             "skipped_contact_goals": [],

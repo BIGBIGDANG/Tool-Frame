@@ -126,7 +126,7 @@ def axis_alignment_cost(
     if polarity == "opposite":
         return 1.0 + dot(predicted, target)
     if polarity == "auto":
-        return 1.0 - abs(dot(predicted, target))
+        return 1.0 - dot(predicted, target)
     return 1.0 - dot(predicted, target)
 
 

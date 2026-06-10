@@ -25,6 +25,10 @@ from PIL import Image, ImageDraw
 from parttoolgen.evaluation.tool_selection_evidence import (
     write_tool_selection_visual_evidence,
 )
+from parttoolgen.pipeline.trial_tool_refs import (
+    add_tool_ref_mode_args,
+    resolve_trial_tool_refs,
+)
 
 
 ROOT = Path(__file__).resolve().parents[5]
@@ -328,6 +332,18 @@ def _run_one(args: argparse.Namespace, *, config: dict[str, Any], trial_index: i
     instruction = str(args.task_language or f"Use this marker to write the letter {letter} on the whiteboard.")
     _prepare_task_copy(Path(args.source_task), task, instruction=instruction, seed_index=seed, split=split)
     _write_state_bundle(task, state)
+    trial_tool_refs = resolve_trial_tool_refs(
+        repo_root=ROOT,
+        python=_python(),
+        args=args,
+        trial_dir=out,
+        static_tool_refs_dir=tool_refs,
+        tool_id="staples_marker",
+        task_id=task_id,
+        task_instruction=instruction,
+        log_path=logs / "tool_refs.json",
+        env=_env(),
+    )
 
     trial: dict[str, Any] = {
         "seed": seed,
@@ -420,11 +436,11 @@ def _run_one(args: argparse.Namespace, *, config: dict[str, Any], trial_index: i
                 "--program",
                 str(out / "lifted_program/constraint_program.json"),
                 "--axis-binding",
-                str(tool_refs / "axis_binding.json"),
+                str(trial_tool_refs / "axis_binding.json"),
                 "--axis-mesh-report",
-                str(tool_refs / "axis_mesh_overlay_report.json"),
+                str(trial_tool_refs / "axis_mesh_overlay_report.json"),
                 "--contact-point-selection",
-                str(tool_refs / "contact_point_selection.json"),
+                str(trial_tool_refs / "contact_point_selection.json"),
                 "--output",
                 str(out / "lifted_program/constraint_program_with_tool_refs.json"),
             ],
@@ -482,7 +498,14 @@ def _run_one(args: argparse.Namespace, *, config: dict[str, Any], trial_index: i
                 "0,2",
             ]
             if args.capture_video_every > 0 and trial_index % args.capture_video_every == 0:
-                rollout_cmd.extend(["--capture-video", "--capture-side-board-video", "--video-stride", str(args.video_stride)])
+                rollout_cmd.extend([
+                    "--capture-video",
+                    "--capture-side-board-video",
+                    "--capture-subgoal-video",
+                    "--capture-subgoal-side-board-video",
+                    "--video-stride",
+                    str(args.video_stride),
+                ])
             _run_logged(logs, "06_rollout", rollout_cmd, env=rollout_env)
             (out / "ink_evidence").mkdir(parents=True, exist_ok=True)
             _run_logged(
@@ -628,6 +651,7 @@ def main() -> int:
     parser.add_argument("--output-root", required=True)
     parser.add_argument("--source-task", default=str(SRC_TASK))
     parser.add_argument("--tool-refs-dir", default=str(DEFAULT_TOOL_REFS))
+    add_tool_ref_mode_args(parser)
     parser.add_argument("--requested-letter", default=None)
     parser.add_argument("--split", default="write_c")
     parser.add_argument("--task-language", default=None)

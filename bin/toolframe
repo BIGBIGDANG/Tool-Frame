@@ -18,10 +18,8 @@ Public commands:
   tool-ref          Generate or regenerate P3SAM/VLM tool refs.
   inventory         List segmented SimToolReal tools and planned task assets.
   list              List registered benchmark tasks and suites.
-  paper-headline    Run the reviewed headline subset for ToolFrame 6.4.
-  preflight-headline Preflight the reviewed headline subset for ToolFrame 6.4.
-  paper-release     Run the ToolFrame 6.4 paper-release candidate suite.
-  preflight-paper   Preflight the ToolFrame 6.4 paper-release candidate suite.
+  current-e2e       Run the current full end-to-end suite.
+  preflight-current Preflight the current full end-to-end suite.
   preflight-all     Preflight every current launcher-runnable task.
   run-all           Run every current launcher-runnable task.
   run-spec          Run a unified task spec or registry task/suite.
@@ -29,13 +27,13 @@ Public commands:
 Examples:
   bin/toolframe bootstrap-env
   bin/toolframe check --quick
-  bin/toolframe preflight-headline
+  bin/toolframe preflight-current
+  bin/toolframe current-e2e --trials 10 --device cuda:0
   bin/toolframe benchmark --suite current_all_runnable --preflight-only --skip-rollout
-  bin/toolframe preflight-paper
-  bin/toolframe benchmark --task brush_sweep/red_zone --trials 1 --device auto
+  bin/toolframe benchmark --task brush_sweep/off_table_red --trials 1 --device auto
   bin/toolframe tool-ref --help
   bin/toolframe inventory --compact
-  bin/toolframe run-spec --task brush_sweep/red_zone --preflight-only
+  bin/toolframe run-spec --task brush_sweep/off_table_red --preflight-only
 EOF
 }
 
@@ -94,30 +92,18 @@ case "${cmd}" in
   list)
     run_with_env "${ROOT}/parttoolgen/scripts/run_tool_use_benchmark.py" --list "$@"
     ;;
-  preflight-headline)
+  preflight-current)
     run_with_env "${ROOT}/parttoolgen/scripts/run_tool_use_benchmark.py" \
-      --suite paper_release_6.4_headline \
+      --suite current_all_runnable \
       --preflight-only \
       --skip-rollout \
       --aggregate none \
       "$@"
     ;;
-  paper-headline)
+  current-e2e)
     run_with_env "${ROOT}/parttoolgen/scripts/run_tool_use_benchmark.py" \
-      --suite paper_release_6.4_headline \
-      "$@"
-    ;;
-  preflight-paper)
-    run_with_env "${ROOT}/parttoolgen/scripts/run_tool_use_benchmark.py" \
-      --suite paper_release_6.4 \
-      --preflight-only \
-      --skip-rollout \
-      --aggregate none \
-      "$@"
-    ;;
-  paper-release)
-    run_with_env "${ROOT}/parttoolgen/scripts/run_tool_use_benchmark.py" \
-      --suite paper_release_6.4 \
+      --suite current_all_runnable \
+      --tool-refs-mode vlm_per_seed \
       "$@"
     ;;
   preflight-all)

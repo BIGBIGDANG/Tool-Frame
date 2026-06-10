@@ -3,7 +3,7 @@
 
 This is the public tool-side entry point:
 
-P3SAM/tool_prior -> 5.15-style part overview evidence -> task-conditioned
+P3SAM/tool_prior -> standard part overview evidence -> task-conditioned
 contact point and motion-axis refs.
 
 The lower-level scripts remain importable/debuggable, but handoff users should
@@ -246,6 +246,14 @@ def _select_command(
     ]
     if args.base_url:
         command.extend(["--base-url", args.base_url])
+    enable_thinking = getattr(args, "enable_thinking", None)
+    if enable_thinking is True:
+        command.append("--enable-thinking")
+    elif enable_thinking is False:
+        command.append("--disable-thinking")
+    if stage != "part":
+        for context_image in getattr(args, "context_image", None) or []:
+            command.extend(["--context-image", str(context_image)])
     if part_selection is not None:
         command.extend(["--part-selection", str(part_selection)])
     if stage == "part" and args.part_marker:
@@ -307,6 +315,13 @@ def main() -> int:
     parser.add_argument("--part-overview-views", type=int, default=3)
     parser.add_argument("--max-views", type=int, default=16)
     parser.add_argument("--selection-source", choices=["vlm", "reference"], default="vlm")
+    parser.add_argument(
+        "--context-image",
+        type=Path,
+        action="append",
+        default=[],
+        help="Optional scene/workspace image passed to contact and motion-axis selection.",
+    )
     parser.add_argument("--part-marker")
     parser.add_argument("--contact-point-marker")
     parser.add_argument("--candidate-contact-point-markers", nargs="*")
@@ -315,6 +330,20 @@ def main() -> int:
     parser.add_argument("--model", default=os.environ.get("VLM_MODEL") or "gpt-5.4")
     parser.add_argument("--base-url", default=os.environ.get("VLM_API_BASE"))
     parser.add_argument("--max-new-tokens", type=int, default=768)
+    thinking_group = parser.add_mutually_exclusive_group()
+    thinking_group.add_argument(
+        "--enable-thinking",
+        dest="enable_thinking",
+        action="store_true",
+        default=None,
+        help="Pass enable_thinking=true to OpenAI-compatible providers that support it, such as Qwen.",
+    )
+    thinking_group.add_argument(
+        "--disable-thinking",
+        dest="enable_thinking",
+        action="store_false",
+        help="Pass enable_thinking=false to OpenAI-compatible providers that support it.",
+    )
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 

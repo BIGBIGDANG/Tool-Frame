@@ -1,0 +1,156 @@
+{
+  "schema_version": "toolframe_marker_trace_benchmark_config_v1",
+  "benchmark": "marker_trace",
+  "variant": "write_l",
+  "manual_review_status": "current_provisional_hard_task",
+  "description": "Image-grounded staples-marker side-whiteboard hard benchmark task for writing L. Success is decided by the VLM judge from marker-tip ink evidence; rollout/contact metrics are diagnostic only.",
+  "runner_status": "registry_runnable_self_contained",
+  "runner_args": {
+    "output_root": "artifacts/image_grounded/marker_trace/write_l_contract_smoke",
+    "tool_refs_dir": "configs/tool_refs/staples_marker",
+    "seed_start": 0,
+    "trials": 3,
+    "device": "cuda:0",
+    "rollout_max_steps": 1500,
+    "capture_video_every": 1,
+    "eval_success_tolerance_m": 0.018,
+    "vlm_judge_confidence_threshold": 0.7,
+    "tool_refs_policy": "Use reviewed task-conditioned staples_marker refs from the marker_trace tool-label review file or a regenerated publishable tool-ref package; do not depend on historical path-named runtime roots.",
+    "requested_letter": "L",
+    "split": "write_l",
+    "source_task": "artifacts/tool_use_benchmark/marker_trace/common/blank_whiteboard_task.json",
+    "source_task_status": "tracked_self_contained_public_blank_whiteboard_task_template",
+    "video_stride": 8,
+    "target_approach_axis_source": "opposite_scene_direction",
+    "compile_min_clearance_m": 0.0,
+    "compile_swept_min_clearance_m": 0.0
+  },
+  "scene_initialization": {
+    "table_asset": "urdf/parttoolgen_benchmark/tabletop_polyhaven_wood_table/tabletop_polyhaven_wood_table.urdf",
+    "tool_mesh": "simtoolreal/assets/urdf/dextoolbench/marker/staples_marker/staples_marker.obj",
+    "trajectory": null,
+    "trajectory_policy": "No pre-authored letter trajectory is a method input; VLM scene refs define start, optional path_points, and explicit end from public side-board evidence.",
+    "start_pose_policy": "sample or shift the marker start pose so the tool does not overlap the left-side vertical blank whiteboard at initialization; preview seed 000 places the marker near the robot-hand side with a visible gap before approach.",
+    "whiteboard": {
+      "asset": "urdf/parttoolgen_benchmark/marker_trace_whiteboard/left_side_vertical_whiteboard_002x0475x101.urdf",
+      "nominal_center_world": [
+        0.38,
+        0.0,
+        0.505
+      ],
+      "size_xyz": [
+        0.02,
+        0.82,
+        1.01
+      ],
+      "surface_normal_world": [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "initial_surface_state": "blank_no_preexisting_trace_or_guide",
+      "canonical_preview_policy": "Regenerate public whiteboard_front evidence under the benchmark runtime output tree when promoting statistics; do not depend on historical preview roots."
+    },
+    "target": {
+      "role": "vlm_selected_public_whiteboard_path_refs",
+      "physical_role": "blank writable whiteboard surface",
+      "preexisting_trace_or_guide_asset": null,
+      "path_kind": "single_stroke_linear_corner_letter",
+      "requested_letter": "L"
+    },
+    "target_grounding_policy": "The shared task-generic VLM scene-ref interface applies. VLM start/path/end refs scaffold compilation and diagnostics; final success requires VLM-judged recognizable marker-tip ink matching the requested letter.",
+    "tool_grounding_policy": "Use task-conditioned P3SAM/VLM staples_marker refs: VLM selects the task-facing marker part, then selects tool.contact_point and tool.motion_axis from evidence for that selected part."
+  },
+  "acceptance": {
+    "success_policy": "vlm_judge_success",
+    "requires_visible_ink_trace_overlap": "vlm_judge_scored",
+    "requires_tracking_execution_passed": "diagnostic_only",
+    "ink_evidence_policy": {
+      "module": "parttoolgen.evaluation.marker_trace_ink_evidence",
+      "rule": "Render black ink only from the reviewed staples_marker tool.contact_point while the whiteboard contact gate passes. Never render ink from the tool center, handle, cap, shaft, gripper, or whole-tool pose alone.",
+      "outputs": [
+        "ink_trace_overlay.png",
+        "ink_trace_metrics.json"
+      ],
+      "quality_scope": "VLM judge decides success from marker-tip ink evidence; automatic rollout/contact values are diagnostic only."
+    },
+    "tool_grounding_contract": {
+      "schema_version": "toolframe_tool_grounding_contract_v1",
+      "task_type": "marker_trace",
+      "tool_id": "staples_marker",
+      "label_source": "manual_review_required",
+      "manual_review_status": "pending",
+      "review_file": "artifacts/tool_use_benchmark/tool_label_review/marker_trace__staples_marker.json"
+    },
+    "vlm_judge_evaluation": {
+      "metric": "vlm_judge_success",
+      "judge_inputs": [
+        "scene_grounding/scene_keypoints_overlay.png",
+        "ink_evidence/ink_trace_overlay.png",
+        "rollout/rollout_side_board_front_render.mp4",
+        "rollout/rollout_summary.json",
+        "ink_evidence/ink_trace_metrics.json"
+      ],
+      "success_labels": [
+        "success",
+        "failure"
+      ],
+      "judge_module": "parttoolgen.evaluation.marker_trace_vlm_judge"
+    },
+    "benchmark_status": "current/provisional_hard_task",
+    "latest_default_tolerance_smoke": null,
+    "known_difficulty": "Current smoke completed the full chain but VLM judge success was low because marker-tip ink is fragmented.",
+    "scratch_smoke_policy": "Local smoke roots may be recorded in lab notes, but publishable benchmark configs do not depend on them.",
+    "large_statistics_allowed": false,
+    "required_predicates": [
+      "vlm_judge_success",
+      "marker_tip_contact_ink_exists",
+      "visible_ink_on_whiteboard_surface",
+      "visible_ink_vlm_judge_recognizable_as_letter_L"
+    ],
+    "pipeline_gate_predicates": [
+      "same_prompt_scene_refs_valid",
+      "lifted_ordered_refs_on_blank_whiteboard_surface",
+      "diagnostic_path_gate_checked",
+      "rollout_artifacts_available_for_review",
+      "ink_evidence_rendered_from_marker_tip_contact"
+    ],
+    "diagnostic_predicates": [
+      "policy_goal_pass",
+      "tracking_execution_passed",
+      "semantic_execution_passed",
+      "contact_sample_count",
+      "ink_length_m",
+      "ink_segment_count"
+    ]
+  },
+  "runner": "parttoolgen/src/parttoolgen/cli/runners/run_image_grounded_marker_trace_eval.py",
+  "publish_status_note": "Publishable marker runs are regenerated by parttoolgen/src/parttoolgen/cli/runners/run_image_grounded_marker_trace_eval.py under artifacts/image_grounded/marker_trace/. Historical test000 roots are scratch evidence only.",
+  "contract_status": {
+    "environment_id": "side_left_vertical_whiteboard_soft02",
+    "benchmark_status": "current/provisional_hard_task",
+    "task_scope_review_status": "human_accepted_hard_task_candidate",
+    "success_check_status": "vlm_judge_gate_with_approved_marker_tool_labels",
+    "large_statistics_status": "not_approved_until_publish_smoke_is_reviewed",
+    "notes": "VLM judge over produced marker-tip ink is the intended semantic gate for writing L; automatic ink/path/contact metrics are diagnostic.",
+    "runner_status": "formal_runner_available"
+  },
+  "mainline_params": {
+    "grounding_camera": "whiteboard_front",
+    "depth_sample_policy": "nearest",
+    "action_direction_z_policy": "anchor_height",
+    "path_point_policy": "parser preserves VLM path_points as the complete scene.motion_path; explicit VLM end_point remains supported for single-endpoint or contact-only tasks",
+    "tool_contact_point_ref": "tool.contact_point",
+    "contact_point_relation": "ordered_point_match",
+    "tool_motion_axis_ref": "tool.motion_axis",
+    "tool_motion_axis_target_ref": "scene.direction",
+    "tool_motion_axis_relation": "parallel",
+    "scene_motion_path_ref": "scene.motion_path",
+    "scene_action_end_ref": "scene.end",
+    "end_surface_policy": "anchor_contact_plane",
+    "task_language_draft": "Use this marker to write the letter L on the whiteboard.",
+    "target_approach_axis_source": "opposite_scene_direction",
+    "compile_min_clearance_m": 0.0,
+    "compile_swept_min_clearance_m": 0.0
+  }
+}

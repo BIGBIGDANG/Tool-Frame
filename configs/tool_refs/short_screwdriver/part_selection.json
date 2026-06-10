@@ -1,0 +1,55 @@
+{
+  "schema_version": "parttoolgen_p3sam_part_selection_v0",
+  "tool_id": "short_screwdriver",
+  "task_id": "screwdriver_insert/wide_socket_short_screwdriver",
+  "task_instruction": "Use this screwdriver to insert its tip into the visible socket.",
+  "selection_source": "vlm",
+  "selected_marker": "1",
+  "selected_function_marker": "1",
+  "selected_part": {
+    "marker": "1",
+    "part_ref": "tool.parts.part_000"
+  },
+  "selected_function_part_ref": "tool.parts.part_000",
+  "selected_part_row": {
+    "tool_id": "short_screwdriver",
+    "marker": "1",
+    "part_id": "part_000",
+    "part_ref": "tool.parts.part_000",
+    "source_label": "p3sam_segment_0",
+    "point_count": 210,
+    "role_candidates": [
+      "tool_part_candidate",
+      "functional_candidate",
+      "grasp_candidate",
+      "contact_patch"
+    ],
+    "part_label": 0
+  },
+  "visual_evidence": "configs/tool_refs/short_screwdriver/evidence/01_part_selection/visual_evidence.json",
+  "raw_response": {
+    "selected_marker": "1",
+    "confidence": 0.97,
+    "reason": "Marker 1 labels the screwdriver shaft and tip, which is the part inserted into a socket.",
+    "_raw_response": {
+      "raw_text": "{\"selected_marker\":\"1\",\"confidence\":0.97,\"reason\":\"Marker 1 labels the screwdriver shaft and tip, which is the part inserted into a socket.\"}",
+      "metadata": {
+        "client": "openai_compatible",
+        "endpoint": "chat/completions",
+        "model": "gpt-5.4",
+        "base_url": "https://xcode.best/v1",
+        "image_paths": [
+          "configs/tool_refs/short_screwdriver/evidence/01_part_selection/short_screwdriver/overview/short_screwdriver_whole_mesh_part_choice_overview.png",
+          "configs/tool_refs/short_screwdriver/evidence/01_part_selection/short_screwdriver/overview/short_screwdriver_isolated_part_choice_overview.png"
+        ],
+        "latency_s": 7.074,
+        "max_new_tokens": 768,
+        "context_id": "short_screwdriver:p3sam_part_selection"
+      }
+    }
+  },
+  "metadata": {
+    "created_by": "parttoolgen.cli.tool_prior.select_p3sam_tool_refs",
+    "created_unix_s": 1780672008.9734828
+  }
+}

@@ -106,15 +106,20 @@ def test_paper_release_suites_keep_headline_candidate_and_diagnostic_boundaries(
     suites = registry["suites"]
 
     assert set(suites["paper_release_6.4_headline"]) == {
-        "brush_sweep/red_zone",
+        "brush_sweep/off_table_red",
+        "brush_sweep/off_table_blue",
         "eraser_wipe/tabletop_wipe",
+        "eraser_wipe/tabletop_wipe_handle",
     }
     assert set(suites["legacy_directional_diagnostics"]) == {
         "brush_sweep/forward",
         "brush_sweep/left",
+        "brush_sweep/red_zone",
     }
+    assert "brush_sweep/red_zone" not in suites["current_all_runnable"]
     assert "brush_sweep/forward" not in suites["current_all_runnable"]
     assert "brush_sweep/left" not in suites["current_all_runnable"]
+    assert "brush_sweep/red_zone" not in suites["paper_release_6.4_headline"]
     assert "brush_sweep/forward" not in suites["paper_release_6.4_headline"]
     assert "brush_sweep/left" not in suites["paper_release_6.4"]
     assert "eraser_wipe/side_whiteboard_hdu_erase" not in suites["paper_release_6.4"]

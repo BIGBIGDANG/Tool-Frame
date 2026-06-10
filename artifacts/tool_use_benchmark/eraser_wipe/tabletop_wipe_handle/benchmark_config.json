@@ -1,0 +1,68 @@
+{
+  "schema_version": "toolframe_eraser_wipe_benchmark_config_v1",
+  "benchmark": "eraser_wipe",
+  "variant": "tabletop_wipe_handle",
+  "description": "Same tabletop HDU-board wipe scene using the handle_eraser tool shape. The tool starts on the tabletop near the hand with the handle facing upward.",
+  "runner": "parttoolgen/src/parttoolgen/cli/runners/run_image_grounded_eraser_wipe_eval.py",
+  "runner_args": {
+    "output_root": "artifacts/image_grounded/eraser_wipe/tabletop_wipe_handle",
+    "tool_id": "handle_eraser",
+    "tool_refs_dir": "configs/tool_refs/handle_eraser",
+    "tool_mesh": "simtoolreal/assets/urdf/dextoolbench/eraser/handle_eraser/handle_eraser.obj",
+    "tool_start_pose_source": "simtoolreal/dextoolbench/trajectories/eraser/handle_eraser/wipe_c.json",
+    "fixed_start_pose_xyzw": [
+      0.02,
+      0.135,
+      0.62,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "seed_start": 0,
+    "trials": 20,
+    "device": "cuda:0",
+    "rollout_max_steps": 1500,
+    "rollout_max_tracking_error_m": 0.018,
+    "capture_video_every": 1,
+    "approach_offset_m": 0.03,
+    "max_translation_step_m": 0.035,
+    "max_rotation_step_rad": 0.30,
+    "target_approach_axis_source": "opposite_scene_direction",
+    "initial_grasp_lift_m": 0.12,
+    "initial_grasp_lift_steps": 3,
+    "initial_grasp_hold_steps": 0
+  },
+  "scene_initialization": {
+    "table_asset": "urdf/parttoolgen_benchmark/tabletop_polyhaven_wood_table/tabletop_polyhaven_wood_table.urdf",
+    "tool_mesh": "simtoolreal/assets/urdf/dextoolbench/eraser/handle_eraser/handle_eraser.obj",
+    "trajectory": "simtoolreal/dextoolbench/trajectories/eraser/handle_eraser/wipe_c.json",
+    "nominal_start_pose_xyzw": [
+      0.02,
+      0.135,
+      0.62,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ],
+    "start_pose_policy": "Runtime mesh-table-contact projection keeps the handle_eraser on the tabletop near the robot hand with the handle upward and 3 mm clearance.",
+    "target": {
+      "role": "fixed_physical_hdu_board_on_tabletop",
+      "asset": "urdf/parttoolgen_benchmark/eraser_wipe_tabletop_hdu_board/tabletop_hdu_board_018x011x030.urdf",
+      "physical_role": "fixed raised white tabletop board containing the HDU text; the board top is the physical contact surface"
+    }
+  },
+  "acceptance": {
+    "success_policy": "eraser_wipe_contact_coverage: same tabletop wipe predicate as flat_eraser; rollout contact coverage and final visual judge remain diagnostics for attribution.",
+    "min_contact_coverage_fraction": 0.3,
+    "requires_visual_patch_disappearance": false,
+    "requires_tracking_execution_passed": false
+  },
+  "contract_status": {
+    "environment_id": "tabletop_wood_table",
+    "benchmark_status": "current/e2e_tool_shape_variant",
+    "success_check_status": "reviewed_same_task_predicate",
+    "large_statistics_status": "allowed_after_smoke"
+  }
+}

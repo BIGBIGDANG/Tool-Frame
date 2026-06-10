@@ -15,7 +15,6 @@
     "capture_video_every": 1,
     "approach_offset_m": 0.045,
     "target_approach_axis_source": "opposite_scene_direction",
-    "terminal_inside_depth_m": 0.035,
     "success_min_inside_depth_m": 0.005,
     "socket_asset": "urdf/parttoolgen_benchmark/screwdriver_insert_socket/deep_socket_wide_048x055.urdf",
     "socket_size_xyz": [
@@ -27,7 +26,7 @@
     "socket_inner_diameter_m": 0.024,
     "socket_tip_radial_tolerance_m": 0.012,
     "max_translation_step_m": 0.025,
-    "initial_grasp_lift_m": 0.08,
+    "initial_grasp_lift_m": 0.12,
     "initial_grasp_lift_steps": 3,
     "initial_grasp_hold_steps": 0
   },
@@ -45,7 +44,6 @@
         0.055
       ],
       "socket_top_local_z_m": 0.055,
-      "terminal_inside_depth_m": 0.035,
       "success_min_inside_depth_m": 0.005,
       "inner_diameter_m": 0.024,
       "tip_radial_tolerance_m": 0.012,
@@ -108,7 +106,7 @@
         30.0
       ]
     },
-    "target_grounding_policy": "The shared VLM scene-ref interface applies: natural task language and public top-down RGB-D evidence provide start_point at the visible socket opening and scene.direction when applicable. The runner derives the executable terminal point from that public direction plus the benchmark inside-socket goal contract.",
+    "target_grounding_policy": "The shared VLM scene-ref interface applies: natural task language and public top-down RGB-D evidence provide start_point, end_point, and scene.direction when applicable. The lifted VLM endpoint is passed to the compiler unchanged; inside-socket depth is measured only as an evaluation predicate.",
     "tool_grounding_policy": "Use task-conditioned P3SAM/VLM long_screwdriver refs: VLM selects the screwdriver tip/shaft contact-point part, then selects the contact point marker and shaft/tip motion-axis marker from public evidence for that selected part.",
     "trajectory_policy": "Reset/start-pose scaffold for SimToolReal initialization only; not a method input, target trajectory, oracle trajectory, or success template."
   },

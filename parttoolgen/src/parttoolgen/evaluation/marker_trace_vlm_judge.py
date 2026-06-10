@@ -144,9 +144,9 @@ def main() -> int:
         match = re.search(r"\bletter\s+([A-Za-z])\b", instruction)
         if match:
             requested_letter = match.group(1).upper()
-    if requested_letter not in {"C", "L"}:
+    if not re.fullmatch(r"[A-Z]", requested_letter):
         raise ValueError(
-            "marker trace VLM judge currently supports requested letters C and L; "
+            "marker trace VLM judge requires one requested English letter; "
             f"got {requested_letter!r}"
         )
     if not args.ink_overlay.exists():

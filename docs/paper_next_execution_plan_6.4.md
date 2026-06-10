@@ -221,7 +221,7 @@ The existing candidate queue only contains queue metadata. Rerun the candidate
 smoke explicitly after the headline run:
 
 ```bash
-bin/toolframe paper-release \
+bin/toolframe current-e2e \
   --trials 1 \
   --device cuda:0 \
   --continue-on-task-error \

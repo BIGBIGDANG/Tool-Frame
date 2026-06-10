@@ -4,10 +4,10 @@
   "tool_id": "staples_marker",
   "task_semantics": {
     "functional_part": "marker tip or writing end region that should touch and trace the visible line",
-    "contact_point": "tip endpoint/contact point matched to the visible line start and use-stage path",
-    "motion_axis": "marker body or shaft axis used to orient the whole marker along or naturally relative to the trace direction"
+    "contact_point": "distal marker tip endpoint matched to the visible trace start/end point references",
+    "motion_axis": "tip/body side axes that can orient the marker naturally for tracing"
   },
-  "manual_review_status": "pending",
+  "manual_review_status": "approved",
   "audit_policy": {
     "used_for_method_selection": false,
     "used_for_compiler_constraints": false,
@@ -15,52 +15,35 @@
     "purpose": "post_hoc_evaluator_audit_and_failure_attribution_only",
     "empty_allowed_lists_mean": "not_audited"
   },
-  "reviewer": null,
-  "review_date": null,
+  "reviewer": "human_user",
+  "review_date": "2026-06-07",
   "evidence": {
-    "segmented_tool_manifest": "artifacts/image_grounded/tool_ref_grounding/part_selection/all_segmented_tools_20260525/manifest.json",
-    "p3sam_prior_dir": "artifacts/tool_prior/p3sam/staples_marker/tool_prior/",
-    "tool_ref_dir": "configs/tool_refs/staples_marker",
-    "contact_point_selection": "configs/tool_refs/staples_marker/contact_point_selection.json",
-    "axis_binding": "configs/tool_refs/staples_marker/axis_binding.json",
-    "part_visual_evidence": "configs/tool_refs/staples_marker/evidence/01_part_selection/visual_evidence.json",
-    "contact_visual_evidence": "configs/tool_refs/staples_marker/evidence/02_contact_marker_selection/visual_evidence.json",
-    "whole_mesh_overview": "configs/tool_refs/staples_marker/evidence/01_part_selection/staples_marker/overview/staples_marker_whole_mesh_part_choice_overview.png",
-    "isolated_part_overview": "configs/tool_refs/staples_marker/evidence/01_part_selection/staples_marker/overview/staples_marker_isolated_part_choice_overview.png",
-    "part_card": "configs/tool_refs/staples_marker/evidence/01_part_selection/staples_marker/part_cards/candidate_002_card.png",
-    "face_images_glob": "configs/tool_refs/staples_marker/evidence/02_contact_marker_selection/staples_marker/selected_part_face_highlights/candidate_002_face_F*_highlight.png",
-    "publish_policy": "Use configs/tool_refs/staples_marker as the publishable tool-ref evidence package; historical runtime evidence paths remain provenance only."
+    "tool_ref_dir": "artifacts/test005/tool_refs_vlm_reselect_20260607/marker_trace/write_l/staples_marker",
+    "contact_point_selection": "artifacts/test005/tool_refs_vlm_reselect_20260607/marker_trace/write_l/staples_marker/contact_point_selection.json",
+    "axis_binding": "artifacts/test005/tool_refs_vlm_reselect_20260607/marker_trace/write_l/staples_marker/axis_binding.json",
+    "write_c_tool_ref_dir": "artifacts/test005/tool_refs_vlm_reselect_20260607/marker_trace/write_c/staples_marker"
   },
   "candidate_from_artifacts_not_approved": {
-    "selected_contact_point_part_ref": null,
-    "selected_contact_point_face_marker": null,
-    "selected_contact_point_source_ref": null,
-    "selected_contact_point_surface_ref": null,
-    "selected_motion_axis_face_marker": null,
-    "selected_motion_axis_surface_ref": null,
-    "candidate_contact_point_face_markers": [],
-    "candidate_contact_point_source_refs": [],
-    "candidate_contact_point_surface_refs": []
+    "write_l_candidate_contact_point_face_markers": ["F2"],
+    "write_l_candidate_motion_axis_face_markers": ["F2"],
+    "write_c_candidate_contact_point_face_markers": ["F2", "F3", "F4", "F5", "F6"],
+    "write_c_candidate_motion_axis_face_markers": ["F2"]
   },
   "approved_contract": {
-    "allowed_contact_point_part_refs": [],
-    "allowed_contact_point_face_markers": [],
-    "allowed_contact_point_source_refs": [],
-    "allowed_contact_point_surface_refs": [],
-    "allowed_motion_axis_face_markers": [],
-    "allowed_motion_axis_surface_refs": []
+    "allowed_contact_point_part_markers": ["2"],
+    "allowed_contact_point_part_refs": ["tool.parts.part_001"],
+    "allowed_contact_point_face_markers": ["F2"],
+    "allowed_contact_point_source_refs": ["candidate.points.part_001_x_positive_endpoint"],
+    "allowed_contact_point_surface_refs": ["candidate.surfaces.part_001_x_positive_endpoint"],
+    "allowed_motion_axis_face_markers": ["F3", "F4", "F5", "F6"],
+    "allowed_motion_axis_surface_refs": [
+      "candidate.surfaces.part_001_y_negative_contact",
+      "candidate.surfaces.part_001_y_positive_contact",
+      "candidate.surfaces.part_001_z_negative_contact",
+      "candidate.surfaces.part_001_z_positive_contact"
+    ]
   },
-  "review_questions": [
-    "Which part marker is the actual writing tip or writing end for trace contact?",
-    "Which face/contact marker should be point-matched to the visible line?",
-    "Which marker shaft/body face or axis should be used for motion-axis alignment?",
-    "Should visible produced ink overlap be required for task success or kept diagnostic-only?",
-    "What numeric tolerances should gate tip-to-line distance, endpoint error, and contact continuity?"
-  ],
   "review_notes": [
-    "Switched from sharpie_marker because the previewed sharpie asset appears capped in topdown evidence."
-  ],
-  "evidence_provenance": {
-    "publish_policy": "Historical runtime evidence paths are provenance only and are intentionally omitted from publishable configs."
-  }
+    "Human review: contact should be only the marker tip F2. Motion-axis candidates should be F3/F4/F5/F6 rather than the tip endpoint normal F2."
+  ]
 }

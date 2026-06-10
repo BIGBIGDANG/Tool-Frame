@@ -10,11 +10,11 @@ Use `bin/toolframe` first:
 bin/toolframe bootstrap-env
 bin/toolframe env-check
 bin/toolframe check --quick
-bin/toolframe preflight-headline
-bin/toolframe preflight-paper
+bin/toolframe preflight-current
+bin/toolframe current-e2e --trials 10 --device cuda:0 --tool-refs-mode vlm_per_seed
 bin/toolframe benchmark --suite current_all_runnable --preflight-only --skip-rollout
 bin/toolframe tool-ref --help
-bin/toolframe run-spec --task brush_sweep/red_zone --preflight-only
+bin/toolframe run-spec --task brush_sweep/off_table_red --preflight-only
 ```
 
 The only stable files in this directory are listed in
@@ -44,12 +44,18 @@ Do not add a new file here for a new task, scene, or tool. Add registry/spec
 data and package code, then invoke it through `bin/toolframe benchmark`,
 `bin/toolframe run-spec`, or `bin/toolframe tool-ref`.
 
+The current experiment entry is `bin/toolframe current-e2e`, which is a thin
+alias for `run_tool_use_benchmark.py --suite current_all_runnable`. It runs the
+full E2E method and leaves failure attribution to human review; fixed/oracle
+ref baselines and dense module metrics are not part of the current scripts
+layer.
+
 Marker-trace ink rendering, marker VLM judging, and side-board HDU erase
 success checking are package modules under `parttoolgen.evaluation`; runners
 call them with `python -m ...` instead of shim scripts.
 
 Candidate part cards, selected-part bbox overviews, selected-part face
-highlights, and presentation crops should still come from the 5.15-style
+highlights, and presentation crops should still come from the standard
 renderer in `parttoolgen.cli.tool_prior.render_sampart3d_part_role_evidence`.
 Do not reintroduce simplified local mesh/SVG exporters or per-face candidate
 choice figures.

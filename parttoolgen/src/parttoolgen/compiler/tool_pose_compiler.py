@@ -66,6 +66,7 @@ class ProgramIRCompileError(ValueError):
 
 DEFAULT_ENABLE_ALL_TOOL_PART_OBB_TABLE_PROJECTION = True
 DEFAULT_SUBGOAL_TABLE_PART_OBB_CLEARANCE_M = 0.0
+DEFAULT_SUBGOAL_TABLE_CLEARANCE_TOLERANCE_M = 1e-6
 
 
 def _constraints_for_stage(program_ir: dict[str, Any], stage_name: str) -> list[dict[str, Any]]:
@@ -279,21 +280,48 @@ def _project_pose_to_tool_bbox_table_clearance(
     }
 
 
-def _project_goals_to_tool_bbox_table_clearance(
+def _pose_with_generation_time_table_clearance(
+    pose: dict[str, Any],
     *,
-    goals: list[dict[str, Any]],
-    resolver: ReferenceResolver,
     table_top_z: float | None,
     bbox_points_tool: list[list[float]],
     clearance_m: float,
-    sample_scope: str = "tool_bbox",
+    allow_contact_penetration: bool,
+) -> tuple[dict[str, Any], dict[str, Any] | None]:
+    _projected, record = _project_pose_to_tool_bbox_table_clearance(
+        pose,
+        table_top_z=table_top_z,
+        bbox_points_tool=bbox_points_tool,
+        clearance_m=clearance_m,
+    )
+    if record is None:
+        return pose, None
+    if record.get("applied"):
+        lift_m = float(record.get("lift_m", 0.0))
+        if lift_m > DEFAULT_SUBGOAL_TABLE_CLEARANCE_TOLERANCE_M:
+            raise ProgramIRCompileError(
+                "generated subgoal violates hard table bbox clearance invariant: "
+                f"required lift {lift_m:.6f}m exceeds tolerance "
+                f"{DEFAULT_SUBGOAL_TABLE_CLEARANCE_TOLERANCE_M:.6f}m"
+            )
+    return pose, record
+
+
+def _validate_generated_goals_table_clearance(
+    *,
+    goals: list[dict[str, Any]],
+    table_top_z: float | None,
+    bbox_points_tool: list[list[float]],
+    clearance_m: float,
 ) -> dict[str, Any]:
-    records: list[dict[str, Any]] = []
-    applied_count = 0
-    max_lift_m = 0.0
+    if table_top_z is None or not bbox_points_tool:
+        return {"enabled": False, "checked_goal_count": 0, "violation_count": 0, "violations": []}
+    violations: list[dict[str, Any]] = []
+    min_goal_bbox_z = float("inf")
+    required_min_z = float(table_top_z) + float(clearance_m)
     for goal in goals:
         pose = goal["pose_world_tool"]
-        projected, record = _project_pose_to_tool_bbox_table_clearance(
+        _, record = _project_pose_to_tool_bbox_table_clearance(
             pose,
             table_top_z=table_top_z,
             bbox_points_tool=bbox_points_tool,
@@ -301,44 +329,37 @@ def _project_goals_to_tool_bbox_table_clearance(
         )
         if record is None:
             continue
-        if record["applied"]:
-            applied_count += 1
-            max_lift_m = max(max_lift_m, float(record["lift_m"]))
-            goal["pose_world_tool"] = projected
-            contact_point_goal = goal.get("contact_point_goal")
-            expected_contact = goal.get("expected_contact")
-            tool_ref = None
-            if isinstance(expected_contact, dict):
-                tool_ref = expected_contact.get("tool_part")
-            if isinstance(contact_point_goal, dict) and isinstance(tool_ref, str):
-                try:
-                    point_tool = contact_point_goal.get("point_tool")
-                    if not isinstance(point_tool, list) or len(point_tool) != 3:
-                        tool_point = resolver.tool_point(tool_ref)
-                        point_tool = tool_point.point_tool or []
-                    contact_point_goal["position_world"] = pose_point(
-                        projected,
-                        [float(item) for item in point_tool],
-                    )
-                    contact_point_goal["orientation_xyzw"] = projected["orientation_xyzw"]
-                except Exception:  # noqa: BLE001 - keep projection robust for diagnostic refs.
-                    pass
-        records.append(
-            {
-                "goal_index": int(goal.get("index", len(records))),
-                "stage": str(goal.get("stage", "")),
-                **record,
-            }
+        min_z = float(record.get("min_bbox_corner_z_before", required_min_z))
+        min_goal_bbox_z = min(min_goal_bbox_z, min_z)
+        violation_m = max(0.0, required_min_z - min_z)
+        if violation_m > DEFAULT_SUBGOAL_TABLE_CLEARANCE_TOLERANCE_M:
+            violations.append(
+                {
+                    "goal_index": int(goal["index"]),
+                    "stage": str(goal["stage"]),
+                    "min_bbox_corner_z": min_z,
+                    "required_min_z": required_min_z,
+                    "violation_m": violation_m,
+                }
+            )
+    if violations:
+        preview = ", ".join(
+            f"{item['stage']}#{item['goal_index']}:{item['violation_m']:.6f}m"
+            for item in violations[:5]
+        )
+        raise ProgramIRCompileError(
+            "generated subgoals violate hard table bbox clearance invariant: "
+            f"{preview}"
         )
     return {
-        "enabled": bool(table_top_z is not None and bbox_points_tool),
-        "sample_scope": sample_scope,
-        "table_top_z": table_top_z,
-        "clearance_m": float(clearance_m),
-        "num_bbox_corners": len(bbox_points_tool),
-        "applied_count": applied_count,
-        "max_lift_m": max_lift_m,
-        "records": records,
+        "enabled": True,
+        "checked_goal_count": len(goals),
+        "violation_count": 0,
+        "violations": [],
+        "min_goal_bbox_corner_z": None if min_goal_bbox_z == float("inf") else min_goal_bbox_z,
+        "table_top_z": float(table_top_z),
+        "required_min_z": required_min_z,
+        "tolerance_m": DEFAULT_SUBGOAL_TABLE_CLEARANCE_TOLERANCE_M,
     }
 
 
@@ -359,7 +380,23 @@ def _append_transition_if_needed(
     min_axis_descent_m: float = 0.015,
     min_lateral_split_m: float = 0.025,
     primary_tool_point_tool: list[float] | None = None,
+    table_top_z: float | None = None,
+    bbox_points_tool: list[list[float]] | None = None,
+    table_clearance_m: float = 0.0,
+    table_clearance_records: list[dict[str, Any]] | None = None,
 ) -> None:
+    def make_table_safe(pose: dict[str, Any], *, stage: str) -> dict[str, Any]:
+        safe_pose, table_record = _pose_with_generation_time_table_clearance(
+            pose,
+            table_top_z=table_top_z,
+            bbox_points_tool=bbox_points_tool or [],
+            clearance_m=table_clearance_m,
+            allow_contact_penetration=allow_contact_penetration,
+        )
+        if table_record is not None and table_clearance_records is not None:
+            table_clearance_records.append({"stage": stage, **table_record})
+        return safe_pose
+
     def append_linear_segment(
         *,
         segment_start: dict[str, Any],
@@ -390,10 +427,12 @@ def _append_transition_if_needed(
                     alpha,
                 ),
             }
+            transition_stage = f"{stage_prefix}_{segment}"
+            pose = make_table_safe(pose, stage=transition_stage)
             goals.append(
                 _goal_record(
                     index=len(goals),
-                    stage=f"{stage_prefix}_{segment}",
+                    stage=transition_stage,
                     pose=pose,
                     source_constraints=source_constraints,
                     primary_tool_ref=primary_tool_ref,
@@ -433,6 +472,10 @@ def _append_transition_if_needed(
             ),
             "orientation_xyzw": normalize_quat(next_pose["orientation_xyzw"]),
         }
+        high_lateral_pose = make_table_safe(
+            high_lateral_pose,
+            stage=f"{stage_name}_transition_high",
+        )
         append_linear_segment(
             segment_start=current_pose,
             segment_end=high_lateral_pose,
@@ -488,15 +531,28 @@ def _append_start_settle_subgoal(
     goals: list[dict[str, Any]],
     current_pose: dict[str, Any],
     resolver: ReferenceResolver,
-) -> None:
+    table_top_z: float | None = None,
+    bbox_points_tool: list[list[float]] | None = None,
+    table_clearance_m: float = 0.0,
+    table_clearance_records: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
     default_tool_ref = resolver.default_tool_point_ref()
-    record = _goal_record(
-        index=len(goals),
-        stage="execution_start_settle",
-        pose={
+    pose, table_record = _pose_with_generation_time_table_clearance(
+        {
             "position": [float(value) for value in current_pose["position"]],
             "orientation_xyzw": normalize_quat(current_pose["orientation_xyzw"]),
         },
+        table_top_z=table_top_z,
+        bbox_points_tool=bbox_points_tool or [],
+        clearance_m=table_clearance_m,
+        allow_contact_penetration=False,
+    )
+    if table_record is not None and table_clearance_records is not None:
+        table_clearance_records.append({"stage": "execution_start_settle", **table_record})
+    record = _goal_record(
+        index=len(goals),
+        stage="execution_start_settle",
+        pose=pose,
         source_constraints=["execution:start_settle"],
         primary_tool_ref=default_tool_ref,
         primary_target_ref="execution.start_settle",
@@ -507,6 +563,7 @@ def _append_start_settle_subgoal(
         semantic_gate=False,
     )
     goals.append(record)
+    return pose
 
 
 def _append_grasp_lift_subgoal(
@@ -518,12 +575,24 @@ def _append_grasp_lift_subgoal(
     max_translation_m: float,
     max_rotation_rad: float,
     lift_steps: int = 3,
+    table_top_z: float | None = None,
+    bbox_points_tool: list[list[float]] | None = None,
+    table_clearance_m: float = 0.0,
+    table_clearance_records: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Optionally insert an execution-side grasp-lift phase before task contact."""
 
     if lift_m <= 1e-9:
         return current_pose
-    lifted = _lifted_pose(current_pose, lift_m=lift_m)
+    lifted, lifted_table_record = _pose_with_generation_time_table_clearance(
+        _lifted_pose(current_pose, lift_m=lift_m),
+        table_top_z=table_top_z,
+        bbox_points_tool=bbox_points_tool or [],
+        clearance_m=table_clearance_m,
+        allow_contact_penetration=False,
+    )
+    if lifted_table_record is not None and table_clearance_records is not None:
+        table_clearance_records.append({"stage": "grasp_lift", **lifted_table_record})
     default_tool_ref = resolver.default_tool_point_ref()
     target_ref = "execution.grasp_lift"
     steps = max(
@@ -542,6 +611,15 @@ def _append_grasp_lift_subgoal(
             ],
             "orientation_xyzw": normalize_quat(current_pose["orientation_xyzw"]),
         }
+        waypoint, waypoint_table_record = _pose_with_generation_time_table_clearance(
+            waypoint,
+            table_top_z=table_top_z,
+            bbox_points_tool=bbox_points_tool or [],
+            clearance_m=table_clearance_m,
+            allow_contact_penetration=False,
+        )
+        if waypoint_table_record is not None and table_clearance_records is not None:
+            table_clearance_records.append({"stage": f"grasp_lift_ramp_{step}", **waypoint_table_record})
         goals.append(
             _goal_record(
                 index=len(goals),
@@ -571,6 +649,10 @@ def _append_grasp_lift_subgoal(
             allow_contact_penetration=False,
             max_translation_m=max_translation_m,
             max_rotation_rad=max_rotation_rad,
+            table_top_z=table_top_z,
+            bbox_points_tool=bbox_points_tool,
+            table_clearance_m=table_clearance_m,
+            table_clearance_records=table_clearance_records,
         )
     goals.append(
         _goal_record(
@@ -606,6 +688,10 @@ def _append_tool_axis_align_subgoal(
     min_rotation_rad: float = 0.035,
     clearance_lift_m: float = 0.0,
     primary_tool_point_tool: list[float] | None = None,
+    table_top_z: float | None = None,
+    bbox_points_tool: list[list[float]] | None = None,
+    table_clearance_m: float = 0.0,
+    table_clearance_records: list[dict[str, Any]] | None = None,
 ) -> tuple[dict[str, Any], bool, bool]:
     """Insert the shared free-space tool-axis alignment phase.
 
@@ -624,6 +710,20 @@ def _append_tool_axis_align_subgoal(
     clearance_inserted = False
     if clearance_lift_m > 1e-9:
         clearance_pose = _lifted_pose(current_pose, lift_m=clearance_lift_m)
+        clearance_pose, clearance_table_record = _pose_with_generation_time_table_clearance(
+            clearance_pose,
+            table_top_z=table_top_z,
+            bbox_points_tool=bbox_points_tool or [],
+            clearance_m=table_clearance_m,
+            allow_contact_penetration=False,
+        )
+        if clearance_table_record is not None and table_clearance_records is not None:
+            table_clearance_records.append(
+                {
+                    "stage": f"{stage_name}_tool_axis_align_clearance",
+                    **clearance_table_record,
+                }
+            )
         clearance_stage = f"{stage_name}_tool_axis_align_clearance"
         _append_transition_if_needed(
             goals=goals,
@@ -638,6 +738,10 @@ def _append_tool_axis_align_subgoal(
             max_translation_m=max_translation_m,
             max_rotation_rad=max_rotation_rad,
             primary_tool_point_tool=primary_tool_point_tool,
+            table_top_z=table_top_z,
+            bbox_points_tool=bbox_points_tool,
+            table_clearance_m=table_clearance_m,
+            table_clearance_records=table_clearance_records,
         )
         goals.append(
             _goal_record(
@@ -657,11 +761,27 @@ def _append_tool_axis_align_subgoal(
         )
         working_pose = clearance_pose
         clearance_inserted = True
+    align_orientation = normalize_quat(next_pose["orientation_xyzw"])
+    align_point_tool = primary_tool_point_tool
     align_pose = {
         "position": [float(value) for value in working_pose["position"]],
-        "orientation_xyzw": normalize_quat(next_pose["orientation_xyzw"]),
+        "orientation_xyzw": align_orientation,
     }
     align_stage = f"{stage_name}_tool_axis_align"
+    align_pose, table_clearance_record = _pose_with_generation_time_table_clearance(
+        align_pose,
+        table_top_z=table_top_z,
+        bbox_points_tool=bbox_points_tool or [],
+        clearance_m=table_clearance_m,
+        allow_contact_penetration=False,
+    )
+    if table_clearance_record is not None and table_clearance_records is not None:
+        table_clearance_records.append(
+            {
+                "stage": align_stage,
+                **table_clearance_record,
+            }
+        )
     _append_transition_if_needed(
         goals=goals,
         current_pose=working_pose,
@@ -674,7 +794,11 @@ def _append_tool_axis_align_subgoal(
         allow_contact_penetration=allow_contact_penetration,
         max_translation_m=max_translation_m,
         max_rotation_rad=max_rotation_rad,
-        primary_tool_point_tool=primary_tool_point_tool,
+        primary_tool_point_tool=align_point_tool,
+        table_top_z=table_top_z,
+        bbox_points_tool=bbox_points_tool,
+        table_clearance_m=table_clearance_m,
+        table_clearance_records=table_clearance_records,
     )
     goals.append(
         _goal_record(
@@ -689,7 +813,7 @@ def _append_tool_axis_align_subgoal(
             allow_contact_penetration=allow_contact_penetration,
             semantic_role="tool_axis_align",
             semantic_gate=False,
-            primary_tool_point_tool=primary_tool_point_tool,
+            primary_tool_point_tool=align_point_tool,
         )
     )
     return align_pose, True, clearance_inserted
@@ -819,6 +943,53 @@ def _compiler_stage_record(
     }
 
 
+def _lookahead_stage_contact_target(
+    *,
+    program_ir: dict[str, Any],
+    stage_index: int,
+    resolver: ReferenceResolver,
+    current_pose: dict[str, Any],
+    locked_tool_points: dict[str, list[float]],
+) -> dict[str, Any] | None:
+    """Find the next functional point target for an axis-only alignment stage."""
+
+    for next_stage in program_ir["stages"][stage_index + 1 :]:
+        next_constraints = _constraints_for_stage(program_ir, str(next_stage["name"]))
+        if not next_constraints:
+            continue
+        canonical_next = canonicalize_stage_constraints(
+            stage_name=str(next_stage["name"]),
+            constraints=next_constraints,
+            resolver=resolver,
+            current_pose=current_pose,
+        )
+        canonical_next = _stage_with_locked_tool_points(
+            canonical_next,
+            locked_tool_points,
+        )
+        if canonical_next.point_targets:
+            target = canonical_next.point_targets[0]
+            return {
+                "source_ref": target.source_ref,
+                "target_ref": target.target_ref,
+                "point_tool": [float(value) for value in target.point_tool],
+                "point_world": [float(value) for value in target.point_world],
+                "lookahead_stage": str(next_stage["name"]),
+                "lookahead_kind": "point_target",
+            }
+        if canonical_next.move_along_targets:
+            target = canonical_next.move_along_targets[0]
+            return {
+                "source_ref": target.source_ref,
+                "target_ref": target.start_ref,
+                "point_tool": [float(value) for value in target.point_tool],
+                "point_world": [float(value) for value in target.start_world],
+                "lookahead_stage": str(next_stage["name"]),
+                "lookahead_kind": "move_start",
+            }
+    return None
+
+
 def _validate_inputs(
     *,
     observed_scene_graph: dict[str, Any],
@@ -916,10 +1087,30 @@ def compile_program_ir_to_tool_pose_subgoals(
     tool_axis_align_waypoints = 0
     tool_axis_align_clearance_waypoints = 0
     locked_tool_points: dict[str, list[float]] = {}
-    _append_start_settle_subgoal(
+    table_clearance_sample_points_tool = (
+        resolver.table_clearance_sample_points_tool()
+        if DEFAULT_ENABLE_ALL_TOOL_PART_OBB_TABLE_PROJECTION
+        else []
+    )
+    table_top_z = _support_table_top_z(observed_scene_graph)
+    table_clearance_context = (
+        {
+            "table_top_z": table_top_z,
+            "bbox_points_tool": table_clearance_sample_points_tool,
+            "clearance_m": DEFAULT_SUBGOAL_TABLE_PART_OBB_CLEARANCE_M,
+        }
+        if table_top_z is not None and table_clearance_sample_points_tool
+        else None
+    )
+    generation_table_clearance_records: list[dict[str, Any]] = []
+    current_pose = _append_start_settle_subgoal(
         goals=goals,
         current_pose=current_pose,
         resolver=resolver,
+        table_top_z=table_top_z,
+        bbox_points_tool=table_clearance_sample_points_tool,
+        table_clearance_m=DEFAULT_SUBGOAL_TABLE_PART_OBB_CLEARANCE_M,
+        table_clearance_records=generation_table_clearance_records,
     )
     current_pose = _append_grasp_lift_subgoal(
         goals=goals,
@@ -929,9 +1120,13 @@ def compile_program_ir_to_tool_pose_subgoals(
         max_translation_m=max_translation_step_m,
         max_rotation_rad=max_rotation_step_rad,
         lift_steps=initial_grasp_lift_steps,
+        table_top_z=table_top_z,
+        bbox_points_tool=table_clearance_sample_points_tool,
+        table_clearance_m=DEFAULT_SUBGOAL_TABLE_PART_OBB_CLEARANCE_M,
+        table_clearance_records=generation_table_clearance_records,
     )
 
-    for stage in program_ir["stages"]:
+    for stage_index, stage in enumerate(program_ir["stages"]):
         stage_name = stage["name"]
         repeat = int(stage.get("repeat", 1))
         constraints = _constraints_for_stage(program_ir, stage_name)
@@ -970,12 +1165,27 @@ def compile_program_ir_to_tool_pose_subgoals(
                     )
                 )
             try:
+                line_proximity_target = None
+                if (
+                    canonical_stage.axis_targets
+                    and not canonical_stage.point_targets
+                    and not canonical_stage.move_along_targets
+                ):
+                    line_proximity_target = _lookahead_stage_contact_target(
+                        program_ir=program_ir,
+                        stage_index=stage_index,
+                        resolver=resolver,
+                        current_pose=current_pose,
+                        locked_tool_points=locked_tool_points,
+                    )
                 solve_result = solve_stage_pose(
                     stage=canonical_stage,
                     current_pose=current_pose,
                     default_tool_point_ref=resolver.default_tool_point_ref(),
                     objective_cost_fn=objective_cost_fn,
                     objective_error_fn=objective_error_fn,
+                    line_proximity_target=line_proximity_target,
+                    table_clearance_context=table_clearance_context,
                 )
             except Exception as exc:  # noqa: BLE001 - normalize compiler-stage failures.
                 raise ProgramIRCompileError(f"failed to solve stage {stage_name}: {exc}") from exc
@@ -1034,6 +1244,10 @@ def compile_program_ir_to_tool_pose_subgoals(
                 max_rotation_rad=max_rotation_step_rad,
                 clearance_lift_m=tool_axis_align_clearance_lift_m,
                 primary_tool_point_tool=solve_result.primary_tool_point,
+                table_top_z=table_top_z,
+                bbox_points_tool=table_clearance_sample_points_tool,
+                table_clearance_m=DEFAULT_SUBGOAL_TABLE_PART_OBB_CLEARANCE_M,
+                table_clearance_records=generation_table_clearance_records,
             )
             if axis_align_inserted:
                 tool_axis_align_waypoints += 1
@@ -1048,6 +1262,7 @@ def compile_program_ir_to_tool_pose_subgoals(
                         orientation_xyzw=solve_result.pose["orientation_xyzw"],
                         current_pose=current_pose,
                         steps=move_along_steps,
+                        table_clearance_context=table_clearance_context,
                     )
                     if (
                         move.source_ref not in locked_tool_points
@@ -1107,6 +1322,20 @@ def compile_program_ir_to_tool_pose_subgoals(
                 indexed_stage = indexed_base_stage
                 if len(stage_targets) > 1:
                     indexed_stage = f"{indexed_base_stage}_waypoint_{target_index + 1}"
+                next_pose, table_clearance_record = _pose_with_generation_time_table_clearance(
+                    next_pose,
+                    table_top_z=table_top_z,
+                    bbox_points_tool=table_clearance_sample_points_tool,
+                    clearance_m=DEFAULT_SUBGOAL_TABLE_PART_OBB_CLEARANCE_M,
+                    allow_contact_penetration=allow_contact_penetration,
+                )
+                if table_clearance_record is not None:
+                    generation_table_clearance_records.append(
+                        {
+                            "stage": indexed_stage,
+                            **table_clearance_record,
+                        }
+                    )
                 _append_transition_if_needed(
                     goals=goals,
                     current_pose=current_pose,
@@ -1120,6 +1349,10 @@ def compile_program_ir_to_tool_pose_subgoals(
                     max_translation_m=max_translation_step_m,
                     max_rotation_rad=max_rotation_step_rad,
                     primary_tool_point_tool=primary_tool_point_tool,
+                    table_top_z=table_top_z,
+                    bbox_points_tool=table_clearance_sample_points_tool,
+                    table_clearance_m=DEFAULT_SUBGOAL_TABLE_PART_OBB_CLEARANCE_M,
+                    table_clearance_records=generation_table_clearance_records,
                 )
                 goals.append(
                     _goal_record(
@@ -1142,18 +1375,38 @@ def compile_program_ir_to_tool_pose_subgoals(
 
     if not goals:
         raise ProgramIRCompileError("ProgramIR did not compile to any tool-pose goals")
-    table_bbox_clearance_projection = _project_goals_to_tool_bbox_table_clearance(
+    hard_table_clearance_invariant = _validate_generated_goals_table_clearance(
         goals=goals,
-        resolver=resolver,
-        table_top_z=_support_table_top_z(observed_scene_graph),
-        bbox_points_tool=(
-            resolver.table_clearance_sample_points_tool()
-            if DEFAULT_ENABLE_ALL_TOOL_PART_OBB_TABLE_PROJECTION
-            else []
-        ),
+        table_top_z=table_top_z,
+        bbox_points_tool=table_clearance_sample_points_tool,
         clearance_m=DEFAULT_SUBGOAL_TABLE_PART_OBB_CLEARANCE_M,
-        sample_scope="all_tool_part_obbs",
     )
+    applied_records = [
+        record
+        for record in generation_table_clearance_records
+        if record.get("applied") is True
+    ]
+    table_bbox_clearance_projection = {
+        "enabled": bool(
+            _support_table_top_z(observed_scene_graph) is not None
+            and table_clearance_sample_points_tool
+        ),
+        "mode": "native_table_bbox_constraint_assertion",
+        "sample_scope": "all_tool_part_obbs",
+        "table_top_z": table_top_z,
+        "clearance_m": float(DEFAULT_SUBGOAL_TABLE_PART_OBB_CLEARANCE_M),
+        "num_bbox_corners": len(table_clearance_sample_points_tool),
+        "applied_count": len(applied_records),
+        "max_lift_m": max(
+            [float(record.get("lift_m", 0.0)) for record in applied_records],
+            default=0.0,
+        ),
+        "skipped_functional_contact_count": 0,
+        "native_generation_constraint": True,
+        "posthoc_pose_correction": False,
+        "hard_invariant": hard_table_clearance_invariant,
+        "records": generation_table_clearance_records,
+    }
     goal_pose_deltas, pose_delta_summary = _pose_delta_records(
         start_pose=start_pose,
         goals=goals,

@@ -118,7 +118,7 @@ def _load_spec_from_args(args: argparse.Namespace) -> tuple[dict[str, Any] | Non
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--spec", type=Path, help="toolframe_task_spec_v1 or existing benchmark_config JSON.")
-    parser.add_argument("--task", help="Registry task name such as brush_sweep/red_zone.")
+    parser.add_argument("--task", help="Registry task name such as brush_sweep/off_table_red.")
     parser.add_argument("--suite", action="append", help="Registry suite name such as current_all_runnable.")
     parser.add_argument("--registry", type=Path, default=DEFAULT_REGISTRY)
     parser.add_argument("--run-id", default=None)

@@ -24,10 +24,15 @@ Rules:
 
 Review order:
 
-1. `eraser_wipe__flat_eraser.json`
-2. `brush_sweep__red_brush.json`
-3. `hammer_down_strike__claw_hammer.json`
-4. `screwdriver_insert__long_screwdriver.json`
+1. `brush_sweep__red_brush.json`
+2. `brush_sweep__blue_brush.json`
+3. `eraser_wipe__flat_eraser.json`
+4. `eraser_wipe__handle_eraser.json`
+5. `hammer_strike__claw_hammer.json`
+6. `hammer_strike__mallet_hammer.json`
+7. `screwdriver_insert__long_screwdriver.json`
+8. `screwdriver_insert__short_screwdriver.json`
+9. `marker_trace__staples_marker.json`
 
 For each tool, inspect the listed overview/card/face images, then fill only the
 labels that are useful for auditing task semantics. If final task success is

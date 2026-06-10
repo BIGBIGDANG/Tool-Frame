@@ -17,7 +17,6 @@
     "capture_video_every": 1,
     "approach_offset_m": 0.045,
     "target_approach_axis_source": "opposite_scene_direction",
-    "terminal_inside_depth_m": 0.035,
     "success_min_inside_depth_m": 0.005,
     "socket_asset": "urdf/parttoolgen_benchmark/screwdriver_insert_socket/deep_socket_wide_048x055.urdf",
     "socket_size_xyz": [
@@ -49,7 +48,6 @@
       "role": "visible_side_board_socket",
       "asset": "urdf/parttoolgen_benchmark/screwdriver_insert_socket/deep_socket_wide_048x055.urdf",
       "mount_policy": "rotate socket so its local insertion axis maps to the side-board inward direction; exact pose must be validated by side-scene preview before promotion",
-      "terminal_inside_depth_m": 0.035,
       "success_min_inside_depth_m": 0.005,
       "inner_diameter_m": 0.024,
       "tip_radial_tolerance_m": 0.012
@@ -62,7 +60,7 @@
     "grounding_camera": "whiteboard_front",
     "depth_sample_policy": "nearest",
     "direction_source": "vlm_scene_direction_plus_task_socket_inside_goal",
-    "end_depth_policy": "task_contract_socket_inside_goal_along_vlm_or_default_axis",
+    "end_depth_policy": "vlm_lifted_scene_endpoint",
     "tool_motion_axis_ref": "tool.motion_axis",
     "tool_motion_axis_target_ref": "scene.direction",
     "tool_motion_axis_relation": "parallel",
@@ -86,4 +84,3 @@
     "large_statistics_status": "not_allowed"
   }
 }
-

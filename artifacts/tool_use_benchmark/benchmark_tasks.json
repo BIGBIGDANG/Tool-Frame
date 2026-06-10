@@ -22,34 +22,49 @@
   },
   "suites": {
     "current_tabletop": [
-      "brush_sweep/red_zone",
+      "brush_sweep/off_table_red",
+      "brush_sweep/off_table_blue",
       "eraser_wipe/tabletop_wipe",
+      "eraser_wipe/tabletop_wipe_handle",
       "hammer_strike/down",
-      "screwdriver_insert/wide_socket"
+      "hammer_strike/down_mallet",
+      "screwdriver_insert/wide_socket",
+      "screwdriver_insert/wide_socket_short"
     ],
     "current_all_runnable": [
-      "brush_sweep/red_zone",
+      "brush_sweep/off_table_red",
+      "brush_sweep/off_table_blue",
       "eraser_wipe/tabletop_wipe",
+      "eraser_wipe/tabletop_wipe_handle",
       "eraser_wipe/side_whiteboard_hdu_erase",
       "hammer_strike/down",
+      "hammer_strike/down_mallet",
       "screwdriver_insert/wide_socket",
+      "screwdriver_insert/wide_socket_short",
       "screwdriver_insert/deep_socket",
       "marker_trace/write_l",
       "marker_trace/write_c"
     ],
     "legacy_directional_diagnostics": [
       "brush_sweep/forward",
-      "brush_sweep/left"
+      "brush_sweep/left",
+      "brush_sweep/red_zone"
     ],
     "paper_release_6.4_headline": [
-      "brush_sweep/red_zone",
-      "eraser_wipe/tabletop_wipe"
+      "brush_sweep/off_table_red",
+      "brush_sweep/off_table_blue",
+      "eraser_wipe/tabletop_wipe",
+      "eraser_wipe/tabletop_wipe_handle"
     ],
     "paper_release_6.4": [
-      "brush_sweep/red_zone",
+      "brush_sweep/off_table_red",
+      "brush_sweep/off_table_blue",
       "eraser_wipe/tabletop_wipe",
+      "eraser_wipe/tabletop_wipe_handle",
       "hammer_strike/down",
+      "hammer_strike/down_mallet",
       "screwdriver_insert/wide_socket",
+      "screwdriver_insert/wide_socket_short",
       "marker_trace/write_l",
       "marker_trace/write_c"
     ],
@@ -62,10 +77,11 @@
       "marker_trace/write_l",
       "marker_trace/write_c"
     ],
-    "same_difficulty_tool_variants_pending": [
-      "brush_sweep/blue_forward",
-      "brush_sweep/blue_left",
-      "hammer_strike/down_mallet"
+    "same_difficulty_tool_variants_current": [
+      "hammer_strike/down_mallet",
+      "brush_sweep/off_table_blue",
+      "eraser_wipe/tabletop_wipe_handle",
+      "screwdriver_insert/wide_socket_short"
     ],
     "current_side_board": [
       "eraser_wipe/side_whiteboard_hdu_erase",
@@ -88,8 +104,24 @@
     "brush_sweep/red_zone": {
       "task_family": "brush_sweep",
       "split": "red_zone",
-      "status": "fixed/current",
+      "status": "legacy/retired_red_zone",
       "config": "artifacts/tool_use_benchmark/brush_sweep/red_zone/benchmark_config.json",
+      "runner": "parttoolgen/src/parttoolgen/cli/runners/run_image_grounded_brush_seed_eval.py",
+      "runnable": true
+    },
+    "brush_sweep/off_table_red": {
+      "task_family": "brush_sweep",
+      "split": "off_table_red",
+      "status": "current/e2e",
+      "config": "artifacts/tool_use_benchmark/brush_sweep/off_table_red/benchmark_config.json",
+      "runner": "parttoolgen/src/parttoolgen/cli/runners/run_image_grounded_brush_seed_eval.py",
+      "runnable": true
+    },
+    "brush_sweep/off_table_blue": {
+      "task_family": "brush_sweep",
+      "split": "off_table_blue",
+      "status": "current/e2e_tool_shape_variant",
+      "config": "artifacts/tool_use_benchmark/brush_sweep/off_table_blue/benchmark_config.json",
       "runner": "parttoolgen/src/parttoolgen/cli/runners/run_image_grounded_brush_seed_eval.py",
       "runnable": true
     },
@@ -104,26 +136,34 @@
     "brush_sweep/blue_forward": {
       "task_family": "brush_sweep",
       "split": "blue_forward",
-      "status": "same_difficulty_variant/pending_tool_refs",
+      "status": "legacy/retired_directional_tool_variant",
       "config": "artifacts/tool_use_benchmark/brush_sweep/blue_forward/benchmark_config.json",
       "runner": "parttoolgen/src/parttoolgen/cli/runners/run_image_grounded_brush_seed_eval.py",
       "runnable": false,
-      "blocked_reason": "configs/tool_refs/blue_brush is not available in the mainline config tree yet"
+      "blocked_reason": "Retired directional split; use brush_sweep/off_table_blue for the current blue-brush tool-shape variant."
     },
     "brush_sweep/blue_left": {
       "task_family": "brush_sweep",
       "split": "blue_left",
-      "status": "same_difficulty_variant/pending_tool_refs",
+      "status": "legacy/retired_directional_tool_variant",
       "config": "artifacts/tool_use_benchmark/brush_sweep/blue_left/benchmark_config.json",
       "runner": "parttoolgen/src/parttoolgen/cli/runners/run_image_grounded_brush_seed_eval.py",
       "runnable": false,
-      "blocked_reason": "configs/tool_refs/blue_brush is not available in the mainline config tree yet"
+      "blocked_reason": "Retired directional split; use brush_sweep/off_table_blue for the current blue-brush tool-shape variant."
     },
     "eraser_wipe/tabletop_wipe": {
       "task_family": "eraser_wipe",
       "split": "tabletop_wipe",
-      "status": "fixed/current",
+      "status": "current/e2e",
       "config": "artifacts/tool_use_benchmark/eraser_wipe/tabletop_wipe/benchmark_config.json",
+      "runner": "parttoolgen/src/parttoolgen/cli/runners/run_image_grounded_eraser_wipe_eval.py",
+      "runnable": true
+    },
+    "eraser_wipe/tabletop_wipe_handle": {
+      "task_family": "eraser_wipe",
+      "split": "tabletop_wipe_handle",
+      "status": "current/e2e_tool_shape_variant",
+      "config": "artifacts/tool_use_benchmark/eraser_wipe/tabletop_wipe_handle/benchmark_config.json",
       "runner": "parttoolgen/src/parttoolgen/cli/runners/run_image_grounded_eraser_wipe_eval.py",
       "runnable": true
     },
@@ -139,7 +179,7 @@
     "hammer_strike/down": {
       "task_family": "hammer_strike",
       "split": "down",
-      "status": "current/provisional",
+      "status": "current/e2e",
       "config": "artifacts/tool_use_benchmark/hammer_strike/down/benchmark_config.json",
       "runner": "parttoolgen/src/parttoolgen/cli/runners/run_image_grounded_hammer_strike_eval.py",
       "runnable": true
@@ -147,11 +187,11 @@
     "hammer_strike/down_mallet": {
       "task_family": "hammer_strike",
       "split": "down_mallet",
-      "status": "same_difficulty_variant/pending_tool_refs",
+      "status": "current/e2e_tool_shape_variant",
       "config": "artifacts/tool_use_benchmark/hammer_strike/down_mallet/benchmark_config.json",
       "runner": "parttoolgen/src/parttoolgen/cli/runners/run_image_grounded_hammer_strike_eval.py",
-      "runnable": false,
-      "blocked_reason": "configs/tool_refs/mallet_hammer is not available in the mainline config tree yet"
+      "runnable": true,
+      "notes": "Mallet-hammer tool refs are tracked under configs/tool_refs/mallet_hammer; run smoke before large statistics."
     },
     "screwdriver_insert/wide_socket": {
       "task_family": "screwdriver_insert",
@@ -160,6 +200,15 @@
       "config": "artifacts/tool_use_benchmark/screwdriver_insert/wide_socket/benchmark_config.json",
       "runner": "parttoolgen/src/parttoolgen/cli/runners/run_image_grounded_screwdriver_insert_eval.py",
       "runnable": true
+    },
+    "screwdriver_insert/wide_socket_short": {
+      "task_family": "screwdriver_insert",
+      "split": "wide_socket_short",
+      "status": "current/provisional_tool_shape_variant",
+      "config": "artifacts/tool_use_benchmark/screwdriver_insert/wide_socket_short/benchmark_config.json",
+      "runner": "parttoolgen/src/parttoolgen/cli/runners/run_image_grounded_screwdriver_insert_eval.py",
+      "runnable": true,
+      "notes": "Short-screwdriver tool-shape variant using the same public wide-socket endpoint contract as screwdriver_insert/wide_socket; requires fresh smoke/large statistics after the 2026-06-06 endpoint fix."
     },
     "screwdriver_insert/deep_socket": {
       "task_family": "screwdriver_insert",
@@ -198,7 +247,7 @@
       "task_family": "marker_trace",
       "split": "write_l",
       "status": "current/provisional_hard_task",
-      "config": "artifacts/tool_use_benchmark/marker_trace/write_l/benchmark_config.draft.json",
+      "config": "artifacts/tool_use_benchmark/marker_trace/write_l/benchmark_config.json",
       "runner": "parttoolgen/src/parttoolgen/cli/runners/run_image_grounded_marker_trace_eval.py",
       "runnable": true,
       "notes": "Launcher-runnable hard-task smoke; VLM-judge success and marker-tip labels remain provisional."
@@ -207,7 +256,7 @@
       "task_family": "marker_trace",
       "split": "write_c",
       "status": "current/provisional_hard_task",
-      "config": "artifacts/tool_use_benchmark/marker_trace/write_c/benchmark_config.draft.json",
+      "config": "artifacts/tool_use_benchmark/marker_trace/write_c/benchmark_config.json",
       "runner": "parttoolgen/src/parttoolgen/cli/runners/run_image_grounded_marker_trace_eval.py",
       "runnable": true,
       "notes": "Launcher-runnable hard-task smoke; VLM-judge success and marker-tip labels remain provisional."

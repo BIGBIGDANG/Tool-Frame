@@ -15,9 +15,8 @@
     "capture_video_every": 1,
     "approach_offset_m": 0.045,
     "target_approach_axis_source": "opposite_scene_direction",
-    "terminal_inside_depth_m": 0.035,
     "success_min_inside_depth_m": 0.005,
-    "initial_grasp_lift_m": 0.08,
+    "initial_grasp_lift_m": 0.12,
     "initial_grasp_lift_steps": 3,
     "initial_grasp_hold_steps": 0
   },
@@ -35,7 +34,6 @@
         0.055
       ],
       "socket_top_local_z_m": 0.055,
-      "terminal_inside_depth_m": 0.035,
       "success_min_inside_depth_m": 0.005,
       "inner_diameter_m": 0.008,
       "tip_radial_tolerance_m": 0.004,
@@ -98,7 +96,7 @@
         30.0
       ]
     },
-    "target_grounding_policy": "The shared VLM scene-ref interface applies: natural task language and public top-down RGB-D evidence provide start_point at the visible socket opening and scene.direction for insertion. The runner uses that public direction plus the benchmark inside-socket goal contract for the executable terminal point.",
+    "target_grounding_policy": "The shared VLM scene-ref interface applies: natural task language and public top-down RGB-D evidence provide start_point, end_point, and scene.direction for insertion. The lifted VLM endpoint is passed to the compiler unchanged; inside-socket depth is measured only as an evaluation predicate.",
     "tool_grounding_policy": "Use task-conditioned P3SAM/VLM long_screwdriver refs: VLM selects the screwdriver tip/shaft contact-point part, then selects the contact point marker and shaft/tip motion-axis marker from public evidence for that selected part.",
     "trajectory_policy": "Reset/start-pose scaffold for SimToolReal initialization only; not a method input, target trajectory, oracle trajectory, or success template."
   },
@@ -113,7 +111,7 @@
     "target_approach_axis_source": "opposite_scene_direction",
     "max_translation_step_m": 0.025,
     "max_rotation_step_rad": 0.25,
-    "initial_grasp_lift_m": 0.08,
+    "initial_grasp_lift_m": 0.12,
     "initial_grasp_lift_steps": 3,
     "initial_grasp_hold_steps": 0,
     "rollout_max_tracking_error_m": 0.018,
@@ -121,7 +119,7 @@
     "min_clearance_m": 0.003,
     "swept_min_clearance_m": 0.006,
     "allowed_contact_penetration_m": 0.004,
-    "end_depth_policy": "task_contract_socket_inside_goal_along_vlm_world_axis"
+    "end_depth_policy": "vlm_lifted_scene_endpoint"
   },
   "acceptance": {
     "success_policy": "screwdriver_insert_tip_path: a seed succeeds when the diagnostic path gate, compiled terminal socket goal, rollout semantic insertion path, measured tip XY radial alignment, and measured tip inside-socket depth pass. Tracking/policy-goal pass and full terminal endpoint error are diagnostic.",

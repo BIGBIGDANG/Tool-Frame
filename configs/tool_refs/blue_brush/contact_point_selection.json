@@ -1,0 +1,435 @@
+{
+  "schema_version": "parttoolgen_contact_point_motion_axis_selection_v1",
+  "selection_semantics": "p3sam_vlm_contact_point_motion_axis",
+  "artifact_id": "blue_brush_brush_sweep/red_zone_blue_brush_p3sam_contact_point_selection",
+  "tool_id": "blue_brush",
+  "task_id": "brush_sweep/red_zone_blue_brush",
+  "task_instruction": "Use this brush to sweep the blue block into the red target zone.",
+  "selected_part": {
+    "marker": "1",
+    "part_ref": "tool.parts.part_000"
+  },
+  "contact_point": {
+    "marker": "F6",
+    "point_ref": "candidate.points.part_000_z_positive_contact",
+    "surface_ref": "candidate.surfaces.part_000_z_positive_contact",
+    "patch_id": "z_positive_contact",
+    "row": {
+      "tool_id": "blue_brush",
+      "part_marker": "1",
+      "part_id": "part_000",
+      "part_ref": "tool.parts.part_000",
+      "point_ref": "candidate.points.part_000_z_positive_contact",
+      "surface_ref": "candidate.surfaces.part_000_z_positive_contact",
+      "polarity": "positive",
+      "patch_id": "z_positive_contact",
+      "role": null,
+      "xyz_tool": [
+        0.21841900464818498,
+        -0.011255416564896379,
+        0.01812533001621639
+      ],
+      "normal_tool": [
+        -0.02061321229402947,
+        0.024211817783199824,
+        0.9994943138200209
+      ],
+      "face_marker": "F6",
+      "contact_marker": "F6",
+      "selection_semantics": "contact_point_bbox_face",
+      "derived_point_ref": "candidate.points.part_000_z_positive_contact",
+      "source_surface_ref": "candidate.surfaces.part_000_z_positive_contact"
+    }
+  },
+  "contact_point_candidates": [
+    {
+      "marker": "F5",
+      "point_ref": "candidate.points.part_000_z_negative_contact",
+      "surface_ref": "candidate.surfaces.part_000_z_negative_contact",
+      "patch_id": "z_negative_contact",
+      "row": {
+        "tool_id": "blue_brush",
+        "part_marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "point_ref": "candidate.points.part_000_z_negative_contact",
+        "surface_ref": "candidate.surfaces.part_000_z_negative_contact",
+        "polarity": "negative",
+        "patch_id": "z_negative_contact",
+        "role": null,
+        "xyz_tool": [
+          0.19965917050551713,
+          0.004845760522561564,
+          -0.01625446617632326
+        ],
+        "normal_tool": [
+          -0.016508105718488285,
+          -0.005277089669373382,
+          -0.9998498061060014
+        ],
+        "face_marker": "F5",
+        "contact_marker": "F5",
+        "selection_semantics": "contact_point_bbox_face",
+        "derived_point_ref": "candidate.points.part_000_z_negative_contact",
+        "source_surface_ref": "candidate.surfaces.part_000_z_negative_contact"
+      }
+    },
+    {
+      "marker": "F6",
+      "point_ref": "candidate.points.part_000_z_positive_contact",
+      "surface_ref": "candidate.surfaces.part_000_z_positive_contact",
+      "patch_id": "z_positive_contact",
+      "row": {
+        "tool_id": "blue_brush",
+        "part_marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "point_ref": "candidate.points.part_000_z_positive_contact",
+        "surface_ref": "candidate.surfaces.part_000_z_positive_contact",
+        "polarity": "positive",
+        "patch_id": "z_positive_contact",
+        "role": null,
+        "xyz_tool": [
+          0.21841900464818498,
+          -0.011255416564896379,
+          0.01812533001621639
+        ],
+        "normal_tool": [
+          -0.02061321229402947,
+          0.024211817783199824,
+          0.9994943138200209
+        ],
+        "face_marker": "F6",
+        "contact_marker": "F6",
+        "selection_semantics": "contact_point_bbox_face",
+        "derived_point_ref": "candidate.points.part_000_z_positive_contact",
+        "source_surface_ref": "candidate.surfaces.part_000_z_positive_contact"
+      }
+    }
+  ],
+  "motion_axis": {
+    "marker": "F6",
+    "surface_ref": "candidate.surfaces.part_000_z_positive_contact",
+    "patch_id": "z_positive_contact",
+    "row": {
+      "tool_id": "blue_brush",
+      "part_marker": "1",
+      "part_id": "part_000",
+      "part_ref": "tool.parts.part_000",
+      "point_ref": "candidate.points.part_000_z_positive_contact",
+      "surface_ref": "candidate.surfaces.part_000_z_positive_contact",
+      "polarity": "positive",
+      "patch_id": "z_positive_contact",
+      "role": null,
+      "xyz_tool": [
+        0.21841900464818498,
+        -0.011255416564896379,
+        0.01812533001621639
+      ],
+      "normal_tool": [
+        -0.02061321229402947,
+        0.024211817783199824,
+        0.9994943138200209
+      ],
+      "face_marker": "F6",
+      "contact_marker": "F6",
+      "selection_semantics": "contact_point_bbox_face",
+      "derived_point_ref": "candidate.points.part_000_z_positive_contact",
+      "source_surface_ref": "candidate.surfaces.part_000_z_positive_contact"
+    }
+  },
+  "motion_axis_candidates": [
+    {
+      "marker": "F5",
+      "surface_ref": "candidate.surfaces.part_000_z_negative_contact",
+      "patch_id": "z_negative_contact",
+      "row": {
+        "tool_id": "blue_brush",
+        "part_marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "point_ref": "candidate.points.part_000_z_negative_contact",
+        "surface_ref": "candidate.surfaces.part_000_z_negative_contact",
+        "polarity": "negative",
+        "patch_id": "z_negative_contact",
+        "role": null,
+        "xyz_tool": [
+          0.19965917050551713,
+          0.004845760522561564,
+          -0.01625446617632326
+        ],
+        "normal_tool": [
+          -0.016508105718488285,
+          -0.005277089669373382,
+          -0.9998498061060014
+        ],
+        "face_marker": "F5",
+        "contact_marker": "F5",
+        "selection_semantics": "contact_point_bbox_face",
+        "derived_point_ref": "candidate.points.part_000_z_negative_contact",
+        "source_surface_ref": "candidate.surfaces.part_000_z_negative_contact"
+      }
+    },
+    {
+      "marker": "F6",
+      "surface_ref": "candidate.surfaces.part_000_z_positive_contact",
+      "patch_id": "z_positive_contact",
+      "row": {
+        "tool_id": "blue_brush",
+        "part_marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "point_ref": "candidate.points.part_000_z_positive_contact",
+        "surface_ref": "candidate.surfaces.part_000_z_positive_contact",
+        "polarity": "positive",
+        "patch_id": "z_positive_contact",
+        "role": null,
+        "xyz_tool": [
+          0.21841900464818498,
+          -0.011255416564896379,
+          0.01812533001621639
+        ],
+        "normal_tool": [
+          -0.02061321229402947,
+          0.024211817783199824,
+          0.9994943138200209
+        ],
+        "face_marker": "F6",
+        "contact_marker": "F6",
+        "selection_semantics": "contact_point_bbox_face",
+        "derived_point_ref": "candidate.points.part_000_z_positive_contact",
+        "source_surface_ref": "candidate.surfaces.part_000_z_positive_contact"
+      }
+    }
+  ],
+  "contact_point_selection_policy": "compiler_optimizes_over_public_vlm_contact_candidates",
+  "confidence": 0.58,
+  "reason": "Sweeping uses the exposed broad bristle face to physically push the block, and the sweep direction is along that face normal. The two opposite broad bristle faces are the semantically valid working alternatives; F6 appears to be the primary outward-facing brushing surface in the views.",
+  "contact_point_marker_table": [
+    {
+      "tool_id": "blue_brush",
+      "part_marker": "1",
+      "part_id": "part_000",
+      "part_ref": "tool.parts.part_000",
+      "point_ref": "candidate.points.part_000_x_negative_contact",
+      "surface_ref": "candidate.surfaces.part_000_x_negative_contact",
+      "polarity": "negative",
+      "patch_id": "x_negative_contact",
+      "role": null,
+      "xyz_tool": [
+        0.1598048322069139,
+        -0.005184803006412573,
+        -2.8622246024589627e-06
+      ],
+      "normal_tool": [
+        -0.9676277290895546,
+        0.20857527294716452,
+        0.1421018416911169
+      ],
+      "face_marker": "F1",
+      "contact_marker": "F1",
+      "selection_semantics": "contact_point_bbox_face",
+      "derived_point_ref": "candidate.points.part_000_x_negative_contact",
+      "source_surface_ref": "candidate.surfaces.part_000_x_negative_contact"
+    },
+    {
+      "tool_id": "blue_brush",
+      "part_marker": "1",
+      "part_id": "part_000",
+      "part_ref": "tool.parts.part_000",
+      "point_ref": "candidate.points.part_000_x_positive_contact",
+      "surface_ref": "candidate.surfaces.part_000_x_positive_contact",
+      "polarity": "positive",
+      "patch_id": "x_positive_contact",
+      "role": null,
+      "xyz_tool": [
+        0.23993842820919115,
+        0.003025434200180395,
+        0.00031528089190940476
+      ],
+      "normal_tool": [
+        0.9993279067616755,
+        -0.03503473542367463,
+        -0.010784344260130781
+      ],
+      "face_marker": "F2",
+      "contact_marker": "F2",
+      "selection_semantics": "contact_point_bbox_face",
+      "derived_point_ref": "candidate.points.part_000_x_positive_contact",
+      "source_surface_ref": "candidate.surfaces.part_000_x_positive_contact"
+    },
+    {
+      "tool_id": "blue_brush",
+      "part_marker": "1",
+      "part_id": "part_000",
+      "part_ref": "tool.parts.part_000",
+      "point_ref": "candidate.points.part_000_y_negative_endpoint",
+      "surface_ref": "candidate.surfaces.part_000_y_negative_endpoint",
+      "polarity": "negative",
+      "patch_id": "y_negative_endpoint",
+      "role": null,
+      "xyz_tool": [
+        0.20074929681577008,
+        -0.0690803849487507,
+        0.0009444002555900206
+      ],
+      "normal_tool": [
+        -0.0034537980179901047,
+        -0.995425442443952,
+        -0.09547910669100969
+      ],
+      "face_marker": "F3",
+      "contact_marker": "F3",
+      "selection_semantics": "contact_point_bbox_face",
+      "derived_point_ref": "candidate.points.part_000_y_negative_endpoint",
+      "source_surface_ref": "candidate.surfaces.part_000_y_negative_endpoint"
+    },
+    {
+      "tool_id": "blue_brush",
+      "part_marker": "1",
+      "part_id": "part_000",
+      "part_ref": "tool.parts.part_000",
+      "point_ref": "candidate.points.part_000_y_positive_endpoint",
+      "surface_ref": "candidate.surfaces.part_000_y_positive_endpoint",
+      "polarity": "positive",
+      "patch_id": "y_positive_endpoint",
+      "role": null,
+      "xyz_tool": [
+        0.20573137752227696,
+        0.07039537954465865,
+        -0.00033995119326559164
+      ],
+      "normal_tool": [
+        -0.017480640944783736,
+        0.9994127361791553,
+        -0.02947218951917056
+      ],
+      "face_marker": "F4",
+      "contact_marker": "F4",
+      "selection_semantics": "contact_point_bbox_face",
+      "derived_point_ref": "candidate.points.part_000_y_positive_endpoint",
+      "source_surface_ref": "candidate.surfaces.part_000_y_positive_endpoint"
+    },
+    {
+      "tool_id": "blue_brush",
+      "part_marker": "1",
+      "part_id": "part_000",
+      "part_ref": "tool.parts.part_000",
+      "point_ref": "candidate.points.part_000_z_negative_contact",
+      "surface_ref": "candidate.surfaces.part_000_z_negative_contact",
+      "polarity": "negative",
+      "patch_id": "z_negative_contact",
+      "role": null,
+      "xyz_tool": [
+        0.19965917050551713,
+        0.004845760522561564,
+        -0.01625446617632326
+      ],
+      "normal_tool": [
+        -0.016508105718488285,
+        -0.005277089669373382,
+        -0.9998498061060014
+      ],
+      "face_marker": "F5",
+      "contact_marker": "F5",
+      "selection_semantics": "contact_point_bbox_face",
+      "derived_point_ref": "candidate.points.part_000_z_negative_contact",
+      "source_surface_ref": "candidate.surfaces.part_000_z_negative_contact"
+    },
+    {
+      "tool_id": "blue_brush",
+      "part_marker": "1",
+      "part_id": "part_000",
+      "part_ref": "tool.parts.part_000",
+      "point_ref": "candidate.points.part_000_z_positive_contact",
+      "surface_ref": "candidate.surfaces.part_000_z_positive_contact",
+      "polarity": "positive",
+      "patch_id": "z_positive_contact",
+      "role": null,
+      "xyz_tool": [
+        0.21841900464818498,
+        -0.011255416564896379,
+        0.01812533001621639
+      ],
+      "normal_tool": [
+        -0.02061321229402947,
+        0.024211817783199824,
+        0.9994943138200209
+      ],
+      "face_marker": "F6",
+      "contact_marker": "F6",
+      "selection_semantics": "contact_point_bbox_face",
+      "derived_point_ref": "candidate.points.part_000_z_positive_contact",
+      "source_surface_ref": "candidate.surfaces.part_000_z_positive_contact"
+    }
+  ],
+  "visual_evidence": {
+    "visual_evidence": "configs/tool_refs/blue_brush/evidence/02_contact_marker_selection/visual_evidence.json",
+    "prompt_images": []
+  },
+  "raw_response": {
+    "part": {
+      "selected_marker": "1",
+      "confidence": 0.98,
+      "reason": "Marker 1 is the brush head/bristles, the part intended to make sweeping contact with the blue block.",
+      "_raw_response": {
+        "raw_text": "{\"selected_marker\":\"1\",\"confidence\":0.98,\"reason\":\"Marker 1 is the brush head/bristles, the part intended to make sweeping contact with the blue block.\"}",
+        "metadata": {
+          "client": "openai_compatible",
+          "endpoint": "chat/completions",
+          "model": "gpt-5.4",
+          "base_url": "https://xcode.best/v1",
+          "image_paths": [
+            "configs/tool_refs/blue_brush/evidence/01_part_selection/blue_brush/overview/blue_brush_whole_mesh_part_choice_overview.png",
+            "configs/tool_refs/blue_brush/evidence/01_part_selection/blue_brush/overview/blue_brush_isolated_part_choice_overview.png"
+          ],
+          "latency_s": 6.72,
+          "max_new_tokens": 768,
+          "context_id": "blue_brush:p3sam_part_selection"
+        }
+      }
+    },
+    "contact_point_motion_axis": {
+      "selected_contact_point_marker": "F6",
+      "candidate_contact_point_markers": [
+        "F5",
+        "F6"
+      ],
+      "selected_motion_axis_marker": "F6",
+      "candidate_motion_axis_markers": [
+        "F5",
+        "F6"
+      ],
+      "confidence": 0.58,
+      "reason": "Sweeping uses the exposed broad bristle face to physically push the block, and the sweep direction is along that face normal. The two opposite broad bristle faces are the semantically valid working alternatives; F6 appears to be the primary outward-facing brushing surface in the views.",
+      "_raw_response": {
+        "raw_text": "{\"selected_contact_point_marker\":\"F6\",\"candidate_contact_point_markers\":[\"F5\",\"F6\"],\"selected_motion_axis_marker\":\"F6\",\"candidate_motion_axis_markers\":[\"F5\",\"F6\"],\"confidence\":0.58,\"reason\":\"Sweeping uses the exposed broad bristle face to physically push the block, and the sweep direction is along that face normal. The two opposite broad bristle faces are the semantically valid working alternatives; F6 appears to be the primary outward-facing brushing surface in the views.\"}",
+        "metadata": {
+          "client": "openai_compatible",
+          "endpoint": "chat/completions",
+          "model": "gpt-5.4",
+          "base_url": "https://xcode.best/v1",
+          "image_paths": [
+            "configs/tool_refs/blue_brush/evidence/02_contact_marker_selection/blue_brush/overview/blue_brush_whole_mesh_part_choice_overview.png",
+            "configs/tool_refs/blue_brush/evidence/02_contact_marker_selection/blue_brush/overview/blue_brush_isolated_part_choice_overview.png",
+            "configs/tool_refs/blue_brush/evidence/02_contact_marker_selection/blue_brush/part_cards/candidate_001_card.png",
+            "configs/tool_refs/blue_brush/evidence/02_contact_marker_selection/blue_brush/selected_part_bbox_overview/candidate_001_bbox_overview.png",
+            "configs/tool_refs/blue_brush/evidence/02_contact_marker_selection/blue_brush/selected_part_face_highlights/candidate_001_face_F1_highlight.png",
+            "configs/tool_refs/blue_brush/evidence/02_contact_marker_selection/blue_brush/selected_part_face_highlights/candidate_001_face_F2_highlight.png",
+            "configs/tool_refs/blue_brush/evidence/02_contact_marker_selection/blue_brush/selected_part_face_highlights/candidate_001_face_F3_highlight.png",
+            "configs/tool_refs/blue_brush/evidence/02_contact_marker_selection/blue_brush/selected_part_face_highlights/candidate_001_face_F4_highlight.png",
+            "configs/tool_refs/blue_brush/evidence/02_contact_marker_selection/blue_brush/selected_part_face_highlights/candidate_001_face_F5_highlight.png",
+            "configs/tool_refs/blue_brush/evidence/02_contact_marker_selection/blue_brush/selected_part_face_highlights/candidate_001_face_F6_highlight.png"
+          ],
+          "latency_s": 76.499,
+          "max_new_tokens": 768,
+          "context_id": "blue_brush:p3sam_contact_selection"
+        }
+      }
+    }
+  },
+  "metadata": {
+    "created_by": "parttoolgen.cli.tool_prior.select_p3sam_tool_refs",
+    "tool_side_grounding_source": "p3sam"
+  }
+}

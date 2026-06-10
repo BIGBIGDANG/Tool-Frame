@@ -43,10 +43,10 @@ runtime outputs with method inputs.
   candidates; package separately from source if included in a public release.
   Third-party/imported asset roots remain local unless the project owner
   explicitly approves a dedicated data/asset commit.
-- `reports/`: compact audit/provenance reports. Regenerate
-  `reports/paper_release_6.4/` from `bin/toolframe paper-headline` or
-  `bin/toolframe paper-release`; do not treat historical report snapshots as
-  source of truth.
+- `reports/`: compact audit/provenance reports. Regenerate current reports
+  from `bin/toolframe current-e2e` or the explicit
+  `benchmark --suite current_all_runnable --tool-refs-mode vlm_per_seed`
+  command; do not treat historical report snapshots as source of truth.
 
 ## External asset decision boundary
 
@@ -62,8 +62,9 @@ large imported assets into normal source/config commits.
 - Side-board tasks: shared side whiteboard environment with task-specific
   targets, currently including marker letter writing (`write_l`, `write_c`) and
   side-board eraser wiping drafts.
-- Paper suites: `paper_release_6.4_headline` is the reviewed headline subset;
-  `paper_release_6.4` is the broader candidate evidence-generation suite.
+- Current suite: `current_all_runnable` is the only active E2E benchmark scope.
+  Historical `paper_release_*` suites are compatibility names for old reports,
+  not the current experiment protocol.
 
 ## Cleanup policy
 

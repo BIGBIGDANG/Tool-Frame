@@ -38,6 +38,9 @@ class SE3OptimizerError(ValueError):
     """Raised when a stage cannot be solved into a tool pose."""
 
 
+_TABLE_CLEARANCE_FEASIBILITY_TOLERANCE_M = 1e-6
+
+
 @dataclass(frozen=True)
 class StageSolveResult:
     pose: dict[str, Any]
@@ -63,11 +66,17 @@ def _orientation_from_axes(
     *,
     current_orientation: list[float],
     stage: CanonicalStageConstraints,
+    current_position: list[float],
+    line_proximity_target: dict[str, Any] | None = None,
+    table_clearance_context: dict[str, Any] | None = None,
 ) -> tuple[list[float], list[dict[str, Any]]]:
     if len(stage.axis_targets) > 1:
         return _orientation_from_coupled_axes(
             current_orientation=current_orientation,
             stage=stage,
+            current_position=current_position,
+            line_proximity_target=line_proximity_target,
+            table_clearance_context=table_clearance_context,
         )
     orientation = normalize_quat(current_orientation)
     resolutions: list[dict[str, Any]] = []
@@ -82,6 +91,10 @@ def _orientation_from_axes(
             current_orientation=orientation,
             axis=axis,
             sample_points_tool=stage.orientation_sample_points_tool,
+            current_position=current_position,
+            line_proximity_target=line_proximity_target,
+            stage=stage,
+            table_clearance_context=table_clearance_context,
         )
         if best_orientation is None:
             raise SE3OptimizerError(f"{axis.constraint_id} has no feasible axis orientation candidate")
@@ -115,6 +128,207 @@ def _tool_geometry_displacement_cost(
         delta = sub(after, before)
         total += dot(delta, delta)
     return total / float(len(sample_points_tool))
+
+
+def _axis_line_proximity_cost(
+    *,
+    candidate_orientation: list[float],
+    current_position: list[float],
+    axis_world: list[float],
+    line_proximity_target: dict[str, Any] | None,
+) -> float:
+    if not line_proximity_target:
+        return 0.0
+    point_tool = line_proximity_target.get("point_tool")
+    point_world = line_proximity_target.get("point_world")
+    if not isinstance(point_tool, list) or len(point_tool) != 3:
+        return 0.0
+    if not isinstance(point_world, list) or len(point_world) != 3:
+        return 0.0
+    contact_world = add(current_position, quat_rotate(candidate_orientation, point_tool))
+    offset = sub(contact_world, point_world)
+    axis = unit(axis_world)
+    lateral = sub(offset, mul(axis, dot(offset, axis)))
+    return dot(lateral, lateral)
+
+
+def _orientation_table_clearance_violation_m(
+    *,
+    candidate_orientation: list[float],
+    current_position: list[float],
+    stage: CanonicalStageConstraints,
+    line_proximity_target: dict[str, Any] | None,
+    table_clearance_context: dict[str, Any] | None,
+) -> float:
+    if not table_clearance_context:
+        return 0.0
+    table_top_z = table_clearance_context.get("table_top_z")
+    bbox_points_tool = table_clearance_context.get("bbox_points_tool") or []
+    if table_top_z is None or not bbox_points_tool:
+        return 0.0
+    clearance_m = float(table_clearance_context.get("clearance_m", 0.0))
+    pose = {
+        "position": list(current_position),
+        "orientation_xyzw": normalize_quat(candidate_orientation),
+    }
+    if stage.point_targets:
+        target = stage.point_targets[0]
+        pose = pose_for_tool_point_goal(
+            orientation_xyzw=candidate_orientation,
+            point_tool=target.point_tool,
+            point_world=target.point_world,
+        )
+    elif stage.move_along_targets:
+        move = stage.move_along_targets[0]
+        pose = pose_for_tool_point_goal(
+            orientation_xyzw=candidate_orientation,
+            point_tool=move.point_tool,
+            point_world=move.start_world,
+        )
+    elif line_proximity_target:
+        point_tool = line_proximity_target.get("point_tool")
+        point_world = line_proximity_target.get("point_world")
+        if isinstance(point_tool, list) and len(point_tool) == 3 and isinstance(point_world, list) and len(point_world) == 3:
+            pose = pose_for_tool_point_goal(
+                orientation_xyzw=candidate_orientation,
+                point_tool=[float(item) for item in point_tool],
+                point_world=[float(item) for item in point_world],
+            )
+    min_corner_z = min(
+        float(pose["position"][2]) + float(quat_rotate(candidate_orientation, point)[2])
+        for point in bbox_points_tool
+    )
+    required_min_z = float(table_top_z) + clearance_m
+    return max(0.0, required_min_z - min_corner_z)
+
+
+def _orientation_stage_candidate_combo_cost(
+    *,
+    candidate_orientation: list[float],
+    current_position: list[float],
+    stage: CanonicalStageConstraints,
+    line_proximity_target: dict[str, Any] | None,
+    table_clearance_context: dict[str, Any] | None,
+) -> tuple[float, float]:
+    """Evaluate the best VLM-approved point/axis candidate combination.
+
+    Axis candidates are enumerated by the caller. This helper makes the
+    orientation score aware of all VLM-approved contact-point candidates too,
+    instead of choosing a roll from only the primary point and selecting the
+    point afterwards.
+    """
+
+    def pose_cost(pose: dict[str, Any]) -> tuple[float, float]:
+        violation_m = _pose_table_clearance_violation_m(
+            pose=pose,
+            table_clearance_context=table_clearance_context,
+        )
+        translation_m = norm(sub(pose["position"], current_position))
+        return violation_m, 1e-4 * translation_m * translation_m
+
+    if stage.point_targets:
+        groups: dict[str, list[dict[str, Any]]] = {}
+        for target in stage.point_targets:
+            candidates = _source_point_candidates(target)
+            if len(candidates) > 1:
+                groups.setdefault(target.source_ref, candidates)
+        if not groups:
+            pose = _pose_from_point_targets(
+                orientation_xyzw=candidate_orientation,
+                point_targets=stage.point_targets,
+            )
+            return pose_cost(pose)
+        best_score: tuple[float, float] | None = None
+        best_violation = float("inf")
+        best_cost = float("inf")
+        source_refs = sorted(groups)
+        for combination in product(*(groups[source_ref] for source_ref in source_refs)):
+            selections = {source_ref: candidate for source_ref, candidate in zip(source_refs, combination)}
+            candidate_stage = _stage_with_point_selection(stage=stage, selections=selections)
+            pose = _pose_from_point_targets(
+                orientation_xyzw=candidate_orientation,
+                point_targets=candidate_stage.point_targets,
+            )
+            violation_m, cost = pose_cost(pose)
+            score = (float(violation_m), float(cost))
+            if best_score is None or score < best_score:
+                best_score = score
+                best_violation = violation_m
+                best_cost = cost
+        return best_violation, best_cost
+
+    if stage.move_along_targets:
+        move = stage.move_along_targets[0]
+        best_score: tuple[float, float] | None = None
+        best_violation = float("inf")
+        best_cost = float("inf")
+        for candidate in _source_point_candidates(move):
+            point_tool = list(candidate["point_tool"])
+            start_pose = pose_for_tool_point_goal(
+                orientation_xyzw=candidate_orientation,
+                point_tool=point_tool,
+                point_world=move.start_world,
+            )
+            goal_pose = pose_for_tool_point_goal(
+                orientation_xyzw=candidate_orientation,
+                point_tool=point_tool,
+                point_world=move.goal_world,
+            )
+            start_violation, start_cost = pose_cost(start_pose)
+            goal_violation, goal_cost = pose_cost(goal_pose)
+            violation_m = max(start_violation, goal_violation)
+            cost = max(start_cost, goal_cost)
+            score = (float(violation_m), float(cost))
+            if best_score is None or score < best_score:
+                best_score = score
+                best_violation = violation_m
+                best_cost = cost
+        return best_violation, best_cost
+
+    violation_m = _orientation_table_clearance_violation_m(
+        candidate_orientation=candidate_orientation,
+        current_position=current_position,
+        stage=stage,
+        line_proximity_target=line_proximity_target,
+        table_clearance_context=table_clearance_context,
+    )
+    return violation_m, 1e6 * violation_m * violation_m
+
+
+def _pose_table_clearance_violation_m(
+    *,
+    pose: dict[str, Any],
+    table_clearance_context: dict[str, Any] | None,
+) -> float:
+    if not table_clearance_context:
+        return 0.0
+    table_top_z = table_clearance_context.get("table_top_z")
+    bbox_points_tool = table_clearance_context.get("bbox_points_tool") or []
+    if table_top_z is None or not bbox_points_tool:
+        return 0.0
+    clearance_m = float(table_clearance_context.get("clearance_m", 0.0))
+    orientation = normalize_quat(pose["orientation_xyzw"])
+    min_corner_z = min(
+        float(pose["position"][2]) + float(quat_rotate(orientation, point)[2])
+        for point in bbox_points_tool
+    )
+    return max(0.0, float(table_top_z) + clearance_m - min_corner_z)
+
+
+def _require_pose_table_clearance(
+    *,
+    pose: dict[str, Any],
+    table_clearance_context: dict[str, Any] | None,
+    label: str,
+) -> None:
+    violation_m = _pose_table_clearance_violation_m(
+        pose=pose,
+        table_clearance_context=table_clearance_context,
+    )
+    if violation_m > _TABLE_CLEARANCE_FEASIBILITY_TOLERANCE_M:
+        raise SE3OptimizerError(
+            f"{label} violates native table bbox constraint by {violation_m:.6f}m"
+        )
 
 
 def _axis_source_vector_candidates(axis: Any) -> list[dict[str, Any]]:
@@ -310,6 +524,7 @@ def _select_point_candidates_for_stage(
     orientation_xyzw: list[float],
     current_pose: dict[str, Any],
     objective_cost_fn: Callable[[dict[str, Any]], float] | None,
+    table_clearance_context: dict[str, Any] | None = None,
 ) -> tuple[CanonicalStageConstraints, list[dict[str, Any]]]:
     groups: dict[str, list[dict[str, Any]]] = {}
     for target in stage.point_targets:
@@ -320,7 +535,7 @@ def _select_point_candidates_for_stage(
         return stage, []
 
     source_refs = sorted(groups)
-    best_stage = stage
+    best_stage: CanonicalStageConstraints | None = None
     best_selection: dict[str, dict[str, Any]] = {}
     best_cost = float("inf")
     for combination in product(*(groups[source_ref] for source_ref in source_refs)):
@@ -342,12 +557,23 @@ def _select_point_candidates_for_stage(
             clearance_targets=candidate_stage.clearance_targets,
         )
         cost += 1e-4 * translation_from_seed * translation_from_seed
+        violation_m = _pose_table_clearance_violation_m(
+            pose=pose,
+            table_clearance_context=table_clearance_context,
+        )
+        if violation_m > _TABLE_CLEARANCE_FEASIBILITY_TOLERANCE_M:
+            continue
         if objective_cost_fn is not None:
             cost += float(objective_cost_fn(pose))
         if cost + 1e-12 < best_cost:
             best_cost = float(cost)
             best_stage = candidate_stage
             best_selection = selections
+
+    if best_stage is None:
+        raise SE3OptimizerError(
+            "no VLM-approved contact point candidate satisfies table bbox clearance"
+        )
 
     records = [
         _selected_point_candidate_record(
@@ -366,6 +592,10 @@ def _orientation_for_single_axis_with_geometry_cost(
     current_orientation: list[float],
     axis: Any,
     sample_points_tool: list[list[float]],
+    current_position: list[float],
+    line_proximity_target: dict[str, Any] | None,
+    stage: CanonicalStageConstraints,
+    table_clearance_context: dict[str, Any] | None,
 ) -> tuple[list[float] | None, str | None, float, float, dict[str, Any]]:
     """Align one axis and resolve free roll by minimizing tool geometry motion."""
 
@@ -374,11 +604,14 @@ def _orientation_for_single_axis_with_geometry_cost(
     best_orientation: list[float] | None = None
     best_polarity: str | None = None
     best_source_candidate: dict[str, Any] | None = None
-    best_score = float("inf")
+    best_score: tuple[float, ...] | None = None
     best_rotation = float("inf")
     best_cosine = -1.0
     best_roll = 0.0
     best_geometry_cost = float("inf")
+    best_line_proximity_cost = 0.0
+    best_table_clearance_violation_m = 0.0
+    best_candidate_combo_cost = 0.0
     roll_step_rad = math.radians(2.0)
     for source_candidate in axis_candidates:
         source_vector = source_candidate["vector_tool"]
@@ -401,12 +634,43 @@ def _orientation_for_single_axis_with_geometry_cost(
                     reference_orientation=seed,
                     sample_points_tool=sample_points_tool,
                 )
+                line_proximity_cost = _axis_line_proximity_cost(
+                    candidate_orientation=candidate,
+                    current_position=current_position,
+                    axis_world=target,
+                    line_proximity_target=line_proximity_target,
+                )
+                table_clearance_violation_m, candidate_combo_cost = _orientation_stage_candidate_combo_cost(
+                    candidate_orientation=candidate,
+                    current_position=current_position,
+                    stage=stage,
+                    line_proximity_target=line_proximity_target,
+                    table_clearance_context=table_clearance_context,
+                )
+                if table_clearance_violation_m > _TABLE_CLEARANCE_FEASIBILITY_TOLERANCE_M:
+                    continue
                 rotation = quat_angle_rad(candidate, seed)
-                # Alignment is the hard objective. Geometry displacement resolves
-                # the residual roll ambiguity; SO(3) angle only breaks near ties.
-                score = 1e3 * alignment_cost * alignment_cost + geometry_cost + 1e-8 * rotation * rotation
-                if score + 1e-12 < best_score:
-                    best_score = score
+                # Table clearance is a hard feasibility gate above. Among
+                # feasible rotations, keep the tool/scene geometry objective
+                # clean: align the axis, then use the scene direction line when
+                # present, then resolve remaining freedom naturally.
+                if line_proximity_target:
+                    score_key = (
+                        float(alignment_cost),
+                        float(line_proximity_cost),
+                        float(geometry_cost),
+                        float(candidate_combo_cost),
+                        float(rotation * rotation),
+                    )
+                else:
+                    score_key = (
+                        float(alignment_cost),
+                        float(geometry_cost),
+                        float(candidate_combo_cost),
+                        float(rotation * rotation),
+                    )
+                if best_score is None or score_key < best_score:
+                    best_score = score_key
                     best_orientation = candidate
                     best_polarity = candidate_polarity
                     best_source_candidate = source_candidate
@@ -414,6 +678,9 @@ def _orientation_for_single_axis_with_geometry_cost(
                     best_cosine = dot(unit(quat_rotate(candidate, source_vector)), target)
                     best_roll = roll_angle
                     best_geometry_cost = geometry_cost
+                    best_line_proximity_cost = line_proximity_cost
+                    best_table_clearance_violation_m = table_clearance_violation_m
+                    best_candidate_combo_cost = candidate_combo_cost
     selection_record = _selected_axis_candidate_record(
         axis_candidates=axis_candidates,
         selected_candidate=best_source_candidate,
@@ -426,6 +693,19 @@ def _orientation_for_single_axis_with_geometry_cost(
             else "fallback_so3_angle",
             "orientation_cost_num_samples": len(sample_points_tool),
             "orientation_geometry_displacement_m2": best_geometry_cost,
+            "axis_line_proximity_m2": best_line_proximity_cost,
+            "orientation_table_clearance_violation_m": best_table_clearance_violation_m,
+            "orientation_candidate_combo_cost": best_candidate_combo_cost,
+            "candidate_selection_scope": "joint_axis_roll_and_vlm_contact_point_candidates",
+            "axis_roll_resolution_priority": (
+                "hard_gate_table_clearance_then_axis_alignment_axis_line_distance_tool_geometry"
+                if table_clearance_context and line_proximity_target
+                else "hard_gate_table_clearance_then_axis_alignment_tool_geometry"
+                if table_clearance_context
+                else "axis_alignment_axis_line_distance_tool_geometry"
+                if line_proximity_target
+                else "axis_alignment_tool_geometry"
+            ),
             "axis_roll_rad": best_roll,
         }
     )
@@ -443,7 +723,7 @@ def _axis_target_candidates(axis: Any) -> list[tuple[str, list[float]]]:
     if axis.polarity == "opposite":
         return [("opposite", [-x for x in world])]
     if axis.polarity == "auto":
-        return [("same", world), ("opposite", [-x for x in world])]
+        return [("same", world)]
     return [("same", world)]
 
 
@@ -471,7 +751,7 @@ def _axis_orientation_cost_for_vector(
     if axis.polarity == "opposite":
         return 1.0 + cosine
     if axis.polarity == "auto":
-        return 1.0 - abs(cosine)
+        return 1.0 - cosine
     return 1.0 - cosine
 
 
@@ -503,8 +783,8 @@ def _axis_final_resolution_for_vector(
         resolved_polarity = "opposite"
         cosine = -raw_cosine
     elif axis.polarity == "auto":
-        resolved_polarity = "same" if raw_cosine >= 0.0 else "opposite"
-        cosine = abs(raw_cosine)
+        resolved_polarity = "same"
+        cosine = raw_cosine
     else:
         resolved_polarity = "same"
         cosine = raw_cosine
@@ -523,6 +803,9 @@ def _orientation_from_coupled_axes(
     *,
     current_orientation: list[float],
     stage: CanonicalStageConstraints,
+    current_position: list[float],
+    line_proximity_target: dict[str, Any] | None = None,
+    table_clearance_context: dict[str, Any] | None = None,
 ) -> tuple[list[float], list[dict[str, Any]]]:
     """Resolve primary axis alignment while using secondary axes to choose roll.
 
@@ -537,10 +820,13 @@ def _orientation_from_coupled_axes(
     primary_candidates = _axis_source_vector_candidates(primary)
     best_orientation: list[float] | None = None
     best_primary_candidate: dict[str, Any] | None = None
-    best_score = float("inf")
+    best_score: tuple[float, ...] | None = None
     best_rotation = float("inf")
     best_roll = 0.0
     best_primary_polarity = primary.polarity
+    best_line_proximity_cost = 0.0
+    best_table_clearance_violation_m = 0.0
+    best_candidate_combo_cost = 0.0
     for primary_candidate in primary_candidates:
         primary_vector = primary_candidate["vector_tool"]
         primary_current = unit(quat_rotate(seed, primary_vector))
@@ -561,15 +847,45 @@ def _orientation_from_coupled_axes(
                         vector_tool=source_vector,
                     )
                     axis_cost += float(axis.weight) * cost * cost
+                line_proximity_cost = _axis_line_proximity_cost(
+                    candidate_orientation=candidate,
+                    current_position=current_position,
+                    axis_world=primary_target,
+                    line_proximity_target=line_proximity_target,
+                )
+                table_clearance_violation_m, candidate_combo_cost = _orientation_stage_candidate_combo_cost(
+                    candidate_orientation=candidate,
+                    current_position=current_position,
+                    stage=stage,
+                    line_proximity_target=line_proximity_target,
+                    table_clearance_context=table_clearance_context,
+                )
+                if table_clearance_violation_m > _TABLE_CLEARANCE_FEASIBILITY_TOLERANCE_M:
+                    continue
                 rotation = quat_angle_rad(candidate, seed)
-                score = axis_cost + 1e-6 * rotation * rotation
-                if score + 1e-12 < best_score:
-                    best_score = score
+                if line_proximity_target:
+                    score_key = (
+                        float(axis_cost),
+                        float(line_proximity_cost),
+                        float(candidate_combo_cost),
+                        float(rotation * rotation),
+                    )
+                else:
+                    score_key = (
+                        float(axis_cost),
+                        float(candidate_combo_cost),
+                        float(rotation * rotation),
+                    )
+                if best_score is None or score_key < best_score:
+                    best_score = score_key
                     best_orientation = candidate
                     best_primary_candidate = primary_candidate
                     best_rotation = rotation
                     best_roll = roll_angle
                     best_primary_polarity = primary_polarity
+                    best_line_proximity_cost = line_proximity_cost
+                    best_table_clearance_violation_m = table_clearance_violation_m
+                    best_candidate_combo_cost = candidate_combo_cost
     if best_orientation is None:
         raise SE3OptimizerError(f"{primary.constraint_id} has no feasible coupled-axis orientation candidate")
     resolutions = [
@@ -586,6 +902,22 @@ def _orientation_from_coupled_axes(
         resolutions[0]["coupled_axis_roll_rad"] = best_roll
         resolutions[0]["coupled_axis_count"] = len(stage.axis_targets)
         resolutions[0]["coupled_axis_objective"] = "preserve primary axis while minimizing secondary axis alignment cost"
+        if line_proximity_target:
+            resolutions[0]["axis_line_proximity_objective"] = (
+                "minimize_primary_axis_line_distance_to_next_contact_direction"
+            )
+        resolutions[0]["axis_line_proximity_m2"] = best_line_proximity_cost
+        resolutions[0]["orientation_table_clearance_violation_m"] = best_table_clearance_violation_m
+        resolutions[0]["orientation_candidate_combo_cost"] = best_candidate_combo_cost
+        resolutions[0]["candidate_selection_scope"] = "joint_axis_roll_and_vlm_contact_point_candidates"
+        if table_clearance_context:
+            resolutions[0]["coupled_axis_roll_resolution_priority"] = (
+                "hard_gate_table_clearance_then_axis_alignment_axis_line_distance_candidate_combo_rotation"
+            )
+        elif line_proximity_target:
+            resolutions[0]["coupled_axis_roll_resolution_priority"] = (
+                "axis_alignment_axis_line_distance_candidate_combo_rotation"
+            )
         resolutions[0].update(
             _selected_axis_candidate_record(
                 axis_candidates=primary_candidates,
@@ -644,7 +976,7 @@ def stage_constraint_errors(
         if target.polarity == "opposite":
             cosine = -cosine
         elif target.polarity == "auto":
-            cosine = abs(cosine)
+            cosine = cosine
         errors[f"{target.constraint_id}.axis_cost"] = cost
         errors[f"{target.constraint_id}.axis_cosine"] = cosine
     for target in stage.clearance_targets:
@@ -746,11 +1078,10 @@ def _select_move_along_point_candidate(
     move: MoveAlongTarget,
     orientation_xyzw: list[float],
     current_pose: dict[str, Any],
+    table_clearance_context: dict[str, Any] | None = None,
 ) -> tuple[list[float], dict[str, Any] | None]:
     candidates = _source_point_candidates(move)
-    if len(candidates) <= 1:
-        return list(move.point_tool), None
-    best_candidate = candidates[0]
+    best_candidate: dict[str, Any] | None = None
     best_cost = float("inf")
     for candidate in candidates:
         point_tool = list(candidate["point_tool"])
@@ -766,15 +1097,27 @@ def _select_move_along_point_candidate(
         )
         start_translation = norm(sub(start_pose["position"], current_pose["position"]))
         use_translation = norm(sub(goal_pose["position"], start_pose["position"]))
-        # All candidates are VLM-valid; prefer the one that reaches the path
-        # with the least free-space translation, then the shorter tool-base path.
+        start_table_violation_m = _pose_table_clearance_violation_m(
+            pose=start_pose,
+            table_clearance_context=table_clearance_context,
+        )
+        goal_table_violation_m = _pose_table_clearance_violation_m(
+            pose=goal_pose,
+            table_clearance_context=table_clearance_context,
+        )
+        if max(start_table_violation_m, goal_table_violation_m) > _TABLE_CLEARANCE_FEASIBILITY_TOLERANCE_M:
+            continue
         cost = start_translation * start_translation + 1e-6 * use_translation * use_translation
         if cost + 1e-12 < best_cost:
             best_candidate = candidate
             best_cost = float(cost)
+    if best_candidate is None:
+        raise SE3OptimizerError(
+            "no VLM-approved move-along contact point candidate satisfies native table bbox constraint"
+        )
     return (
         list(best_candidate["point_tool"]),
-        _selected_point_candidate_record(
+        None if len(candidates) <= 1 else _selected_point_candidate_record(
             source_ref=move.source_ref,
             point_candidates=candidates,
             selected_candidate=best_candidate,
@@ -910,10 +1253,15 @@ def solve_stage_pose(
     default_tool_point_ref: str,
     objective_cost_fn: Callable[[dict[str, Any]], float] | None = None,
     objective_error_fn: Callable[[dict[str, Any]], dict[str, float]] | None = None,
+    line_proximity_target: dict[str, Any] | None = None,
+    table_clearance_context: dict[str, Any] | None = None,
 ) -> StageSolveResult:
     orientation, axis_resolutions = _orientation_from_axes(
         current_orientation=current_pose["orientation_xyzw"],
         stage=stage,
+        current_position=list(current_pose["position"]),
+        line_proximity_target=line_proximity_target,
+        table_clearance_context=table_clearance_context,
     )
     effective_stage = _stage_with_selected_axis_vectors(
         stage=stage,
@@ -924,6 +1272,7 @@ def solve_stage_pose(
         orientation_xyzw=orientation,
         current_pose=current_pose,
         objective_cost_fn=objective_cost_fn,
+        table_clearance_context=table_clearance_context,
     )
     primary_tool_point: list[float] | None = None
     if effective_stage.point_targets:
@@ -953,6 +1302,11 @@ def solve_stage_pose(
         pose=pose,
         clearance_targets=effective_stage.clearance_targets,
     )
+    _require_pose_table_clearance(
+        pose=pose,
+        table_clearance_context=table_clearance_context,
+        label=f"stage {stage.stage_name}",
+    )
     if objective_cost_fn is not None:
         try:
             pose = _optimize_with_objectives(
@@ -965,6 +1319,11 @@ def solve_stage_pose(
         pose = apply_clearance_constraints(
             pose=pose,
             clearance_targets=effective_stage.clearance_targets,
+        )
+        _require_pose_table_clearance(
+            pose=pose,
+            table_clearance_context=table_clearance_context,
+            label=f"stage {stage.stage_name} objective pose",
         )
     errors = stage_constraint_errors(pose=pose, stage=effective_stage)
     objective_cost = 0.0
@@ -1001,6 +1360,7 @@ def compile_move_along_waypoints(
     orientation_xyzw: list[float],
     current_pose: dict[str, Any],
     steps: int,
+    table_clearance_context: dict[str, Any] | None = None,
 ) -> list[CompiledMoveWaypoint]:
     compiled: list[CompiledMoveWaypoint] = []
     final_orientation = normalize_quat(orientation_xyzw)
@@ -1008,15 +1368,22 @@ def compile_move_along_waypoints(
         move=move,
         orientation_xyzw=final_orientation,
         current_pose=current_pose,
+        table_clearance_context=table_clearance_context,
     )
     if norm(sub(move.goal_world, move.start_world)) <= 1e-9:
+        terminal_pose = pose_for_tool_point_goal(
+            orientation_xyzw=final_orientation,
+            point_tool=point_tool,
+            point_world=move.goal_world,
+        )
+        _require_pose_table_clearance(
+            pose=terminal_pose,
+            table_clearance_context=table_clearance_context,
+            label=f"{move.source_ref} move-along terminal",
+        )
         return [
             CompiledMoveWaypoint(
-                pose=pose_for_tool_point_goal(
-                    orientation_xyzw=final_orientation,
-                    point_tool=point_tool,
-                    point_world=move.goal_world,
-                ),
+                pose=terminal_pose,
                 tool_ref=move.source_ref,
                 target_ref=move.goal_ref,
                 semantic_role=f"{move.path_family}_terminal",
@@ -1050,6 +1417,11 @@ def compile_move_along_waypoints(
             orientation_xyzw=waypoint_orientation,
             point_tool=point_tool,
             point_world=point_world,
+        )
+        _require_pose_table_clearance(
+            pose=pose,
+            table_clearance_context=table_clearance_context,
+            label=f"{move.source_ref} move-along waypoint {step}",
         )
         semantic_role, semantic_gate, target_ref = _move_waypoint_semantics(
             move=move,

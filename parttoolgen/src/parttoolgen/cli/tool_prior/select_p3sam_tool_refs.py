@@ -103,12 +103,8 @@ def _axis_for_face_row(row: Mapping[str, Any]) -> tuple[list[float], str]:
     if isinstance(bbox_axis, list) and len(bbox_axis) == 3:
         return [float(item) for item in bbox_axis], "bbox_axis_tool"
     patch_axis = _bbox_axis_from_patch_id(row.get("patch_id"))
-    if (
-        patch_axis is not None
-        and str(row.get("selection_semantics") or "").endswith("bbox_face")
-        and str(row.get("patch_id") or "").endswith("_endpoint")
-    ):
-        return patch_axis, "bbox_endpoint_axis"
+    if patch_axis is not None and str(row.get("selection_semantics") or "").endswith("bbox_face"):
+        return patch_axis, "bbox_face_axis"
     normal = row.get("normal_tool")
     if isinstance(normal, list) and len(normal) == 3:
         return [float(item) for item in normal], "mesh_patch_normal"
@@ -169,6 +165,7 @@ def _image_items(
     *,
     tool_id: str,
     part_marker: str | None = None,
+    purpose: str | None = None,
 ) -> list[Path]:
     paths: list[Path] = []
     for item in visual_evidence.get("items", []):
@@ -183,7 +180,12 @@ def _image_items(
                 f"{tool_id}_part_candidate_{part_marker}"
             ):
                 paths.append(Path(str(item.get("path"))))
-        elif part_marker is not None and kind in {"selected_part_bbox_overview", "selected_part_face_highlight"}:
+        elif part_marker is not None and kind == "selected_part_bbox_overview":
+            if str(item.get("part_marker") or "") == str(part_marker) or str(item.get("id", "")).startswith(
+                f"{tool_id}_part_candidate_{part_marker}"
+            ):
+                paths.append(Path(str(item.get("path"))))
+        elif part_marker is not None and kind == "selected_part_face_highlight":
             if str(item.get("part_marker") or "") == str(part_marker) or str(item.get("id", "")).startswith(
                 f"{tool_id}_part_candidate_{part_marker}"
             ):
@@ -232,53 +234,44 @@ def _contact_prompt(
     part_marker: str,
     rows: list[dict[str, Any]],
 ) -> str:
-    compact_rows = [
-        {
-            "contact_point_marker": row.get("contact_marker") or row.get("face_marker"),
-            "point_ref": row.get("point_ref"),
-            "surface_ref": row.get("surface_ref"),
-            "polarity": row.get("polarity"),
-            "patch_id": row.get("patch_id"),
-        }
-        for row in rows
-    ]
+    compact_rows = []
+    for row in rows:
+        compact_rows.append(
+            {
+                "contact_point_marker": row.get("contact_marker") or row.get("face_marker"),
+                "point_ref": row.get("point_ref"),
+                "surface_ref": row.get("surface_ref"),
+                "patch_id": row.get("patch_id"),
+            }
+        )
     return (
-        "Select two task-conditioned tool refs on the chosen P3SAM tool part.\n"
-        "The listed candidates have already been filtered to exclude faces marked as internal to the tool; "
-        "do not request or infer unlisted internal faces.\n"
-        "1) selected_contact_point_marker: the tool point/face center that should be point-matched to the scene "
-        "target contact point because it is the active tool reference that physically acts on the target during use. "
-        "This is a tool ref, not a scene start-edge or path-direction choice.\n"
-        "Also list candidate_contact_point_markers: every listed contact point candidate that is semantically valid "
-        "for this task and could serve as the same active tool reference after downstream pose optimization. "
-        "Include the selected marker in this list. For tasks involving wiping, erasing, rubbing, scrubbing, "
-        "polishing, spreading, pressing, stamping, or area contact, broad exposed working surfaces on the "
-        "functional part are valid contact candidates; keep symmetric or opposite working faces when either "
-        "face could physically act on the target under a feasible tool pose. Contact candidates are not "
-        "motion-axis candidates: do not exclude a valid working face merely because its normal is not the "
-        "use-stage travel direction. A listed face may appear in both candidate_contact_point_markers and "
-        "candidate_motion_axis_markers when it is semantically valid for both roles. For thin, flat, or "
-        "geometrically near-degenerate functional parts where several highlighted bbox faces correspond to "
-        "the same exposed working sheet, keep all visually equivalent working-surface markers as contact "
-        "candidates instead of forcing one label. Do not list every geometric face; include only candidates "
-        "justified by the task and visual evidence.\n"
-        "2) selected_motion_axis_marker: the tool face whose normal or declared axis should be aligned parallel to the "
-        "VLM scene motion axis during use. This may differ from the contact point marker.\n"
-        "Also list candidate_motion_axis_markers: every listed face/axis candidate that is semantically valid "
-        "for motion-axis alignment during this task. Include the selected marker in this list. "
-        "For symmetric, opposite, or interchangeable axis faces, keep all valid alternatives instead of forcing "
-        "a single geometry.\n"
-        "Make both choices from the task instruction and the visual evidence only; do not assume a fixed tool-specific rule. "
-        "Do not choose the motion-axis marker as the contact point unless the same candidate is also the active tool "
-        "reference that should physically act on the target.\n"
-        "Use only listed contact_point_marker values. Return exactly one JSON object:\n"
+        "Choose practical tool-use references for the selected tool part and task.\n"
+        "The attached tool images are visual evidence cards for candidate faces on the selected tool part.\n"
+        "If scene/context images are attached, use them only to understand the target, workspace, and intended task motion; still choose only from the F markers shown on the tool evidence cards.\n"
+        "Overview images show the whole tool and the selected part; face cards show one candidate F face at a time from multiple views.\n"
+        "Use everyday common sense: imagine how a person would normally hold and move this tool when doing the task with the selected part.\n"
+        "The cards are labeled F1, F2, ... . Each card shows one candidate tool face with a green dot and a red arrow.\n"
+        "The green dot is a representative point on the candidate face that may touch and act on the target.\n"
+        "The red arrow is the candidate motion axis on the tool's working part for carrying out the action.\n"
+        "Each F marker corresponds to one candidate face on the selected part's bounding box. A colored or yellow highlighted face only shows which bbox face the marker refers to.\n"
+        "Use the highlighted bbox face, the green dot, and the red arrow together to understand the candidate: the face is the local side, the dot represents that face's contact location, and the arrow is the candidate action direction on the tool.\n"
+        "Select contact candidates by asking which candidate face a person would normally use to touch the target with this tool part in this task.\n"
+        "Select motion-axis candidates by asking: when using this tool normally, which axis of the working part would be used to approach the target and produce the intended action?\n"
+        "A marker may be useful as a contact point, a motion axis, both, or neither; decide the two roles separately.\n"
+        "If several markers are equally ordinary and practical, include all of them as candidates and choose one representative as selected.\n"
+        "Avoid unusual, awkward, hidden, or accidental contacts when a normal working contact is available.\n"
+        "Use only the listed F markers; do not invent coordinates or new parts.\n"
+        "Return exactly one JSON object:\n"
         "{\n"
+        '  "ordinary_use_modes": [\n'
+        '    {"description": "short use mode", "contact_markers": ["F1"], "motion_axis_markers": ["F3"]}\n'
+        "  ],\n"
         '  "selected_contact_point_marker": "F1",\n'
-        '  "candidate_contact_point_markers": ["F1"],\n'
-        '  "selected_motion_axis_marker": "F2",\n'
-        '  "candidate_motion_axis_markers": ["F2"],\n'
+        '  "candidate_contact_point_markers": ["F1", "F2"],\n'
+        '  "selected_motion_axis_marker": "F3",\n'
+        '  "candidate_motion_axis_markers": ["F3"],\n'
         '  "confidence": 0.0,\n'
-        '  "reason": "short visual/task reason"\n'
+        '  "reason": "short task-and-visual reason"\n'
         "}\n\n"
         f"tool_id: {tool_id}\n"
         f"task_instruction: {task_instruction}\n"
@@ -296,6 +289,7 @@ def _vlm_json(
     model: str,
     base_url: str | None,
     max_new_tokens: int,
+    enable_thinking: bool | None = None,
 ) -> dict[str, Any]:
     client = build_vlm_client(
         response_mode="openai-compatible",
@@ -303,6 +297,7 @@ def _vlm_json(
         model=model,
         base_url=base_url,
         max_new_tokens=max_new_tokens,
+        enable_thinking=enable_thinking,
     )
     response = client.generate(
         prompt=prompt,
@@ -330,6 +325,7 @@ def _select_part(
     model: str,
     base_url: str | None,
     max_new_tokens: int,
+    enable_thinking: bool | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     rows = _part_rows(visual_evidence, tool_id)
     if not rows:
@@ -345,6 +341,7 @@ def _select_part(
             model=model,
             base_url=base_url,
             max_new_tokens=max_new_tokens,
+            enable_thinking=enable_thinking,
         )
         marker = str(raw.get("selected_marker") or "").strip()
     else:
@@ -370,6 +367,8 @@ def _select_contact(
     model: str,
     base_url: str | None,
     max_new_tokens: int,
+    enable_thinking: bool | None = None,
+    context_images: list[Path] | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any], list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
     rows = _contact_rows(visual_evidence, tool_id=tool_id, part_marker=part_marker)
     if not rows:
@@ -379,12 +378,13 @@ def _select_contact(
     if selection_source == "vlm":
         raw = _vlm_json(
             prompt=_contact_prompt(tool_id, task_instruction, part_marker, rows),
-            images=_image_items(visual_evidence, tool_id=tool_id, part_marker=part_marker),
+            images=[*(context_images or []), *_image_items(visual_evidence, tool_id=tool_id, part_marker=part_marker)],
             task_instruction=task_instruction,
             context_id=f"{tool_id}:p3sam_contact_selection",
             model=model,
             base_url=base_url,
             max_new_tokens=max_new_tokens,
+            enable_thinking=enable_thinking,
         )
         marker = _canonical_marker(
             raw.get("selected_contact_point_marker") or "",
@@ -413,8 +413,13 @@ def _select_contact(
     else:
         if marker is None:
             raise ValueError("--contact-point-marker is required for reference selection")
+        if axis_marker is None:
+            raise ValueError(
+                "--motion-axis-marker is required for reference selection; "
+                "contact point and motion axis are separate tool refs"
+            )
         marker = _canonical_marker(marker, prefix="F")
-        axis_marker = _canonical_marker(axis_marker or marker, prefix="F")
+        axis_marker = _canonical_marker(axis_marker, prefix="F")
         candidate_markers = [
             _canonical_marker(item, prefix="F") for item in (candidate_markers or [marker])
         ]
@@ -785,6 +790,10 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         raise FileNotFoundError(f"P3SAM prior has no tool_part_graph.json: {tool_part_graph_path}")
 
     visual_evidence = _load_json(visual_evidence_path)
+    context_images = [Path(path) for path in (args.context_image or [])]
+    for context_image in context_images:
+        if not context_image.exists():
+            raise FileNotFoundError(f"context image does not exist: {context_image}")
     args.output_dir.mkdir(parents=True, exist_ok=True)
     if args.stage == "contact":
         if args.part_selection is None:
@@ -805,6 +814,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             model=args.model,
             base_url=args.base_url,
             max_new_tokens=args.max_new_tokens,
+            enable_thinking=args.enable_thinking,
         )
     part_marker = str(part_row["marker"])
     part_selection = _part_selection_json(
@@ -836,6 +846,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
             "metadata": {
                 "created_by": "parttoolgen.cli.tool_prior.select_p3sam_tool_refs",
                 "created_unix_s": time.time(),
+                "enable_thinking": args.enable_thinking,
             },
         }
         _write_json(args.output_dir / "p3sam_tool_ref_selection_summary.json", summary)
@@ -854,6 +865,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         model=args.model,
         base_url=args.base_url,
         max_new_tokens=args.max_new_tokens,
+        enable_thinking=args.enable_thinking,
+        context_images=context_images,
     )
 
     shutil.copy2(tool_part_graph_path, args.output_dir / "tool_part_graph.json")
@@ -956,6 +969,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "metadata": {
             "created_by": "parttoolgen.cli.tool_prior.select_p3sam_tool_refs",
             "created_unix_s": time.time(),
+            "context_images": [str(path) for path in context_images],
         },
     }
     _write_json(args.output_dir / "p3sam_tool_ref_selection_summary.json", summary)
@@ -969,6 +983,13 @@ def main() -> int:
     parser.add_argument("--task-instruction", required=True)
     parser.add_argument("--p3sam-prior-dir", type=Path, required=True)
     parser.add_argument("--visual-evidence", type=Path, required=True)
+    parser.add_argument(
+        "--context-image",
+        type=Path,
+        action="append",
+        default=[],
+        help="Optional scene/workspace image supplied as context for contact and motion-axis selection.",
+    )
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--stage", choices=["part", "contact", "full"], default="full")
     parser.add_argument("--part-selection", type=Path)
@@ -987,6 +1008,20 @@ def main() -> int:
     parser.add_argument("--model", default=os.environ.get("VLM_MODEL") or "gpt-5.4")
     parser.add_argument("--base-url", default=os.environ.get("VLM_API_BASE"))
     parser.add_argument("--max-new-tokens", type=int, default=768)
+    thinking_group = parser.add_mutually_exclusive_group()
+    thinking_group.add_argument(
+        "--enable-thinking",
+        dest="enable_thinking",
+        action="store_true",
+        default=None,
+        help="Pass enable_thinking=true to OpenAI-compatible providers that support it, such as Qwen.",
+    )
+    thinking_group.add_argument(
+        "--disable-thinking",
+        dest="enable_thinking",
+        action="store_false",
+        help="Pass enable_thinking=false to OpenAI-compatible providers that support it.",
+    )
     args = parser.parse_args()
     summary = run(args)
     print(json.dumps(summary, indent=2))

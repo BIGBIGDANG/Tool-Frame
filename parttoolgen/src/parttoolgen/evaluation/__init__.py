@@ -9,6 +9,7 @@ from .target_bridge import (
 )
 from .task_spec import ToolUseTask, ToolUseEvalSuite, load_suite, load_task, public_task_payload
 from .task_success import (
+    BRUSH_SWEEP_OFF_TABLE_SUCCESS_POLICY,
     BRUSH_SWEEP_SUCCESS_POLICY,
     ERASER_WIPE_SUCCESS_POLICY,
     HAMMER_DOWN_SUCCESS_POLICY,
@@ -40,6 +41,7 @@ from .simtoolreal_segmented_tools import (
 
 __all__ = [
     "BRUSH_SWEEP_SUCCESS_POLICY",
+    "BRUSH_SWEEP_OFF_TABLE_SUCCESS_POLICY",
     "DEFAULT_SEGMENTED_TOOL_MANIFEST",
     "ERASER_WIPE_SUCCESS_POLICY",
     "HAMMER_DOWN_SUCCESS_POLICY",

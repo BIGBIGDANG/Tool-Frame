@@ -1,163 +1,134 @@
 # Next Agent Handoff
 
-Read `AGENTS.md` first and follow the Agent Collaboration Rules.
+Read `AGENTS.md` first and follow the collaboration rules.
 
-## Current State
+## Current Priority
 
-- Workspace: repository root, normally `<your clone>/ToolFrame_6.4`.
-- Canonical workflow: see `docs/current_pipeline.md`.
-- Active task families: `brush_sweep`, `hammer_strike`, `eraser_wipe`,
-  `screwdriver_insert`, marker letter-writing (`marker_trace/write_l`, `marker_trace/write_c`), and draft side-board tasks.
-- Active method boundary: public SimToolReal RGB-D scene evidence,
-  task-generic VLM scene refs, RGB-D lifting, public/P3SAM/task-conditioned VLM
-  tool refs, whole-tool SE(3) subgoals, SimToolReal fixed-goal rollout, and
-  explicit task-level success checks.
-- Prohibited method inputs: hidden evaluator target refs, oracle target axes,
-  oracle trajectories, `tool_family`/`task_family` fallback, primitive
-  fallback, repair-loop fallback, automatic global-axis retries, and
-  seed-specific shortcuts.
-
-## Active Output Safety Check
-
-Before touching generated output roots under `artifacts/image_grounded/**` or
-local scratch roots under `test000/`, check for active runners:
-
-```bash
-ps -eo pid,ppid,stat,etime,cmd | \
-  rg 'run_seed20|run_smoke_left_tasks_parallel|run_image_grounded|simtoolreal_rollout|run_vlm_scene_keypoint_grounding'
-```
-
-Do not edit, move, stage, or delete active run roots while they are active.
-
-## Task Status
-
-| Status | Item | Notes |
-|---|---|---|
-| Current | Brush sweep forward/left | Success is directional target displacement; tracking is diagnostic. |
-| Current | Hammer down | Success is support-direction/compiler/semantic contact; target displacement is not required. |
-| Current/reviewed | Eraser wipe | Flat-eraser label direction reviewed; strict bottom-surface coverage and visual disappearance are diagnostic. |
-| Current/provisional | Screwdriver insert wide socket | Corrected success uses compiled terminal socket-goal check plus measured tip XY/radial error and inside-socket depth; terminal endpoint error is diagnostic. |
-| Current/hard | Marker trace write L/C | Side-board whiteboard tasks under `artifacts/tool_use_benchmark/marker_trace/write_l/` and `artifacts/tool_use_benchmark/marker_trace/write_c/`; use the shared left-side vertical side-task environment asset `simtoolreal/assets/urdf/parttoolgen_benchmark/marker_trace_whiteboard/left_side_vertical_whiteboard_002x0475x101.urdf` and canonical preview `artifacts/image_grounded/marker_trace/path_whiteboard_preview_staples_seed_000/sim_rgbd_left_vertical_wall_wide_front_aligned/`; switched to `staples_marker` after topdown review showed `sharpie_marker` is capped; use the generic brush/eraser-style VLM scene-ref prompt so the VLM marks start/optional-waypoints/end public refs on the blank side whiteboard via `whiteboard_front`; ink evidence must be rendered only from the reviewed marker-tip contact ref via `python -m parttoolgen.evaluation.marker_trace_ink_evidence`; final success is VLM-judged produced ink legibility, while rollout/contact metrics are diagnostic. |
-| Draft/smoking | Side-board HDU eraser | Shared side-board whiteboard, `soft02` lighting, natural task language: "Use this eraser to erase the whole HDU pattern on the whiteboard." Target is a visual-only HDU sticker/handwriting decal. Human proposed erase >=70%; final implementation must measure flat-eraser functional contact coverage on the whiteboard, not whole-tool root pose or collision with the sticker. |
-| Draft/smoking | Side-board hammer/screwdriver | Reuse the shared side-board whiteboard plus separate hammer target/socket actors. Keep side-board assets isolated from tabletop tasks and use `whiteboard_front` evidence. Success contracts are still pending review. |
-| Removed/deprecated | Marker trace line/path-waypoint drafts | Superseded by marker letter-writing hard tasks; old runtime outputs may remain only as historical scratch evidence. |
-| Blocked | Knife line cut | Needs valid mesh and cut/separation contract. |
-| Deferred | Spatula | Wait for clearer task/object contract. |
-
-## Benchmark Expansion Objective
-
-The next main work item is benchmark expansion, not single-seed repair. Build a
-candidate matrix from the current public-release asset sources:
-
-1. segmented SimToolReal tools under `simtoolreal/assets/urdf/dextoolbench/`;
-2. the P3SAM package reported by
-   `bin/toolframe inventory --compact`;
-3. small reviewed benchmark assets under
-   `simtoolreal/assets/urdf/parttoolgen_benchmark/`.
-
-Imported external ToolUse assets are intentionally omitted from the current
-public release. Reintroduce them only after a separate asset/license review and
-human-reviewed benchmark contracts.
-
-For each feasible tool/object/task combination, record the proposed public
-scene evidence, task language, required scene refs, tool refs, compiler
-constraint type, rollout runner/config path, and a human-reviewed success
-contract. Only promote a task from candidate to benchmark after the contract is
-approved and a small smoke shows coherent evidence, compilation, rollout, and
-videos.
-
-## Success-Check Policy
-
-Every new task needs a task-specific benchmark contract before large statistics.
-For each task, define and get human approval for:
-
-1. visible public scene refs available to the VLM,
-2. tool refs and part-face grounding source,
-3. required task-level success predicates,
-4. diagnostic-only predicates,
-5. thresholds/tolerances,
-6. allowed functional part/face/motion-axis labels.
-
-Do not invent labels or thresholds. Smoke runs before review are debugging
-evidence, not final pass rates.
-
-## Cleanup Guidance
-
-- Do not run `git add .`.
-- Leave generated run outputs under `artifacts/image_grounded/**` uncommitted.
-- Avoid staging heavy/runtime artifacts such as imported third-party asset
-  roots, `artifacts/tool_prior/**`, and generated preview outputs unless
-  explicitly requested.
-- Keep benchmark configs under `artifacts/tool_use_benchmark/`.
-- Keep run outputs under `artifacts/image_grounded/<task_family>/`.
-- `test000/` is allowed as an interactive scratch/review root when the human
-  explicitly asks for it; do not treat it as a benchmark config root.
-- `visual_evidence/` should normally be manifest-only.
-
-Low-risk stale roots to remove only after confirming they are not active and
-their summary values are no longer needed:
+Do not expand the benchmark or add new baselines before the current mainline is
+clean. The active priority is:
 
 ```text
-artifacts/image_grounded/brush_sweep/forward_original_rgb/
-artifacts/image_grounded/hammer_strike/down_original_rgb_smoke/
-artifacts/image_grounded/eraser_wipe/tabletop_wipe_original_rgb_smoke/
-artifacts/image_grounded/eraser_wipe/tabletop_wipe_seed20_original_rgb/
-artifacts/image_grounded/eraser_wipe/tabletop_wipe_seed20_2500steps_original_rgb/
-artifacts/image_grounded/eraser_wipe/tabletop_wipe_seed20_2000steps_nonoverlap_original_rgb/
-artifacts/image_grounded/screwdriver_insert/scene_preview_seed_000/
-artifacts/image_grounded/vlm_prompt_unified_scene_grounding_smoke/
+clean code/docs/configs
+  -> run current_all_runnable full E2E
+  -> manually audit failures
+  -> report final task success + coarse attribution
 ```
 
-Keep `vlm_prompt_unified_scene_grounding_smoke_v2/` as the current generic
-prompt smoke evidence unless a newer prompt audit supersedes it.
+## Mainline Method
+
+The only active method path is:
+
+```text
+task language
+  + public tool mesh / P3SAM tool evidence
+  + public SimToolReal RGB-D scene evidence
+    -> VLM tool refs from tool-only evidence
+    -> VLM scene refs from per-seed scene evidence
+    -> RGB-D lifting
+    -> tool-centric compiler
+    -> whole-tool SE(3) subgoals
+    -> SimToolReal rollout
+    -> task success check
+    -> manual failure attribution
+```
+
+Do not pass the scene image into the tool-ref VLM prompt in the current
+mainline. Do not use hidden simulator target centers, oracle axes, oracle
+trajectories, fixed global-axis fallbacks, tool-family fallbacks, repair loops,
+or seed-specific prompt hacks.
+
+## Current Suite
+
+Use `current_all_runnable`:
+
+```text
+brush_sweep/off_table_red
+brush_sweep/off_table_blue
+eraser_wipe/tabletop_wipe
+eraser_wipe/tabletop_wipe_handle
+eraser_wipe/side_whiteboard_hdu_erase
+hammer_strike/down
+hammer_strike/down_mallet
+screwdriver_insert/wide_socket
+screwdriver_insert/wide_socket_short
+screwdriver_insert/deep_socket
+marker_trace/write_l
+marker_trace/write_c
+```
+
+Retired red-zone/directional brush tasks, dense screwdriver tasks, scene-context
+tool-ref experiments, fixed/oracle-ref experiments, and unapproved side-board
+drafts are not part of the current result.
+
+## Safety Check Before Touching Outputs
+
+```bash
+pgrep -af 'run_tool_use_benchmark.py|run_image_grounded|run_p3sam_tool_ref_pipeline|render_sampart3d|run_vlm_scene_keypoint|compile_image_grounded|simtoolreal_rollout'
+```
+
+Do not edit, move, or delete active output roots.
+
+## Canonical Commands
+
+```bash
+bin/toolframe env-check --mode core
+bin/toolframe preflight-current
+bin/toolframe benchmark --suite current_all_runnable --preflight-only --skip-rollout
+```
+
+Current full E2E run:
+
+```bash
+bin/toolframe current-e2e \
+  --trials 10 \
+  --seed-start 0 \
+  --device cuda:0 \
+  --capture-video-every 1 \
+  --continue-on-task-error \
+  --tool-ref-model gpt-5.5 \
+  --tool-ref-base-url "$VLM_API_BASE" \
+  --output-prefix artifacts/test008/e2e_10seed_gpt55_20260607 \
+  --aggregate json,csv,md
+```
+
+For multi-GPU runs, split tasks into groups but keep the same protocol.
+
+## Manual Attribution
+
+Each failed trial gets one primary label:
+
+```text
+reference
+compilation
+execution
+artifact
+needs_review
+```
+
+Use tool-ref evidence, scene overlays, lifted refs, compiler outputs, rollout
+videos, and task success reports. Do not turn attribution labels into method
+inputs.
+
+## Cleanup Rules
+
+- Do not run `git add .`.
+- Do not commit `.parttoolgen.local.env`, VLM keys, rollout videos, raw RGB-D
+  dumps, large generated roots, or temporary `test00*` artifacts.
+- `artifacts/tool_use_benchmark/` is config/contract source, not runtime output.
+- `artifacts/test008/` is the current E2E experiment root.
+- `test001` through `test007` are development evidence unless a reviewed report
+  explicitly promotes a compact artifact.
+- Remove obviously wrong generated paths such as nested repository roots.
 
 ## Verification
 
-Before committing source/docs/config changes, run:
+For source/docs/config changes:
 
 ```bash
 git diff --check
 bin/toolframe check --quick
-bin/toolframe preflight-headline
-bin/toolframe preflight-paper
-bin/toolframe preflight-all
+bin/toolframe preflight-current
 ```
 
-## Prompt For The Next Coding Agent
-
-```text
-Read AGENTS.md first and follow the Agent Collaboration Rules.
-
-You are working in the ToolFrame 6.4 repository root.
-
-Start by checking for active runners before touching generated output roots.
-Do not edit, move, stage, or delete active output roots while they are active.
-
-Continue the image-grounded tabletop and side-board benchmark only within the method boundary:
-public RGB-D scene evidence, task-generic VLM scene refs, RGB-D lifting,
-public/P3SAM/task-conditioned VLM tool refs, whole-tool SE(3) compiler
-subgoals, SimToolReal fixed-goal rollout, and explicit task-level success
-checks. Do not use hidden evaluator target refs, oracle target axes, oracle
-trajectories, tool_family/task_family fallback, primitive fallback, repair-loop
-fallback, automatic global-axis retries, or seed-specific shortcuts.
-
-Prefer documentation/contract consolidation and small, verifiable fixes over
-broad refactors. For any proposed next task, first write the success contract
-and get human approval for scene refs, tool refs, required predicates,
-diagnostic predicates, thresholds, and tool labels.
-
-The next priority is to finish smoke/review bookkeeping for the retained
-tabletop and side-board tasks, then expand the benchmark from built-in
-SimToolReal segmented tools and small reviewed benchmark assets. External
-ToolUse assets are outside the current public release unless the project owner
-approves a separate asset/license review.
-
-Produce a candidate task matrix before implementing new tasks. For each
-candidate, specify public scene evidence, natural task language, VLM scene refs,
-tool-side refs, compiler constraints, runner/config/output paths, success
-contract, diagnostic metrics, and why the task is or is not ready. Keep configs
-under artifacts/tool_use_benchmark/<task_family>/<split>/ and outputs under
-artifacts/image_grounded/<task_family>/ unless the human explicitly asks for a
-temporary `test000/` run; do not place runtime videos/evidence under
-artifacts/tool_use_benchmark/.
-```
+Run full rollouts only after the method/docs/config state matches the current
+protocol.

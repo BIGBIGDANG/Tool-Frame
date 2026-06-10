@@ -1,0 +1,435 @@
+{
+  "schema_version": "parttoolgen_contact_point_motion_axis_selection_v1",
+  "selection_semantics": "p3sam_vlm_contact_point_motion_axis",
+  "artifact_id": "mallet_hammer_hammer_strike/down_mallet_p3sam_contact_point_selection",
+  "tool_id": "mallet_hammer",
+  "task_id": "hammer_strike/down_mallet",
+  "task_instruction": "Use this hammer to hit the visible nail.",
+  "selected_part": {
+    "marker": "4",
+    "part_ref": "tool.parts.part_287"
+  },
+  "contact_point": {
+    "marker": "F4",
+    "point_ref": "candidate.points.part_287_y_positive_contact",
+    "surface_ref": "candidate.surfaces.part_287_y_positive_contact",
+    "patch_id": "y_positive_contact",
+    "row": {
+      "tool_id": "mallet_hammer",
+      "part_marker": "4",
+      "part_id": "part_287",
+      "part_ref": "tool.parts.part_287",
+      "point_ref": "candidate.points.part_287_y_positive_contact",
+      "surface_ref": "candidate.surfaces.part_287_y_positive_contact",
+      "polarity": "positive",
+      "patch_id": "y_positive_contact",
+      "role": null,
+      "xyz_tool": [
+        0.21729314825060328,
+        -0.04147864089085311,
+        0.0021756395587816317
+      ],
+      "normal_tool": [
+        0.9289238700905502,
+        0.04646559498820889,
+        0.3673436974529252
+      ],
+      "face_marker": "F4",
+      "contact_marker": "F4",
+      "selection_semantics": "contact_point_bbox_face",
+      "derived_point_ref": "candidate.points.part_287_y_positive_contact",
+      "source_surface_ref": "candidate.surfaces.part_287_y_positive_contact"
+    }
+  },
+  "contact_point_candidates": [
+    {
+      "marker": "F3",
+      "point_ref": "candidate.points.part_287_y_negative_contact",
+      "surface_ref": "candidate.surfaces.part_287_y_negative_contact",
+      "patch_id": "y_negative_contact",
+      "row": {
+        "tool_id": "mallet_hammer",
+        "part_marker": "4",
+        "part_id": "part_287",
+        "part_ref": "tool.parts.part_287",
+        "point_ref": "candidate.points.part_287_y_negative_contact",
+        "surface_ref": "candidate.surfaces.part_287_y_negative_contact",
+        "polarity": "negative",
+        "patch_id": "y_negative_contact",
+        "role": null,
+        "xyz_tool": [
+          0.2061139194756521,
+          -0.044410749768601925,
+          -0.001649919655557915
+        ],
+        "normal_tool": [
+          0.033386582122018185,
+          -0.9992534925437154,
+          0.019436917795698873
+        ],
+        "face_marker": "F3",
+        "contact_marker": "F3",
+        "selection_semantics": "contact_point_bbox_face",
+        "derived_point_ref": "candidate.points.part_287_y_negative_contact",
+        "source_surface_ref": "candidate.surfaces.part_287_y_negative_contact"
+      }
+    },
+    {
+      "marker": "F4",
+      "point_ref": "candidate.points.part_287_y_positive_contact",
+      "surface_ref": "candidate.surfaces.part_287_y_positive_contact",
+      "patch_id": "y_positive_contact",
+      "row": {
+        "tool_id": "mallet_hammer",
+        "part_marker": "4",
+        "part_id": "part_287",
+        "part_ref": "tool.parts.part_287",
+        "point_ref": "candidate.points.part_287_y_positive_contact",
+        "surface_ref": "candidate.surfaces.part_287_y_positive_contact",
+        "polarity": "positive",
+        "patch_id": "y_positive_contact",
+        "role": null,
+        "xyz_tool": [
+          0.21729314825060328,
+          -0.04147864089085311,
+          0.0021756395587816317
+        ],
+        "normal_tool": [
+          0.9289238700905502,
+          0.04646559498820889,
+          0.3673436974529252
+        ],
+        "face_marker": "F4",
+        "contact_marker": "F4",
+        "selection_semantics": "contact_point_bbox_face",
+        "derived_point_ref": "candidate.points.part_287_y_positive_contact",
+        "source_surface_ref": "candidate.surfaces.part_287_y_positive_contact"
+      }
+    }
+  ],
+  "motion_axis": {
+    "marker": "F4",
+    "surface_ref": "candidate.surfaces.part_287_y_positive_contact",
+    "patch_id": "y_positive_contact",
+    "row": {
+      "tool_id": "mallet_hammer",
+      "part_marker": "4",
+      "part_id": "part_287",
+      "part_ref": "tool.parts.part_287",
+      "point_ref": "candidate.points.part_287_y_positive_contact",
+      "surface_ref": "candidate.surfaces.part_287_y_positive_contact",
+      "polarity": "positive",
+      "patch_id": "y_positive_contact",
+      "role": null,
+      "xyz_tool": [
+        0.21729314825060328,
+        -0.04147864089085311,
+        0.0021756395587816317
+      ],
+      "normal_tool": [
+        0.9289238700905502,
+        0.04646559498820889,
+        0.3673436974529252
+      ],
+      "face_marker": "F4",
+      "contact_marker": "F4",
+      "selection_semantics": "contact_point_bbox_face",
+      "derived_point_ref": "candidate.points.part_287_y_positive_contact",
+      "source_surface_ref": "candidate.surfaces.part_287_y_positive_contact"
+    }
+  },
+  "motion_axis_candidates": [
+    {
+      "marker": "F3",
+      "surface_ref": "candidate.surfaces.part_287_y_negative_contact",
+      "patch_id": "y_negative_contact",
+      "row": {
+        "tool_id": "mallet_hammer",
+        "part_marker": "4",
+        "part_id": "part_287",
+        "part_ref": "tool.parts.part_287",
+        "point_ref": "candidate.points.part_287_y_negative_contact",
+        "surface_ref": "candidate.surfaces.part_287_y_negative_contact",
+        "polarity": "negative",
+        "patch_id": "y_negative_contact",
+        "role": null,
+        "xyz_tool": [
+          0.2061139194756521,
+          -0.044410749768601925,
+          -0.001649919655557915
+        ],
+        "normal_tool": [
+          0.033386582122018185,
+          -0.9992534925437154,
+          0.019436917795698873
+        ],
+        "face_marker": "F3",
+        "contact_marker": "F3",
+        "selection_semantics": "contact_point_bbox_face",
+        "derived_point_ref": "candidate.points.part_287_y_negative_contact",
+        "source_surface_ref": "candidate.surfaces.part_287_y_negative_contact"
+      }
+    },
+    {
+      "marker": "F4",
+      "surface_ref": "candidate.surfaces.part_287_y_positive_contact",
+      "patch_id": "y_positive_contact",
+      "row": {
+        "tool_id": "mallet_hammer",
+        "part_marker": "4",
+        "part_id": "part_287",
+        "part_ref": "tool.parts.part_287",
+        "point_ref": "candidate.points.part_287_y_positive_contact",
+        "surface_ref": "candidate.surfaces.part_287_y_positive_contact",
+        "polarity": "positive",
+        "patch_id": "y_positive_contact",
+        "role": null,
+        "xyz_tool": [
+          0.21729314825060328,
+          -0.04147864089085311,
+          0.0021756395587816317
+        ],
+        "normal_tool": [
+          0.9289238700905502,
+          0.04646559498820889,
+          0.3673436974529252
+        ],
+        "face_marker": "F4",
+        "contact_marker": "F4",
+        "selection_semantics": "contact_point_bbox_face",
+        "derived_point_ref": "candidate.points.part_287_y_positive_contact",
+        "source_surface_ref": "candidate.surfaces.part_287_y_positive_contact"
+      }
+    }
+  ],
+  "contact_point_selection_policy": "compiler_optimizes_over_public_vlm_contact_candidates",
+  "confidence": 0.83,
+  "reason": "To hit a nail, the mallet should use its flat striking end on part 4; the visually highlighted broad end-face markers F3/F4 represent the working striking face and its opposing equivalent normal for alignment with the nail-driving axis.",
+  "contact_point_marker_table": [
+    {
+      "tool_id": "mallet_hammer",
+      "part_marker": "4",
+      "part_id": "part_287",
+      "part_ref": "tool.parts.part_287",
+      "point_ref": "candidate.points.part_287_x_negative_contact",
+      "surface_ref": "candidate.surfaces.part_287_x_negative_contact",
+      "polarity": "negative",
+      "patch_id": "x_negative_contact",
+      "role": null,
+      "xyz_tool": [
+        0.18482095063580117,
+        -0.04364074049972309,
+        -0.0016320863591548348
+      ],
+      "normal_tool": [
+        -0.9061757206396581,
+        -0.4228975623989664,
+        0.0017930533200386076
+      ],
+      "face_marker": "F1",
+      "contact_marker": "F1",
+      "selection_semantics": "contact_point_bbox_face",
+      "derived_point_ref": "candidate.points.part_287_x_negative_contact",
+      "source_surface_ref": "candidate.surfaces.part_287_x_negative_contact"
+    },
+    {
+      "tool_id": "mallet_hammer",
+      "part_marker": "4",
+      "part_id": "part_287",
+      "part_ref": "tool.parts.part_287",
+      "point_ref": "candidate.points.part_287_x_positive_contact",
+      "surface_ref": "candidate.surfaces.part_287_x_positive_contact",
+      "polarity": "positive",
+      "patch_id": "x_positive_contact",
+      "role": null,
+      "xyz_tool": [
+        0.22879025598724093,
+        -0.04303257886507013,
+        -0.0016062341745380353
+      ],
+      "normal_tool": [
+        0.8374991620600154,
+        -0.5434332351897971,
+        0.05723174328921509
+      ],
+      "face_marker": "F2",
+      "contact_marker": "F2",
+      "selection_semantics": "contact_point_bbox_face",
+      "derived_point_ref": "candidate.points.part_287_x_positive_contact",
+      "source_surface_ref": "candidate.surfaces.part_287_x_positive_contact"
+    },
+    {
+      "tool_id": "mallet_hammer",
+      "part_marker": "4",
+      "part_id": "part_287",
+      "part_ref": "tool.parts.part_287",
+      "point_ref": "candidate.points.part_287_y_negative_contact",
+      "surface_ref": "candidate.surfaces.part_287_y_negative_contact",
+      "polarity": "negative",
+      "patch_id": "y_negative_contact",
+      "role": null,
+      "xyz_tool": [
+        0.2061139194756521,
+        -0.044410749768601925,
+        -0.001649919655557915
+      ],
+      "normal_tool": [
+        0.033386582122018185,
+        -0.9992534925437154,
+        0.019436917795698873
+      ],
+      "face_marker": "F3",
+      "contact_marker": "F3",
+      "selection_semantics": "contact_point_bbox_face",
+      "derived_point_ref": "candidate.points.part_287_y_negative_contact",
+      "source_surface_ref": "candidate.surfaces.part_287_y_negative_contact"
+    },
+    {
+      "tool_id": "mallet_hammer",
+      "part_marker": "4",
+      "part_id": "part_287",
+      "part_ref": "tool.parts.part_287",
+      "point_ref": "candidate.points.part_287_y_positive_contact",
+      "surface_ref": "candidate.surfaces.part_287_y_positive_contact",
+      "polarity": "positive",
+      "patch_id": "y_positive_contact",
+      "role": null,
+      "xyz_tool": [
+        0.21729314825060328,
+        -0.04147864089085311,
+        0.0021756395587816317
+      ],
+      "normal_tool": [
+        0.9289238700905502,
+        0.04646559498820889,
+        0.3673436974529252
+      ],
+      "face_marker": "F4",
+      "contact_marker": "F4",
+      "selection_semantics": "contact_point_bbox_face",
+      "derived_point_ref": "candidate.points.part_287_y_positive_contact",
+      "source_surface_ref": "candidate.surfaces.part_287_y_positive_contact"
+    },
+    {
+      "tool_id": "mallet_hammer",
+      "part_marker": "4",
+      "part_id": "part_287",
+      "part_ref": "tool.parts.part_287",
+      "point_ref": "candidate.points.part_287_z_negative_endpoint",
+      "surface_ref": "candidate.surfaces.part_287_z_negative_endpoint",
+      "polarity": "negative",
+      "patch_id": "z_negative_endpoint",
+      "role": null,
+      "xyz_tool": [
+        0.20629019435676152,
+        -0.04431814014238982,
+        -0.02180028475888789
+      ],
+      "normal_tool": [
+        -0.03675228811417468,
+        -0.6132017362665751,
+        -0.7890709093345353
+      ],
+      "face_marker": "F5",
+      "contact_marker": "F5",
+      "selection_semantics": "contact_point_bbox_face",
+      "derived_point_ref": "candidate.points.part_287_z_negative_endpoint",
+      "source_surface_ref": "candidate.surfaces.part_287_z_negative_endpoint"
+    },
+    {
+      "tool_id": "mallet_hammer",
+      "part_marker": "4",
+      "part_id": "part_287",
+      "part_ref": "tool.parts.part_287",
+      "point_ref": "candidate.points.part_287_z_positive_endpoint",
+      "surface_ref": "candidate.surfaces.part_287_z_positive_endpoint",
+      "polarity": "positive",
+      "patch_id": "z_positive_endpoint",
+      "role": null,
+      "xyz_tool": [
+        0.20843367826302825,
+        -0.04337774485057075,
+        0.022402356472686322
+      ],
+      "normal_tool": [
+        0.1197967772581562,
+        -0.6093503031913892,
+        0.7837990432241684
+      ],
+      "face_marker": "F6",
+      "contact_marker": "F6",
+      "selection_semantics": "contact_point_bbox_face",
+      "derived_point_ref": "candidate.points.part_287_z_positive_endpoint",
+      "source_surface_ref": "candidate.surfaces.part_287_z_positive_endpoint"
+    }
+  ],
+  "visual_evidence": {
+    "visual_evidence": "configs/tool_refs/mallet_hammer/evidence/02_contact_marker_selection/visual_evidence.json",
+    "prompt_images": []
+  },
+  "raw_response": {
+    "part": {
+      "selected_marker": "4",
+      "confidence": 0.96,
+      "reason": "Marker 4 is the flat striking face of the mallet head, the part used to contact and hit a visible nail.",
+      "_raw_response": {
+        "raw_text": "{\"selected_marker\":\"4\",\"confidence\":0.96,\"reason\":\"Marker 4 is the flat striking face of the mallet head, the part used to contact and hit a visible nail.\"}",
+        "metadata": {
+          "client": "openai_compatible",
+          "endpoint": "chat/completions",
+          "model": "gpt-5.4",
+          "base_url": "https://xcode.best/v1",
+          "image_paths": [
+            "configs/tool_refs/mallet_hammer/evidence/01_part_selection/mallet_hammer/overview/mallet_hammer_whole_mesh_part_choice_overview.png",
+            "configs/tool_refs/mallet_hammer/evidence/01_part_selection/mallet_hammer/overview/mallet_hammer_isolated_part_choice_overview.png"
+          ],
+          "latency_s": 8.587,
+          "max_new_tokens": 768,
+          "context_id": "mallet_hammer:p3sam_part_selection"
+        }
+      }
+    },
+    "contact_point_motion_axis": {
+      "selected_contact_point_marker": "F4",
+      "candidate_contact_point_markers": [
+        "F3",
+        "F4"
+      ],
+      "selected_motion_axis_marker": "F4",
+      "candidate_motion_axis_markers": [
+        "F3",
+        "F4"
+      ],
+      "confidence": 0.83,
+      "reason": "To hit a nail, the mallet should use its flat striking end on part 4; the visually highlighted broad end-face markers F3/F4 represent the working striking face and its opposing equivalent normal for alignment with the nail-driving axis.",
+      "_raw_response": {
+        "raw_text": "{\"selected_contact_point_marker\":\"F4\",\"candidate_contact_point_markers\":[\"F3\",\"F4\"],\"selected_motion_axis_marker\":\"F4\",\"candidate_motion_axis_markers\":[\"F3\",\"F4\"],\"confidence\":0.83,\"reason\":\"To hit a nail, the mallet should use its flat striking end on part 4; the visually highlighted broad end-face markers F3/F4 represent the working striking face and its opposing equivalent normal for alignment with the nail-driving axis.\"}",
+        "metadata": {
+          "client": "openai_compatible",
+          "endpoint": "chat/completions",
+          "model": "gpt-5.4",
+          "base_url": "https://xcode.best/v1",
+          "image_paths": [
+            "configs/tool_refs/mallet_hammer/evidence/02_contact_marker_selection/mallet_hammer/overview/mallet_hammer_whole_mesh_part_choice_overview.png",
+            "configs/tool_refs/mallet_hammer/evidence/02_contact_marker_selection/mallet_hammer/overview/mallet_hammer_isolated_part_choice_overview.png",
+            "configs/tool_refs/mallet_hammer/evidence/02_contact_marker_selection/mallet_hammer/part_cards/candidate_004_card.png",
+            "configs/tool_refs/mallet_hammer/evidence/02_contact_marker_selection/mallet_hammer/selected_part_bbox_overview/candidate_004_bbox_overview.png",
+            "configs/tool_refs/mallet_hammer/evidence/02_contact_marker_selection/mallet_hammer/selected_part_face_highlights/candidate_004_face_F1_highlight.png",
+            "configs/tool_refs/mallet_hammer/evidence/02_contact_marker_selection/mallet_hammer/selected_part_face_highlights/candidate_004_face_F2_highlight.png",
+            "configs/tool_refs/mallet_hammer/evidence/02_contact_marker_selection/mallet_hammer/selected_part_face_highlights/candidate_004_face_F3_highlight.png",
+            "configs/tool_refs/mallet_hammer/evidence/02_contact_marker_selection/mallet_hammer/selected_part_face_highlights/candidate_004_face_F4_highlight.png",
+            "configs/tool_refs/mallet_hammer/evidence/02_contact_marker_selection/mallet_hammer/selected_part_face_highlights/candidate_004_face_F5_highlight.png",
+            "configs/tool_refs/mallet_hammer/evidence/02_contact_marker_selection/mallet_hammer/selected_part_face_highlights/candidate_004_face_F6_highlight.png"
+          ],
+          "latency_s": 33.418,
+          "max_new_tokens": 768,
+          "context_id": "mallet_hammer:p3sam_contact_selection"
+        }
+      }
+    }
+  },
+  "metadata": {
+    "created_by": "parttoolgen.cli.tool_prior.select_p3sam_tool_refs",
+    "tool_side_grounding_source": "p3sam"
+  }
+}

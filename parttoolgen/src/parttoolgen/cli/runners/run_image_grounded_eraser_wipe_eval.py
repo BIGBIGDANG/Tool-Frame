@@ -35,6 +35,10 @@ from parttoolgen.evaluation.tool_selection_evidence import (
 from parttoolgen.adapters.simtoolreal_policy_priors import (
     table_contact_start_pose_from_state_bundle,
 )
+from parttoolgen.pipeline.trial_tool_refs import (
+    add_tool_ref_mode_args,
+    resolve_trial_tool_refs,
+)
 
 
 def repo_root() -> Path:
@@ -44,7 +48,9 @@ def repo_root() -> Path:
 ROOT = repo_root()
 DEFAULT_TOOL_REFS_DIR = ROOT / "configs/tool_refs/flat_eraser"
 TABLE_ASSET = "urdf/parttoolgen_benchmark/tabletop_polyhaven_wood_table/tabletop_polyhaven_wood_table.urdf"
-TOOL_MESH = "simtoolreal/assets/urdf/dextoolbench/eraser/flat_eraser/flat_eraser.obj"
+DEFAULT_TOOL_ID = "flat_eraser"
+DEFAULT_TOOL_MESH = "simtoolreal/assets/urdf/dextoolbench/eraser/flat_eraser/flat_eraser.obj"
+DEFAULT_TOOL_START_POSE_SOURCE = "simtoolreal/dextoolbench/trajectories/eraser/flat_eraser/wipe_c.json"
 FRONT_OF_ARM_FLAT_ERASER_START_POSE = [
     0.02,
     0.135,
@@ -146,7 +152,7 @@ def _clamp(value: float, lo: float, hi: float) -> float:
     return max(float(lo), min(float(hi), float(value)))
 
 
-def _table_contact_tool_pose(pose_xyzw: list[float]) -> list[float]:
+def _table_contact_tool_pose(pose_xyzw: list[float], *, tool_mesh: str = DEFAULT_TOOL_MESH) -> list[float]:
     projected = table_contact_start_pose_from_state_bundle(
         start_pose={
             "position": [float(item) for item in pose_xyzw[:3]],
@@ -156,7 +162,7 @@ def _table_contact_tool_pose(pose_xyzw: list[float]) -> list[float]:
             "table_pose_xyzw": [0.0, 0.0, TABLE_Z, 0.0, 0.0, 0.0, 1.0],
             "table_asset": TABLE_ASSET,
         },
-        tool_mesh_path=TOOL_MESH,
+        tool_mesh_path=tool_mesh,
         min_tool_table_clearance_m=TOOL_TABLE_CLEARANCE_M,
     )
     return [
@@ -165,20 +171,25 @@ def _table_contact_tool_pose(pose_xyzw: list[float]) -> list[float]:
     ]
 
 
-def _sample_seed_params(seed: int) -> dict[str, Any]:
+def _sample_seed_params(seed: int, *, args: argparse.Namespace | None = None) -> dict[str, Any]:
     rng = random.Random(int(seed))
-    cols, rows = [int(item) for item in SEED_VARIATION_POLICY["target_grid_shape"]]
+    policy = copy.deepcopy(SEED_VARIATION_POLICY)
+    if args is not None:
+        policy["target_center_x_m"] = [float(item) for item in args.target_center_x_range]
+        policy["target_center_y_m"] = [float(item) for item in args.target_center_y_range]
+        policy["target_xy_jitter_m"] = [float(item) for item in args.target_xy_jitter_range]
+    cols, rows = [int(item) for item in policy["target_grid_shape"]]
     col = int(seed) % cols
     row = (int(seed) // cols) % rows
     x_alpha = (float(col) + 0.5) / float(cols)
     y_alpha = (float(row) + 0.5) / float(rows)
-    target_x = _lerp(*SEED_VARIATION_POLICY["target_center_x_m"], x_alpha)
-    target_y = _lerp(*SEED_VARIATION_POLICY["target_center_y_m"], y_alpha)
-    target_x += rng.uniform(*SEED_VARIATION_POLICY["target_xy_jitter_m"])
-    target_y += rng.uniform(*SEED_VARIATION_POLICY["target_xy_jitter_m"])
-    target_x = _clamp(target_x, *SEED_VARIATION_POLICY["target_center_x_m"])
-    target_y = _clamp(target_y, *SEED_VARIATION_POLICY["target_center_y_m"])
-    yaw_span = SEED_VARIATION_POLICY["target_yaw_deg"]
+    target_x = _lerp(*policy["target_center_x_m"], x_alpha)
+    target_y = _lerp(*policy["target_center_y_m"], y_alpha)
+    target_x += rng.uniform(*policy["target_xy_jitter_m"])
+    target_y += rng.uniform(*policy["target_xy_jitter_m"])
+    target_x = _clamp(target_x, *policy["target_center_x_m"])
+    target_y = _clamp(target_y, *policy["target_center_y_m"])
+    yaw_span = policy["target_yaw_deg"]
     target_yaw_deg = _lerp(
         float(yaw_span[0]),
         float(yaw_span[1]),
@@ -187,11 +198,20 @@ def _sample_seed_params(seed: int) -> dict[str, Any]:
     target_yaw_deg += rng.uniform(-3.0, 3.0)
     target_yaw_deg = _clamp(target_yaw_deg, *yaw_span)
 
-    tool_pose = _table_contact_tool_pose([float(item) for item in FRONT_OF_ARM_FLAT_ERASER_START_POSE])
+    tool_mesh = str(args.tool_mesh) if args is not None else DEFAULT_TOOL_MESH
+    nominal_start_pose = (
+        [float(item) for item in args.fixed_start_pose_xyzw]
+        if args is not None and getattr(args, "fixed_start_pose_xyzw", None) is not None
+        else [float(item) for item in FRONT_OF_ARM_FLAT_ERASER_START_POSE]
+    )
+    tool_pose = _table_contact_tool_pose(
+        nominal_start_pose,
+        tool_mesh=tool_mesh,
+    )
     tool_x = float(tool_pose[0])
     tool_y = float(tool_pose[1])
-    tool_dx = tool_x - float(FRONT_OF_ARM_FLAT_ERASER_START_POSE[0])
-    tool_dy = tool_y - float(FRONT_OF_ARM_FLAT_ERASER_START_POSE[1])
+    tool_dx = tool_x - float(nominal_start_pose[0])
+    tool_dy = tool_y - float(nominal_start_pose[1])
     rel_x = tool_x - target_x
     rel_y = tool_y - target_y
     tool_distance = math.hypot(rel_x, rel_y)
@@ -206,6 +226,7 @@ def _sample_seed_params(seed: int) -> dict[str, Any]:
         "tool_target_angle_deg": tool_angle_deg,
         "tool_target_distance_m": tool_distance,
         "tool_start_pose": tool_pose,
+        "tool_nominal_start_pose_xyzw": nominal_start_pose,
         "tool_xy_offset_from_nominal_m": [tool_dx, tool_dy],
         "tool_xy_relative_to_target_m": [tool_x - target_x, tool_y - target_y],
         "tool_yaw_jitter_deg": tool_yaw_deg,
@@ -213,7 +234,7 @@ def _sample_seed_params(seed: int) -> dict[str, Any]:
         "target_yaw_deg": target_yaw_deg,
         "target_pose_xyzw": target_pose,
         "target_size_xyz": list(PATCH_SIZE_XYZ),
-        "sampler_policy": copy.deepcopy(SEED_VARIATION_POLICY),
+        "sampler_policy": policy,
     }
 
 
@@ -360,6 +381,10 @@ def _load_benchmark_config_defaults(argv: list[str]) -> tuple[Path | None, dict[
         "initial_grasp_hold_steps",
         "response_mode",
         "model",
+        "tool_id",
+        "tool_mesh",
+        "tool_start_pose_source",
+        "fixed_start_pose_xyzw",
         "skip_rollout",
         "resume",
     }
@@ -428,6 +453,7 @@ def _task_spec(
     seed: int,
     tool_refs_dir: Path,
     seed_params: dict[str, Any],
+    args: argparse.Namespace,
 ) -> dict[str, Any]:
     start_pose = [float(item) for item in seed_params["tool_start_pose"]]
     target_pose = [float(item) for item in seed_params["target_pose_xyzw"]]
@@ -439,21 +465,21 @@ def _task_spec(
         "split": "dev",
         "instruction": "Use this eraser to erase the whole HDU pattern on the table.",
         "tool": {
-            "tool_id": "flat_eraser",
+            "tool_id": args.tool_id,
             "tool_prior_dir": _repo_display(tool_refs_dir),
         },
         "execution": {
             "simtoolreal_category": "eraser",
             "simtoolreal_table_asset": TABLE_ASSET,
-            "simtoolreal_tool_mesh": TOOL_MESH,
-            "simtoolreal_start_pose_source": "simtoolreal/dextoolbench/trajectories/eraser/flat_eraser/wipe_c.json",
-            "start_pose_policy": "fixed_front_of_arm_flat_eraser_start_pose",
+            "simtoolreal_tool_mesh": args.tool_mesh,
+            "simtoolreal_start_pose_source": args.tool_start_pose_source,
+            "start_pose_policy": f"fixed_front_of_arm_{args.tool_id}_start_pose",
             "simtoolreal_start_pose": start_pose,
             "state_bundle": {
                 "table_pose_xyzw": [0.0, 0.0, TABLE_Z, 0.0, 0.0, 0.0, 1.0],
                 "table_asset": TABLE_ASSET,
                 "table_z": TABLE_Z,
-                "object_name": "flat_eraser",
+                "object_name": args.tool_id,
                 "object_category": "eraser",
                 "task_name": "tabletop_wipe",
                 "target_collision_role": "fixed_physical_hdu_board_on_tabletop",
@@ -479,7 +505,7 @@ def _task_spec(
             "method_inputs": [
                 "task language",
                 "SimToolReal RGB-D render",
-                "public flat_eraser tool refs from P3SAM/VLM part-face grounding",
+                f"public {args.tool_id} tool refs from P3SAM/VLM part-face grounding",
             ],
             "forbidden_method_inputs": [
                 "private_eval.target_geometry",
@@ -512,10 +538,12 @@ def _task_spec(
             "tool_yaw_jitter_deg": float(seed_params["tool_yaw_jitter_deg"]),
             "seed_variation_policy": copy.deepcopy(SEED_VARIATION_POLICY),
             "tool_start_policy": "fixed_front_of_arm_start_pose_shared_by_vlm_render_and_rollout",
+            "tool_id": args.tool_id,
+            "tool_mesh": args.tool_mesh,
             "public_tabletop_surface_normal_world": list(TABLETOP_SURFACE_NORMAL_WORLD),
             "tool_grounding_contract": copy.deepcopy(ERASER_WIPE_TOOL_GROUNDING_CONTRACT),
             "notes": (
-                "Tabletop flat_eraser HDU wipe task on a raised white HDU board in the current ToolFrame wood-table scene. "
+                f"Tabletop {args.tool_id} HDU wipe task on a raised white HDU board in the current ToolFrame wood-table scene. "
                 "The tool motion axis is aligned to the public wipe direction, "
                 "while the wipe path is grounded from VLM marks lifted through RGB-D."
             ),
@@ -589,6 +617,14 @@ def _tool_grounding_contract_from_task(task: dict[str, Any] | None) -> dict[str,
     if str(default_contract.get("manual_review_status", "")).lower() == "approved":
         return default_contract
     return dict(contract)
+
+
+def _tool_mesh_from_task(task: dict[str, Any] | None) -> str:
+    if isinstance(task, dict):
+        mesh = task.get("execution", {}).get("simtoolreal_tool_mesh")
+        if isinstance(mesh, str) and mesh:
+            return mesh
+    return DEFAULT_TOOL_MESH
 
 
 def _rollout_max_steps_from_result(result: dict[str, Any], artifacts: dict[str, Any]) -> int | None:
@@ -679,7 +715,7 @@ def _refresh_success_fields(result: dict[str, Any], *, skip_rollout: bool) -> di
         lifted_refs=lifted_refs,
         task=task,
         tracking_samples=tracking_samples,
-        tool_mesh_path=TOOL_MESH,
+        tool_mesh_path=_tool_mesh_from_task(task),
         skip_rollout=skip_rollout,
     )
     refreshed = dict(result)
@@ -712,7 +748,7 @@ def _refresh_success_fields(result: dict[str, Any], *, skip_rollout: bool) -> di
 
 
 def _run_trial(*, seed: int, index: int, args: argparse.Namespace) -> dict[str, Any]:
-    task_id = f"flat_eraser_tabletop_wipe_seed_{seed:03d}"
+    task_id = f"{args.tool_id}_tabletop_wipe_seed_{seed:03d}"
     trial_dir = args.output_root / task_id
     if args.resume and (trial_dir / "trial_result.json").exists():
         result = _refresh_success_fields(
@@ -733,18 +769,31 @@ def _run_trial(*, seed: int, index: int, args: argparse.Namespace) -> dict[str, 
         shutil.rmtree(trial_dir)
     trial_dir.mkdir(parents=True, exist_ok=True)
 
-    seed_params = _sample_seed_params(seed)
+    seed_params = _sample_seed_params(seed, args=args)
     task = _task_spec(
         task_id=task_id,
         seed=seed,
         tool_refs_dir=args.tool_refs_dir,
         seed_params=seed_params,
+        args=args,
     )
     task_path = trial_dir / "task.json"
     method_task_path = trial_dir / "method_task.json"
     _write_json(task_path, task)
     _write_json(method_task_path, _method_facing_task(task))
     py = _python()
+    trial_tool_refs_dir = resolve_trial_tool_refs(
+        repo_root=ROOT,
+        python=py,
+        args=args,
+        trial_dir=trial_dir,
+        static_tool_refs_dir=args.tool_refs_dir,
+        tool_id=args.tool_id,
+        task_id=task_id,
+        task_instruction=str(task.get("instruction") or ""),
+        log_path=trial_dir / "logs/tool_refs.json",
+        env=_env(),
+    )
 
     render_dir = trial_dir / "sim_rgbd"
     _run(
@@ -848,11 +897,11 @@ def _run_trial(*, seed: int, index: int, args: argparse.Namespace) -> dict[str, 
             "--program",
             str(lifted_dir / "constraint_program.json"),
             "--axis-binding",
-            str(args.tool_refs_dir / "axis_binding.json"),
+            str(trial_tool_refs_dir / "axis_binding.json"),
             "--axis-mesh-report",
-            str(args.tool_refs_dir / "axis_mesh_overlay_report.json"),
+            str(trial_tool_refs_dir / "axis_mesh_overlay_report.json"),
             "--contact-point-selection",
-            str(args.tool_refs_dir / "contact_point_selection.json"),
+            str(trial_tool_refs_dir / "contact_point_selection.json"),
             "--output",
             str(enriched_program),
         ],
@@ -908,7 +957,7 @@ def _run_trial(*, seed: int, index: int, args: argparse.Namespace) -> dict[str, 
             "--state-bundle",
             str(trial_dir / "state_bundle.json"),
             "--tool-mesh",
-            TOOL_MESH,
+            args.tool_mesh,
             "--output-dir",
             str(rollout_dir),
             "--device",
@@ -929,6 +978,8 @@ def _run_trial(*, seed: int, index: int, args: argparse.Namespace) -> dict[str, 
                 [
                     "--capture-video",
                     "--capture-topdown-video",
+                    "--capture-subgoal-video",
+                    "--capture-subgoal-topdown-video",
                     "--hide-goal-object-visual",
                     "--video-fps",
                     "24",
@@ -964,7 +1015,7 @@ def _run_trial(*, seed: int, index: int, args: argparse.Namespace) -> dict[str, 
         lifted_refs=lifted_refs,
         task=task,
         tracking_samples=tracking_samples,
-        tool_mesh_path=TOOL_MESH,
+        tool_mesh_path=args.tool_mesh,
         skip_rollout=bool(args.skip_rollout),
     )
     failure_attribution = attribute_eraser_wipe_failure(
@@ -990,7 +1041,7 @@ def _run_trial(*, seed: int, index: int, args: argparse.Namespace) -> dict[str, 
         trial_dir=trial_dir,
         render_dir=render_dir,
         grounding_dir=grounding_dir,
-        tool_refs_dir=args.tool_refs_dir,
+        tool_refs_dir=trial_tool_refs_dir,
         compile_dir=compile_dir,
         rollout_dir=trial_dir / "rollout",
         copy_files=False,
@@ -1217,6 +1268,17 @@ def main() -> int:
         default=ROOT / "artifacts/image_grounded/eraser_wipe/tabletop_wipe_original_rgb_smoke",
     )
     parser.add_argument("--tool-refs-dir", type=Path, default=DEFAULT_TOOL_REFS_DIR)
+    add_tool_ref_mode_args(parser)
+    parser.add_argument("--tool-id", default=DEFAULT_TOOL_ID)
+    parser.add_argument("--tool-mesh", default=DEFAULT_TOOL_MESH)
+    parser.add_argument("--tool-start-pose-source", default=DEFAULT_TOOL_START_POSE_SOURCE)
+    parser.add_argument(
+        "--fixed-start-pose-xyzw",
+        nargs=7,
+        type=float,
+        default=FRONT_OF_ARM_FLAT_ERASER_START_POSE,
+        help="Fixed table-projected tool start pose, in xyzw quaternion order.",
+    )
     parser.add_argument("--seed-start", type=int, default=0)
     parser.add_argument("--trials", type=int, default=1)
     parser.add_argument("--device", default="cuda:0")
@@ -1231,7 +1293,28 @@ def main() -> int:
         choices=["opposite_scene_direction"],
         default="opposite_scene_direction",
     )
-    parser.add_argument("--initial-grasp-lift-m", type=float, default=0.08)
+    parser.add_argument(
+        "--target-center-x-range",
+        nargs=2,
+        type=float,
+        default=SEED_VARIATION_POLICY["target_center_x_m"],
+        help="Inclusive table-safe x range for seeded tabletop HDU board centers.",
+    )
+    parser.add_argument(
+        "--target-center-y-range",
+        nargs=2,
+        type=float,
+        default=SEED_VARIATION_POLICY["target_center_y_m"],
+        help="Inclusive table-safe y range for seeded tabletop HDU board centers.",
+    )
+    parser.add_argument(
+        "--target-xy-jitter-range",
+        nargs=2,
+        type=float,
+        default=SEED_VARIATION_POLICY["target_xy_jitter_m"],
+        help="Uniform xy jitter range applied independently to seeded board centers.",
+    )
+    parser.add_argument("--initial-grasp-lift-m", type=float, default=0.12)
     parser.add_argument("--initial-grasp-lift-steps", type=int, default=3)
     parser.add_argument("--initial-grasp-hold-steps", type=int, default=0)
     parser.add_argument("--response-mode", default="openai-compatible")
@@ -1276,7 +1359,13 @@ def main() -> int:
             "tabletop_hdu_board_asset": PATCH_ASSET,
             "nominal_tabletop_hdu_board_center_world": PATCH_CENTER_WORLD,
             "seed_variation_policy": copy.deepcopy(SEED_VARIATION_POLICY),
-            "tool_mesh": TOOL_MESH,
+            "active_target_center_x_range": [float(item) for item in args.target_center_x_range],
+            "active_target_center_y_range": [float(item) for item in args.target_center_y_range],
+            "active_target_xy_jitter_range": [float(item) for item in args.target_xy_jitter_range],
+            "tool_id": args.tool_id,
+            "tool_mesh": args.tool_mesh,
+            "tool_start_pose_source": args.tool_start_pose_source,
+            "fixed_start_pose_xyzw": [float(item) for item in args.fixed_start_pose_xyzw],
             "seed_start": args.seed_start,
             "trials": args.trials,
             "device": args.device,
@@ -1324,7 +1413,7 @@ def main() -> int:
         try:
             row = _run_trial(seed=seed, index=index, args=args)
         except Exception as exc:
-            task_id = f"flat_eraser_tabletop_wipe_seed_{seed:03d}"
+            task_id = f"{args.tool_id}_tabletop_wipe_seed_{seed:03d}"
             row = {
                 "index": index,
                 "seed": seed,

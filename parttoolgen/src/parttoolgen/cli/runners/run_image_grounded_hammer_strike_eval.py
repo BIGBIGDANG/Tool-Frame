@@ -8,6 +8,7 @@ import copy
 import json
 import math
 import os
+import random
 import shutil
 import subprocess
 import sys
@@ -30,6 +31,10 @@ from parttoolgen.evaluation.tool_selection_evidence import (
 from parttoolgen.adapters.simtoolreal_policy_priors import (
     table_contact_start_pose_from_state_bundle,
 )
+from parttoolgen.pipeline.trial_tool_refs import (
+    add_tool_ref_mode_args,
+    resolve_trial_tool_refs,
+)
 
 
 def repo_root() -> Path:
@@ -43,6 +48,9 @@ TOOL_MESH = "simtoolreal/assets/urdf/dextoolbench/hammer/claw_hammer/claw_hammer
 TOOL_START_POSE_SOURCE = "simtoolreal/dextoolbench/trajectories/hammer/claw_hammer/swing_down.json"
 TARGET_ASSET = "urdf/parttoolgen_benchmark/hammer_strike_nail/strike_nail_035.urdf"
 TARGET_POSE = [0.0, -0.09, 0.545, 0.0, 0.0, 0.0, 1.0]
+TARGET_X_RANGE_M = [-0.12, 0.16]
+TARGET_Y_RANGE_M = [-0.15, 0.04]
+TARGET_XY_JITTER_M = [-0.01, 0.01]
 TABLE_Z = 0.38
 TOOL_TABLE_CLEARANCE_M = 0.003
 START_POSE_SWING_DOWN = [
@@ -217,6 +225,9 @@ def _load_benchmark_config_defaults(argv: list[str]) -> tuple[Path | None, dict[
         "tool_mesh",
         "tool_start_pose_source",
         "fixed_start_pose_xyzw",
+        "target_x_range",
+        "target_y_range",
+        "target_xy_jitter_range",
         "skip_rollout",
         "resume",
     }
@@ -226,6 +237,36 @@ def _load_benchmark_config_defaults(argv: list[str]) -> tuple[Path | None, dict[
         elif key in scalar_keys:
             defaults[key] = value
     return config_path, config, defaults
+
+
+def _lerp(lo: float, hi: float, alpha: float) -> float:
+    return float(lo) * (1.0 - float(alpha)) + float(hi) * float(alpha)
+
+
+def _clamp(value: float, lo: float, hi: float) -> float:
+    return max(float(lo), min(float(hi), float(value)))
+
+
+def _sample_target_pose(seed: int, args: argparse.Namespace) -> tuple[list[float], dict[str, Any]]:
+    rng = random.Random(int(seed))
+    x_range = [float(item) for item in args.target_x_range]
+    y_range = [float(item) for item in args.target_y_range]
+    jitter = [float(item) for item in args.target_xy_jitter_range]
+    cols, rows = 4, 5
+    col = int(seed) % cols
+    row = (int(seed) // cols) % rows
+    x = _lerp(x_range[0], x_range[1], (float(col) + 0.5) / float(cols))
+    y = _lerp(y_range[0], y_range[1], (float(row) + 0.5) / float(rows))
+    x = _clamp(x + rng.uniform(jitter[0], jitter[1]), x_range[0], x_range[1])
+    y = _clamp(y + rng.uniform(jitter[0], jitter[1]), y_range[0], y_range[1])
+    pose = [x, y, float(TARGET_POSE[2]), *[float(item) for item in TARGET_POSE[3:7]]]
+    return pose, {
+        "sampler": "tabletop_strike_target_grid_jitter_v1",
+        "target_grid_cell": [col, row],
+        "target_x_range_m": x_range,
+        "target_y_range_m": y_range,
+        "target_xy_jitter_m": jitter,
+    }
 
 
 def _run(
@@ -281,6 +322,7 @@ def _run(
 
 def _task_spec(*, task_id: str, seed: int, start_pose: list[float], args: argparse.Namespace) -> dict[str, Any]:
     start_pose = _table_contact_tool_pose([float(item) for item in start_pose], tool_mesh=args.tool_mesh)
+    target_pose, target_sampling = _sample_target_pose(seed, args)
     tool_refs_rel = _repo_rel(_tool_refs_dir(args))
     return {
         "schema_version": "parttoolgen_tool_use_task_v0",
@@ -311,7 +353,7 @@ def _task_spec(*, task_id: str, seed: int, start_pose: list[float], args: argpar
                     {
                         "name": "strike_nail",
                         "asset_file": TARGET_ASSET,
-                        "pose_xyzw": TARGET_POSE,
+                        "pose_xyzw": target_pose,
                         "color_rgb": [0.62, 0.64, 0.66],
                         "disable_gravity": False,
                         "fix_base_link": False,
@@ -341,6 +383,8 @@ def _task_spec(*, task_id: str, seed: int, start_pose: list[float], args: argpar
             "benchmark_role": "image_grounded_hammer_down_strike_smoke",
             "target_kind": "dynamic_visible_nail_actor",
             "public_support_surface_normal_world": [0.0, 0.0, 1.0],
+            "strike_target_pose_xyzw": target_pose,
+            "seed_variation_policy": target_sampling,
             "notes": (
                 "The target nail actor is visible in the rendered SimToolReal scene. "
                 "The runner does not copy hidden evaluator target refs into planning; "
@@ -461,6 +505,18 @@ def _run_trial(*, seed: int, index: int, args: argparse.Namespace) -> dict[str, 
     _write_json(task_path, task)
     _write_json(method_task_path, _method_facing_task(task))
     py = _python()
+    trial_tool_refs_dir = resolve_trial_tool_refs(
+        repo_root=ROOT,
+        python=py,
+        args=args,
+        trial_dir=trial_dir,
+        static_tool_refs_dir=_tool_refs_dir(args),
+        tool_id=args.tool_id,
+        task_id=task_id,
+        task_instruction=str(task.get("instruction") or ""),
+        log_path=trial_dir / "logs/tool_refs.json",
+        env=_env(),
+    )
 
     render_dir = trial_dir / "sim_rgbd"
     _run(
@@ -560,11 +616,11 @@ def _run_trial(*, seed: int, index: int, args: argparse.Namespace) -> dict[str, 
             "--program",
             str(lifted_dir / "constraint_program.json"),
             "--axis-binding",
-            str(_tool_refs_dir(args) / "axis_binding.json"),
+            str(trial_tool_refs_dir / "axis_binding.json"),
             "--axis-mesh-report",
-            str(_tool_refs_dir(args) / "axis_mesh_overlay_report.json"),
+            str(trial_tool_refs_dir / "axis_mesh_overlay_report.json"),
             "--contact-point-selection",
-            str(_tool_refs_dir(args) / "contact_point_selection.json"),
+            str(trial_tool_refs_dir / "contact_point_selection.json"),
             "--output",
             str(enriched_program),
         ],
@@ -640,6 +696,8 @@ def _run_trial(*, seed: int, index: int, args: argparse.Namespace) -> dict[str, 
                 [
                     "--capture-video",
                     "--capture-topdown-video",
+                    "--capture-subgoal-video",
+                    "--capture-subgoal-topdown-video",
                     "--hide-goal-object-visual",
                     "--video-fps",
                     "24",
@@ -672,7 +730,7 @@ def _run_trial(*, seed: int, index: int, args: argparse.Namespace) -> dict[str, 
         trial_dir=trial_dir,
         render_dir=render_dir,
         grounding_dir=grounding_dir,
-        tool_refs_dir=_tool_refs_dir(args),
+        tool_refs_dir=trial_tool_refs_dir,
         compile_dir=compile_dir,
         rollout_dir=trial_dir / "rollout",
     )
@@ -819,7 +877,7 @@ def main() -> int:
     parser.add_argument("--rollout-max-steps", type=int, default=1500)
     parser.add_argument("--rollout-max-tracking-error-m", type=float, default=0.018)
     parser.add_argument("--capture-video-every", type=int, default=1)
-    parser.add_argument("--initial-grasp-lift-m", type=float, default=0.08)
+    parser.add_argument("--initial-grasp-lift-m", type=float, default=0.12)
     parser.add_argument("--initial-grasp-lift-steps", type=int, default=3)
     parser.add_argument("--initial-grasp-hold-steps", type=int, default=0)
     parser.add_argument("--post-success-steps", type=int, default=60)
@@ -833,9 +891,13 @@ def main() -> int:
     parser.add_argument("--model", default=None)
     parser.add_argument("--tool-id", default="claw_hammer")
     parser.add_argument("--tool-refs-dir", type=Path, default=TOOL_REFS_DIR)
+    add_tool_ref_mode_args(parser)
     parser.add_argument("--tool-mesh", default=TOOL_MESH)
     parser.add_argument("--tool-start-pose-source", default=TOOL_START_POSE_SOURCE)
     parser.add_argument("--fixed-start-pose-xyzw", nargs=7, type=float, default=START_POSE_SWING_DOWN)
+    parser.add_argument("--target-x-range", nargs=2, type=float, default=list(TARGET_X_RANGE_M))
+    parser.add_argument("--target-y-range", nargs=2, type=float, default=list(TARGET_Y_RANGE_M))
+    parser.add_argument("--target-xy-jitter-range", nargs=2, type=float, default=list(TARGET_XY_JITTER_M))
     parser.add_argument("--skip-rollout", action="store_true")
     parser.add_argument("--resume", action="store_true")
     parser.set_defaults(**benchmark_defaults)
@@ -874,6 +936,10 @@ def main() -> int:
             "table_asset": TABLE_ASSET,
             "tool_mesh": args.tool_mesh,
             "tool_start_pose_source": args.tool_start_pose_source,
+            "fixed_start_pose_xyzw": [float(item) for item in args.fixed_start_pose_xyzw],
+            "target_x_range": [float(item) for item in args.target_x_range],
+            "target_y_range": [float(item) for item in args.target_y_range],
+            "target_xy_jitter_range": [float(item) for item in args.target_xy_jitter_range],
             "seed_start": args.seed_start,
             "trials": args.trials,
             "device": args.device,

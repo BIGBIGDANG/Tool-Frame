@@ -7,7 +7,7 @@ This directory holds eraser wipe contracts and configs. Run outputs belong under
 
 | Task | Environment | Status | Success-check status |
 |---|---|---|---|
-| `tabletop_wipe` | `tabletop_wood_table` | fixed/current | Reviewed flat-eraser contact-coverage success; flat-eraser labels approved. |
+| `tabletop_wipe` | `tabletop_wood_table` | current/e2e | Reviewed flat-eraser contact-coverage success; flat-eraser labels approved. |
 | `side_whiteboard_hdu_erase` | `side_left_vertical_whiteboard_soft02` | draft/smoke_review | Formal runner available; erased-area contract uses proposed 70% threshold and needs publish smoke review before statistics. |
 
 ## Table-Top Wipe Contract

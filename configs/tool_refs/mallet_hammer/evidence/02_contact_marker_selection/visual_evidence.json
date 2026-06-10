@@ -1,0 +1,382 @@
+{
+  "schema_version": "v0.1",
+  "evidence_id": "02_contact_marker_selection_visual_evidence",
+  "items": [
+    {
+      "id": "mallet_hammer_whole_mesh_part_choice_overview",
+      "kind": "whole_mesh_part_choice_overview",
+      "media_type": "image",
+      "path": "configs/tool_refs/mallet_hammer/evidence/02_contact_marker_selection/mallet_hammer/overview/mallet_hammer_whole_mesh_part_choice_overview.png",
+      "description": "Multi-view whole-mesh SAMPart3D part candidates for mallet_hammer; each part is shown as a colored overlay on the mesh, with the same anonymous marker ID reused across views.",
+      "provider_id": "sampart3d_part_role_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "mallet_hammer_isolated_part_choice_overview",
+      "kind": "isolated_part_choice_overview",
+      "media_type": "image",
+      "path": "configs/tool_refs/mallet_hammer/evidence/02_contact_marker_selection/mallet_hammer/overview/mallet_hammer_isolated_part_choice_overview.png",
+      "description": "Isolated SAMPart3D part candidates for mallet_hammer; auxiliary debug view.",
+      "provider_id": "sampart3d_part_role_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "debug_only"
+    },
+    {
+      "id": "mallet_hammer_part_candidate_4_isolated_card",
+      "kind": "isolated_part_card",
+      "media_type": "image",
+      "path": "configs/tool_refs/mallet_hammer/evidence/02_contact_marker_selection/mallet_hammer/part_cards/candidate_004_card.png",
+      "part_marker": "4",
+      "description": "Isolated SAMPart3D part candidate 4 for mallet_hammer; auxiliary debug view.",
+      "provider_id": "sampart3d_part_role_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "debug_only"
+    },
+    {
+      "id": "mallet_hammer_part_candidate_4_selected_part_bbox_overview",
+      "kind": "selected_part_bbox_overview",
+      "media_type": "image",
+      "path": "configs/tool_refs/mallet_hammer/evidence/02_contact_marker_selection/mallet_hammer/selected_part_bbox_overview/candidate_004_bbox_overview.png",
+      "part_marker": "4",
+      "description": "5.15-style selected-part bbox overview for part candidate 4 on mallet_hammer.",
+      "provider_id": "sampart3d_part_role_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "mallet_hammer_part_candidate_4_face_F1_highlight",
+      "kind": "selected_part_face_highlight",
+      "media_type": "image",
+      "path": "configs/tool_refs/mallet_hammer/evidence/02_contact_marker_selection/mallet_hammer/selected_part_face_highlights/candidate_004_face_F1_highlight.png",
+      "part_marker": "4",
+      "face_marker": "F1",
+      "point_ref": "candidate.points.part_287_x_negative_contact",
+      "surface_ref": "candidate.surfaces.part_287_x_negative_contact",
+      "patch_id": "x_negative_contact",
+      "description": "5.15-style selected-part face evidence for mallet_hammer part 4, face F1: part bbox is drawn, only this bbox face is highlighted, and the contact point plus surface-normal/motion-axis arrow are shown.",
+      "provider_id": "sampart3d_part_role_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "mallet_hammer_part_candidate_4_face_F2_highlight",
+      "kind": "selected_part_face_highlight",
+      "media_type": "image",
+      "path": "configs/tool_refs/mallet_hammer/evidence/02_contact_marker_selection/mallet_hammer/selected_part_face_highlights/candidate_004_face_F2_highlight.png",
+      "part_marker": "4",
+      "face_marker": "F2",
+      "point_ref": "candidate.points.part_287_x_positive_contact",
+      "surface_ref": "candidate.surfaces.part_287_x_positive_contact",
+      "patch_id": "x_positive_contact",
+      "description": "5.15-style selected-part face evidence for mallet_hammer part 4, face F2: part bbox is drawn, only this bbox face is highlighted, and the contact point plus surface-normal/motion-axis arrow are shown.",
+      "provider_id": "sampart3d_part_role_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "mallet_hammer_part_candidate_4_face_F3_highlight",
+      "kind": "selected_part_face_highlight",
+      "media_type": "image",
+      "path": "configs/tool_refs/mallet_hammer/evidence/02_contact_marker_selection/mallet_hammer/selected_part_face_highlights/candidate_004_face_F3_highlight.png",
+      "part_marker": "4",
+      "face_marker": "F3",
+      "point_ref": "candidate.points.part_287_y_negative_contact",
+      "surface_ref": "candidate.surfaces.part_287_y_negative_contact",
+      "patch_id": "y_negative_contact",
+      "description": "5.15-style selected-part face evidence for mallet_hammer part 4, face F3: part bbox is drawn, only this bbox face is highlighted, and the contact point plus surface-normal/motion-axis arrow are shown.",
+      "provider_id": "sampart3d_part_role_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "mallet_hammer_part_candidate_4_face_F4_highlight",
+      "kind": "selected_part_face_highlight",
+      "media_type": "image",
+      "path": "configs/tool_refs/mallet_hammer/evidence/02_contact_marker_selection/mallet_hammer/selected_part_face_highlights/candidate_004_face_F4_highlight.png",
+      "part_marker": "4",
+      "face_marker": "F4",
+      "point_ref": "candidate.points.part_287_y_positive_contact",
+      "surface_ref": "candidate.surfaces.part_287_y_positive_contact",
+      "patch_id": "y_positive_contact",
+      "description": "5.15-style selected-part face evidence for mallet_hammer part 4, face F4: part bbox is drawn, only this bbox face is highlighted, and the contact point plus surface-normal/motion-axis arrow are shown.",
+      "provider_id": "sampart3d_part_role_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "mallet_hammer_part_candidate_4_face_F5_highlight",
+      "kind": "selected_part_face_highlight",
+      "media_type": "image",
+      "path": "configs/tool_refs/mallet_hammer/evidence/02_contact_marker_selection/mallet_hammer/selected_part_face_highlights/candidate_004_face_F5_highlight.png",
+      "part_marker": "4",
+      "face_marker": "F5",
+      "point_ref": "candidate.points.part_287_z_negative_endpoint",
+      "surface_ref": "candidate.surfaces.part_287_z_negative_endpoint",
+      "patch_id": "z_negative_endpoint",
+      "description": "5.15-style selected-part face evidence for mallet_hammer part 4, face F5: part bbox is drawn, only this bbox face is highlighted, and the contact point plus surface-normal/motion-axis arrow are shown.",
+      "provider_id": "sampart3d_part_role_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    },
+    {
+      "id": "mallet_hammer_part_candidate_4_face_F6_highlight",
+      "kind": "selected_part_face_highlight",
+      "media_type": "image",
+      "path": "configs/tool_refs/mallet_hammer/evidence/02_contact_marker_selection/mallet_hammer/selected_part_face_highlights/candidate_004_face_F6_highlight.png",
+      "part_marker": "4",
+      "face_marker": "F6",
+      "point_ref": "candidate.points.part_287_z_positive_endpoint",
+      "surface_ref": "candidate.surfaces.part_287_z_positive_endpoint",
+      "patch_id": "z_positive_endpoint",
+      "description": "5.15-style selected-part face evidence for mallet_hammer part 4, face F6: part bbox is drawn, only this bbox face is highlighted, and the contact point plus surface-normal/motion-axis arrow are shown.",
+      "provider_id": "sampart3d_part_role_evidence",
+      "source_stage": "offline_tool_part_visualization",
+      "allowed_use": "planning_context"
+    }
+  ],
+  "metadata": {
+    "evidence_kind": "sampart3d_part_overview_only",
+    "contact_marker_table_scope": "selected_part_only",
+    "selected_contact_point_markers_by_tool": {
+      "mallet_hammer": [
+        "4"
+      ]
+    },
+    "selected_contact_point_markers_default": [],
+    "part_role_selection_path": "configs/tool_refs/mallet_hammer/part_selection.json",
+    "region_marker_table": [
+      {
+        "tool_id": "mallet_hammer",
+        "marker": "1",
+        "part_id": "part_000",
+        "part_ref": "tool.parts.part_000",
+        "source_label": "p3sam_segment_0",
+        "point_count": 5031,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "grasp_candidate",
+          "contact_patch"
+        ],
+        "part_label": 0
+      },
+      {
+        "tool_id": "mallet_hammer",
+        "marker": "2",
+        "part_id": "part_078",
+        "part_ref": "tool.parts.part_078",
+        "source_label": "p3sam_segment_78",
+        "point_count": 3395,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "contact_patch"
+        ],
+        "part_label": 78
+      },
+      {
+        "tool_id": "mallet_hammer",
+        "marker": "3",
+        "part_id": "part_283",
+        "part_ref": "tool.parts.part_283",
+        "source_label": "p3sam_segment_283",
+        "point_count": 190,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "fine_feature_candidate",
+          "contact_patch"
+        ],
+        "part_label": 283
+      },
+      {
+        "tool_id": "mallet_hammer",
+        "marker": "4",
+        "part_id": "part_287",
+        "part_ref": "tool.parts.part_287",
+        "source_label": "p3sam_segment_287",
+        "point_count": 1091,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "contact_patch"
+        ],
+        "part_label": 287
+      },
+      {
+        "tool_id": "mallet_hammer",
+        "marker": "5",
+        "part_id": "part_290",
+        "part_ref": "tool.parts.part_290",
+        "source_label": "p3sam_segment_290",
+        "point_count": 438,
+        "role_candidates": [
+          "tool_part_candidate",
+          "functional_candidate",
+          "contact_patch"
+        ],
+        "part_label": 290
+      }
+    ],
+    "contact_marker_table": [
+      {
+        "tool_id": "mallet_hammer",
+        "part_marker": "4",
+        "part_id": "part_287",
+        "part_ref": "tool.parts.part_287",
+        "point_ref": "candidate.points.part_287_x_negative_contact",
+        "surface_ref": "candidate.surfaces.part_287_x_negative_contact",
+        "polarity": "negative",
+        "patch_id": "x_negative_contact",
+        "role": null,
+        "xyz_tool": [
+          0.18482095063580117,
+          -0.04364074049972309,
+          -0.0016320863591548348
+        ],
+        "normal_tool": [
+          -0.9061757206396581,
+          -0.4228975623989664,
+          0.0017930533200386076
+        ],
+        "face_marker": "F1",
+        "contact_marker": "F1",
+        "selection_semantics": "contact_point_bbox_face",
+        "derived_point_ref": "candidate.points.part_287_x_negative_contact",
+        "source_surface_ref": "candidate.surfaces.part_287_x_negative_contact"
+      },
+      {
+        "tool_id": "mallet_hammer",
+        "part_marker": "4",
+        "part_id": "part_287",
+        "part_ref": "tool.parts.part_287",
+        "point_ref": "candidate.points.part_287_x_positive_contact",
+        "surface_ref": "candidate.surfaces.part_287_x_positive_contact",
+        "polarity": "positive",
+        "patch_id": "x_positive_contact",
+        "role": null,
+        "xyz_tool": [
+          0.22879025598724093,
+          -0.04303257886507013,
+          -0.0016062341745380353
+        ],
+        "normal_tool": [
+          0.8374991620600154,
+          -0.5434332351897971,
+          0.05723174328921509
+        ],
+        "face_marker": "F2",
+        "contact_marker": "F2",
+        "selection_semantics": "contact_point_bbox_face",
+        "derived_point_ref": "candidate.points.part_287_x_positive_contact",
+        "source_surface_ref": "candidate.surfaces.part_287_x_positive_contact"
+      },
+      {
+        "tool_id": "mallet_hammer",
+        "part_marker": "4",
+        "part_id": "part_287",
+        "part_ref": "tool.parts.part_287",
+        "point_ref": "candidate.points.part_287_y_negative_contact",
+        "surface_ref": "candidate.surfaces.part_287_y_negative_contact",
+        "polarity": "negative",
+        "patch_id": "y_negative_contact",
+        "role": null,
+        "xyz_tool": [
+          0.2061139194756521,
+          -0.044410749768601925,
+          -0.001649919655557915
+        ],
+        "normal_tool": [
+          0.033386582122018185,
+          -0.9992534925437154,
+          0.019436917795698873
+        ],
+        "face_marker": "F3",
+        "contact_marker": "F3",
+        "selection_semantics": "contact_point_bbox_face",
+        "derived_point_ref": "candidate.points.part_287_y_negative_contact",
+        "source_surface_ref": "candidate.surfaces.part_287_y_negative_contact"
+      },
+      {
+        "tool_id": "mallet_hammer",
+        "part_marker": "4",
+        "part_id": "part_287",
+        "part_ref": "tool.parts.part_287",
+        "point_ref": "candidate.points.part_287_y_positive_contact",
+        "surface_ref": "candidate.surfaces.part_287_y_positive_contact",
+        "polarity": "positive",
+        "patch_id": "y_positive_contact",
+        "role": null,
+        "xyz_tool": [
+          0.21729314825060328,
+          -0.04147864089085311,
+          0.0021756395587816317
+        ],
+        "normal_tool": [
+          0.9289238700905502,
+          0.04646559498820889,
+          0.3673436974529252
+        ],
+        "face_marker": "F4",
+        "contact_marker": "F4",
+        "selection_semantics": "contact_point_bbox_face",
+        "derived_point_ref": "candidate.points.part_287_y_positive_contact",
+        "source_surface_ref": "candidate.surfaces.part_287_y_positive_contact"
+      },
+      {
+        "tool_id": "mallet_hammer",
+        "part_marker": "4",
+        "part_id": "part_287",
+        "part_ref": "tool.parts.part_287",
+        "point_ref": "candidate.points.part_287_z_negative_endpoint",
+        "surface_ref": "candidate.surfaces.part_287_z_negative_endpoint",
+        "polarity": "negative",
+        "patch_id": "z_negative_endpoint",
+        "role": null,
+        "xyz_tool": [
+          0.20629019435676152,
+          -0.04431814014238982,
+          -0.02180028475888789
+        ],
+        "normal_tool": [
+          -0.03675228811417468,
+          -0.6132017362665751,
+          -0.7890709093345353
+        ],
+        "face_marker": "F5",
+        "contact_marker": "F5",
+        "selection_semantics": "contact_point_bbox_face",
+        "derived_point_ref": "candidate.points.part_287_z_negative_endpoint",
+        "source_surface_ref": "candidate.surfaces.part_287_z_negative_endpoint"
+      },
+      {
+        "tool_id": "mallet_hammer",
+        "part_marker": "4",
+        "part_id": "part_287",
+        "part_ref": "tool.parts.part_287",
+        "point_ref": "candidate.points.part_287_z_positive_endpoint",
+        "surface_ref": "candidate.surfaces.part_287_z_positive_endpoint",
+        "polarity": "positive",
+        "patch_id": "z_positive_endpoint",
+        "role": null,
+        "xyz_tool": [
+          0.20843367826302825,
+          -0.04337774485057075,
+          0.022402356472686322
+        ],
+        "normal_tool": [
+          0.1197967772581562,
+          -0.6093503031913892,
+          0.7837990432241684
+        ],
+        "face_marker": "F6",
+        "contact_marker": "F6",
+        "selection_semantics": "contact_point_bbox_face",
+        "derived_point_ref": "candidate.points.part_287_z_positive_endpoint",
+        "source_surface_ref": "candidate.surfaces.part_287_z_positive_endpoint"
+      }
+    ],
+    "usage": "The whole-mesh part-choice overview exposes anonymous SAMPart3D regions in full-tool context as one multi-view sheet with colored part overlays for contact-region selection. Isolated cards are auxiliary debug views. After a part is selected, the renderer emits a selected-part bbox overview plus one selected-part face-highlight card per F marker; each face card shows the bbox, one highlighted bbox face, the contact point, and the surface normal/motion-axis arrow. This renderer must not emit legacy per-face/contact-choice paths."
+  }
+}

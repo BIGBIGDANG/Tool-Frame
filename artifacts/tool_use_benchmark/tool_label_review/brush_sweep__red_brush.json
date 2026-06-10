@@ -3,11 +3,11 @@
   "task_type": "brush_sweep",
   "tool_id": "red_brush",
   "task_semantics": {
-    "functional_part": "brush head/bristle region that can push the block",
-    "contact_point": "sweeping contact face on the brush head",
-    "motion_axis": "optional for current brush sweep configs; scene action direction supplies the sweep direction"
+    "functional_part": "brush head/bristle region that can push a block off the table",
+    "contact_point": "bristle endpoint or broad bristle side face that can physically contact the block",
+    "motion_axis": "directional bristle-side use axis that can align with the scene sweep direction"
   },
-  "manual_review_status": "pending",
+  "manual_review_status": "approved",
   "audit_policy": {
     "used_for_method_selection": false,
     "used_for_compiler_constraints": false,
@@ -15,39 +15,43 @@
     "purpose": "post_hoc_evaluator_audit_and_failure_attribution_only",
     "empty_allowed_lists_mean": "not_audited"
   },
-  "reviewer": null,
-  "review_date": null,
+  "reviewer": "human_user",
+  "review_date": "2026-06-07",
   "evidence": {
-    "tool_ref_dir": "artifacts/image_grounded/tool_ref_grounding/red_brush/p3sam_refs_20260524",
-    "contact_point_selection": "artifacts/image_grounded/tool_ref_grounding/red_brush/p3sam_refs_20260524/contact_point_selection.json",
-    "axis_binding": "artifacts/image_grounded/tool_ref_grounding/red_brush/p3sam_refs_20260524/axis_binding.json",
-    "axis_mesh_overlay_report": "artifacts/image_grounded/tool_ref_grounding/red_brush/p3sam_refs_20260524/axis_mesh_overlay_report.json"
+    "tool_ref_dir": "artifacts/test005/tool_refs_vlm_reselect_20260607/brush_sweep/off_table_red/red_brush",
+    "contact_point_selection": "artifacts/test005/tool_refs_vlm_reselect_20260607/brush_sweep/off_table_red/red_brush/contact_point_selection.json",
+    "axis_binding": "artifacts/test005/tool_refs_vlm_reselect_20260607/brush_sweep/off_table_red/red_brush/axis_binding.json",
+    "part_visual_evidence": "artifacts/test005/tool_refs_vlm_reselect_20260607/brush_sweep/off_table_red/red_brush/evidence/01_part_selection/visual_evidence.json",
+    "contact_visual_evidence": "artifacts/test005/tool_refs_vlm_reselect_20260607/brush_sweep/off_table_red/red_brush/evidence/02_contact_marker_selection/visual_evidence.json"
   },
   "candidate_from_artifacts_not_approved": {
     "selected_contact_point_part_ref": "tool.parts.part_002",
-    "selected_contact_point_face_marker": "F4",
-    "selected_contact_point_source_ref": "candidate.points.part_002_y_positive_contact",
-    "selected_contact_point_surface_ref": "candidate.surfaces.part_002_y_positive_contact",
-    "candidate_contact_point_face_markers": [
-      "F3",
-      "F4"
-    ],
-    "candidate_contact_point_source_refs": [
+    "selected_contact_point_face_marker": "F2",
+    "selected_motion_axis_face_marker": "F2",
+    "candidate_contact_point_face_markers": ["F2", "F3", "F5"],
+    "candidate_motion_axis_face_markers": ["F2"]
+  },
+  "approved_contract": {
+    "allowed_contact_point_part_markers": ["3"],
+    "allowed_contact_point_part_refs": ["tool.parts.part_002"],
+    "allowed_contact_point_face_markers": ["F3", "F4", "F6"],
+    "allowed_contact_point_source_refs": [
       "candidate.points.part_002_y_negative_contact",
-      "candidate.points.part_002_y_positive_contact"
+      "candidate.points.part_002_y_positive_contact",
+      "candidate.points.part_002_z_positive_contact"
     ],
-    "candidate_contact_point_surface_refs": [
+    "allowed_contact_point_surface_refs": [
+      "candidate.surfaces.part_002_y_negative_contact",
+      "candidate.surfaces.part_002_y_positive_contact",
+      "candidate.surfaces.part_002_z_positive_contact"
+    ],
+    "allowed_motion_axis_face_markers": ["F3", "F4"],
+    "allowed_motion_axis_surface_refs": [
       "candidate.surfaces.part_002_y_negative_contact",
       "candidate.surfaces.part_002_y_positive_contact"
     ]
   },
-  "approved_contract": {
-    "allowed_contact_point_part_refs": [],
-    "allowed_contact_point_face_markers": [],
-    "allowed_contact_point_source_refs": [],
-    "allowed_contact_point_surface_refs": [],
-    "allowed_motion_axis_face_markers": [],
-    "allowed_motion_axis_surface_refs": []
-  },
-  "review_notes": []
+  "review_notes": [
+    "Human review: F3/F4/F6 are the usable red-brush contact candidates, and F3/F4 are usable motion-axis candidates. F2 is a bristle endpoint that is usually not the working contact for sweeping; F5 is an internal/overlapped surface and should be filtered before VLM selection."
+  ]
 }

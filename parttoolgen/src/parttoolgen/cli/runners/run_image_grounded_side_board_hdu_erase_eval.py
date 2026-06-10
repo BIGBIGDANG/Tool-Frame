@@ -27,6 +27,10 @@ from parttoolgen.adapters.simtoolreal_policy_priors import (
 from parttoolgen.evaluation.tool_selection_evidence import (
     write_tool_selection_visual_evidence,
 )
+from parttoolgen.pipeline.trial_tool_refs import (
+    add_tool_ref_mode_args,
+    resolve_trial_tool_refs,
+)
 
 
 ROOT = Path(__file__).resolve().parents[5]
@@ -480,6 +484,18 @@ def _run_one(args: argparse.Namespace, *, trial_index: int) -> dict[str, Any]:
     task = _task_for_seed(seed)
     _write_json(task_path, task)
     _write_state_bundle(task, state_path)
+    trial_tool_refs = resolve_trial_tool_refs(
+        repo_root=ROOT,
+        python=_python(),
+        args=args,
+        trial_dir=out,
+        static_tool_refs_dir=tool_refs,
+        tool_id="flat_eraser",
+        task_id=str(task.get("task_id") or f"side_hdu_erase_seed_{seed:03d}"),
+        task_instruction=str(task.get("instruction") or "Use this eraser to erase the whole HDU pattern on the whiteboard."),
+        log_path=logs / "tool_refs.json",
+        env=_env(),
+    )
 
     trial: dict[str, Any] = {
         "seed": seed,
@@ -569,11 +585,11 @@ def _run_one(args: argparse.Namespace, *, trial_index: int) -> dict[str, Any]:
                 "--program",
                 str(out / "lifted_program/constraint_program.json"),
                 "--axis-binding",
-                str(tool_refs / "axis_binding.json"),
+                str(trial_tool_refs / "axis_binding.json"),
                 "--axis-mesh-report",
-                str(tool_refs / "axis_mesh_overlay_report.json"),
+                str(trial_tool_refs / "axis_mesh_overlay_report.json"),
                 "--contact-point-selection",
-                str(tool_refs / "contact_point_selection.json"),
+                str(trial_tool_refs / "contact_point_selection.json"),
                 "--output",
                 str(out / "lifted_program/constraint_program_with_tool_refs.json"),
             ],
@@ -633,7 +649,14 @@ def _run_one(args: argparse.Namespace, *, trial_index: int) -> dict[str, Any]:
                 "0,2",
             ]
             if args.capture_video_every > 0 and trial_index % args.capture_video_every == 0:
-                rollout_cmd.extend(["--capture-video", "--capture-side-board-video", "--video-stride", str(args.video_stride)])
+                rollout_cmd.extend([
+                    "--capture-video",
+                    "--capture-side-board-video",
+                    "--capture-subgoal-video",
+                    "--capture-subgoal-side-board-video",
+                    "--video-stride",
+                    str(args.video_stride),
+                ])
             _run_logged(logs, "06_rollout", rollout_cmd, env=rollout_env)
             _run_logged(
                 logs,
@@ -735,6 +758,7 @@ def main() -> int:
     parser.add_argument("--benchmark-config", default=None)
     parser.add_argument("--output-root", required=True)
     parser.add_argument("--tool-refs-dir", default=str(TOOL_REFS_DIR))
+    add_tool_ref_mode_args(parser)
     parser.add_argument("--seed-start", type=int, default=0)
     parser.add_argument("--trials", type=int, default=1)
     parser.add_argument("--device", default="cuda:0")

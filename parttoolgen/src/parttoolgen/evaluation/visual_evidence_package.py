@@ -217,6 +217,13 @@ def package_trial_visual_evidence(
         items=items,
         copy_files=copy_files,
     )
+    _copy_tree_if_exists(
+        rollout_dir / "subgoal_visualization" if rollout_dir is not None else None,
+        evidence_dir / "rollout" / "subgoal_visualization",
+        kind="subgoal_visualization_evidence",
+        items=items,
+        copy_files=copy_files,
+    )
 
     manifest = {
         "schema_version": "toolframe_trial_visual_evidence_package_v1",

@@ -1,0 +1,49 @@
+{
+  "schema_version": "toolframe_manual_tool_label_review_v1",
+  "task_type": "eraser_wipe",
+  "tool_id": "handle_eraser",
+  "task_semantics": {
+    "functional_part": "eraser pad/body attached to the handle",
+    "contact_point": "primary erasing face that should touch the target patch",
+    "motion_axis": "tool-side travel/tangent axes that can align with wiping direction"
+  },
+  "manual_review_status": "approved",
+  "audit_policy": {
+    "used_for_method_selection": false,
+    "used_for_compiler_constraints": false,
+    "used_for_task_success": false,
+    "purpose": "post_hoc_evaluator_audit_and_failure_attribution_only",
+    "empty_allowed_lists_mean": "not_audited"
+  },
+  "reviewer": "human_user",
+  "review_date": "2026-06-07",
+  "evidence": {
+    "tool_ref_dir": "artifacts/test005/tool_refs_vlm_reselect_20260607/eraser_wipe/tabletop_wipe_handle/handle_eraser",
+    "contact_point_selection": "artifacts/test005/tool_refs_vlm_reselect_20260607/eraser_wipe/tabletop_wipe_handle/handle_eraser/contact_point_selection.json",
+    "axis_binding": "artifacts/test005/tool_refs_vlm_reselect_20260607/eraser_wipe/tabletop_wipe_handle/handle_eraser/axis_binding.json"
+  },
+  "candidate_from_artifacts_not_approved": {
+    "selected_contact_point_part_ref": "tool.parts.part_001",
+    "selected_contact_point_face_marker": "F3",
+    "selected_motion_axis_face_marker": "F3",
+    "candidate_contact_point_face_markers": ["F3"],
+    "candidate_motion_axis_face_markers": ["F3"]
+  },
+  "approved_contract": {
+    "allowed_contact_point_part_markers": ["2"],
+    "allowed_contact_point_part_refs": ["tool.parts.part_001"],
+    "allowed_contact_point_face_markers": ["F5"],
+    "allowed_contact_point_source_refs": ["candidate.points.part_001_z_negative_contact"],
+    "allowed_contact_point_surface_refs": ["candidate.surfaces.part_001_z_negative_contact"],
+    "allowed_motion_axis_face_markers": ["F1", "F2", "F3", "F4"],
+    "allowed_motion_axis_surface_refs": [
+      "candidate.surfaces.part_001_x_negative_endpoint",
+      "candidate.surfaces.part_001_x_positive_endpoint",
+      "candidate.surfaces.part_001_y_negative_contact",
+      "candidate.surfaces.part_001_y_positive_contact"
+    ]
+  },
+  "review_notes": [
+    "Human review: contact should be F5; F1/F2/F3/F4 can be motion-axis candidates."
+  ]
+}

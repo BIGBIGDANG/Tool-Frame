@@ -19,7 +19,9 @@ The local runtime environment is described in `environment.json`.
 
 | Split | Status | Config | Success-check status |
 |---|---|---|---|
-| `red_zone` | fixed/current | `red_zone/benchmark_config.json` | Final stable blue-block xy center inside the visual-only red outline zone; tracking is diagnostic. |
+| `off_table_red` | current/e2e | `off_table_red/benchmark_config.json` | Final block center leaves the table bounds or drops below the tabletop; tracking is diagnostic. |
+| `off_table_blue` | current/e2e tool-shape variant | `off_table_blue/benchmark_config.json` | Same off-table success contract with the blue brush tool shape. |
+| `red_zone` | legacy/retired | `red_zone/benchmark_config.json` | Retired target-zone split kept only for attribution/regression checks, not headline statistics. |
 | `forward` | diagnostic/legacy | `forward/benchmark_config.json` | Directional target displacement retained for regression checks, not headline statistics. |
 | `left` | diagnostic/legacy | `left/benchmark_config.json` | Leftward displacement variant retained for regression checks, not headline statistics. |
 
@@ -29,14 +31,16 @@ Brush sweep uses public RGB-D evidence, shared scene refs, and task-conditioned
 brush tool refs. The compiler drives `tool.contact_point` through the public
 contact path and aligns `tool.motion_axis` to `scene.direction` when applicable.
 
-The headline task effect is final block occupancy inside the public red outline
-target zone. Directional-displacement splits remain runnable diagnostics.
-Strict rollout tracking, endpoint error, and contact-path details are diagnostic
-unless a reviewed contract says otherwise.
+The current task effect is final block removal from the table. The movable
+block starts near one table edge according to the seeded-edge policy; the VLM
+marks sparse point refs and the compiler drives the selected brush contact
+point through the public contact path. Directional-displacement and red-zone
+splits remain runnable diagnostics. Strict rollout tracking, endpoint error,
+and contact-path details are diagnostic unless a reviewed contract says
+otherwise.
 
-The current red-zone split uses the 50 g stable sweep block with actor friction
-0.8 so success is dominated by controlled planar sweeping rather than a
-lightweight block flying off the table.
+The current off-table split uses the smaller reviewed sweep block so success is
+dominated by controlled table-edge sweeping rather than target-zone tuning.
 
 The configs do not use hidden benchmark target centers, task-family fallbacks,
 tool-family fallbacks, or automatic global-axis retries.

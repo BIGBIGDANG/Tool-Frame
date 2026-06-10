@@ -779,7 +779,7 @@ def _stage_rows(program: Mapping[str, Any], stage_name: str) -> list[Mapping[str
 def _relation_to_polarity(relation: str) -> str:
     normalized = relation.strip().lower()
     if normalized == "parallel":
-        return "auto"
+        return "same"
     if normalized == "same":
         return "same"
     if normalized in {"anti_parallel", "antiparallel", "opposite"}:
@@ -1417,7 +1417,7 @@ def build_program_ir_from_image_grounded_program(
                     "stage": stage_name,
                     "type": "align_axis",
                     "refs": {"source_axis": action_source_axis, "target_axis": segment_axis_ref},
-                    "params": {"polarity": "auto", "min_cosine": 0.9},
+                    "params": {"polarity": "same", "min_cosine": 0.9},
                     "hard": True,
                     "weight": 1.0,
                     "source": "image_grounded_scene_adapter",
@@ -1476,7 +1476,7 @@ def build_program_ir_from_image_grounded_program(
                 "source_axis": approach_source_axis,
                 "target_axis": approach_offset["axis"],
             },
-            "params": {"polarity": "auto", "min_cosine": 0.9},
+            "params": {"polarity": "same", "min_cosine": 0.9},
             "hard": True,
             "weight": 1.0,
             "source": "image_grounded_scene_adapter",

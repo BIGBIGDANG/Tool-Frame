@@ -122,6 +122,35 @@ def test_brush_sweep_red_zone_success_uses_target_region_not_contact_gate() -> N
     assert success_check["policy"]["requires_semantic_execution_passed"] is False
 
 
+def test_brush_sweep_off_table_success_uses_table_exit_not_displacement_threshold() -> None:
+    success_check = check_task_success(
+        "brush_sweep",
+        effect={
+            "target_effect_passed": True,
+            "off_table_passed": True,
+            "target_final_xy_world": [0.10, -0.285],
+            "off_table_region": {
+                "bounds_xy_world": {
+                    "x": [-0.35, 0.35],
+                    "y": [-0.25, 0.25],
+                },
+                "table_top_z_world": 0.53,
+            },
+        },
+        rollout_summary={
+            "policy_goal_passed": False,
+            "tracking_execution_passed": False,
+            "semantic_execution_passed": False,
+        },
+        execution_report={"semantic_execution_passed": False},
+    )
+
+    assert success_check["passed"] is True
+    assert success_check["policy"]["name"] == "brush_sweep_off_table"
+    assert predicate_passed(success_check, "target_off_table") is True
+    assert success_check["policy"]["requires_semantic_execution_passed"] is False
+
+
 def test_brush_sweep_success_fails_without_target_effect() -> None:
     success_check = check_task_success(
         "brush_sweep",

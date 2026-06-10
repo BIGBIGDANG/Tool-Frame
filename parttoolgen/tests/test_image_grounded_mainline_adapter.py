@@ -127,7 +127,7 @@ def test_program_axis_align_to_motion_is_lowered_without_family_fallback() -> No
     engage = _constraint(program_ir, "action_axis_direction")
     assert align["stage"] == "align"
     assert align["refs"]["target_axis"] == "target.axes.direction"
-    assert align["params"]["polarity"] == "auto"
+    assert align["params"]["polarity"] == "same"
     assert approach["stage"] == "approach"
     assert approach["type"] == "pre_contact_offset"
     assert approach["refs"]["target"] == "scene.keypoints.start"
@@ -135,7 +135,7 @@ def test_program_axis_align_to_motion_is_lowered_without_family_fallback() -> No
     assert approach["params"]["direction"] == "opposite_axis"
     assert all(item["type"] != "align_axis" for item in _constraints_for_stage(program_ir, "approach"))
     assert engage["refs"]["target_axis"] == "target.axes.direction"
-    assert engage["params"]["polarity"] == "auto"
+    assert engage["params"]["polarity"] == "same"
 
 
 def test_configured_approach_offset_reaches_program_ir() -> None:
@@ -183,10 +183,17 @@ def test_compiled_image_grounded_stages_align_before_approach() -> None:
     assert stages.index("align") < stages.index("approach")
     assert stages.index("approach") < stages.index("action_waypoint_1")
 
-    lift_goal = next(goal for goal in subgoals["goals"] if goal["stage"] == "grasp_lift")
     align_goal = next(goal for goal in subgoals["goals"] if goal["stage"] == "align")
+    lift_goal = next(goal for goal in subgoals["goals"] if goal["stage"] == "grasp_lift")
     assert align_goal["pose_world_tool"]["position"] == pytest.approx(
         lift_goal["pose_world_tool"]["position"]
+    )
+    align_stage = next(
+        stage for stage in subgoals["sanity_checks"]["compiler_stages"] if stage["name"] == "align"
+    )
+    axis_record = align_stage["pose_selection"]["axis_resolutions"][0]
+    assert axis_record["axis_roll_resolution_priority"] == (
+        "axis_alignment_axis_line_distance_tool_geometry"
     )
 
 
@@ -356,8 +363,8 @@ def test_tabletop_wipe_uses_vlm_direction_even_with_surface_normal_metadata() ->
     engage = _constraint(inputs["program_ir"], "action_axis_direction")
     assert align["refs"]["target_axis"] == "target.axes.direction"
     assert engage["refs"]["target_axis"] == "target.axes.direction"
-    assert align["params"]["polarity"] == "auto"
-    assert engage["params"]["polarity"] == "auto"
+    assert align["params"]["polarity"] == "same"
+    assert engage["params"]["polarity"] == "same"
     move_along = _constraint(inputs["program_ir"], "action_move_along_vlm_path")
     assert move_along["refs"]["start"] == "scene.keypoints.start"
     assert move_along["refs"]["end"] == "scene.keypoints.end"

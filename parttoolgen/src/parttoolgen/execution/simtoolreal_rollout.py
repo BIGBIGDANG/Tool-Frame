@@ -55,7 +55,7 @@ DEFAULT_PRETRAINED_POLICY_ROOT = Path(
 DEFAULT_CONFIG = DEFAULT_PRETRAINED_POLICY_ROOT / "config.yaml"
 DEFAULT_CHECKPOINT = DEFAULT_PRETRAINED_POLICY_ROOT / "model.pth"
 DEFAULT_CONTROL_HZ = 60.0
-DEFAULT_MAX_FUNCTIONAL_TARGET_ERROR_M = 0.03
+DEFAULT_MAX_FUNCTIONAL_TARGET_ERROR_M = 0.008
 DEFAULT_SIMTOOLREAL_KEYPOINT_SCALE = 1.5
 DEFAULT_SUCCESS_TOLERANCE_SAFETY_FACTOR = 0.9
 DEFAULT_SUCCESS_STEPS = 3
@@ -65,6 +65,14 @@ DEFAULT_SOFT_LIGHT_INDICES = (0, 1)
 DEFAULT_SOFT_LIGHT_INTENSITY = (0.45, 0.45, 0.45)
 DEFAULT_SOFT_LIGHT_AMBIENT = (0.78, 0.78, 0.78)
 DEFAULT_SOFT_LIGHT_DIRECTION = (0.5, -0.8, 1.0)
+SUBGOAL_STAGE_BASE_COLORS = {
+    "start_hold": (0.35, 0.35, 0.35),
+    "grasp_lift": (0.0, 0.72, 1.0),
+    "align": (1.0, 0.78, 0.0),
+    "approach": (1.0, 0.34, 0.0),
+    "use": (0.88, 0.0, 1.0),
+    "other": (0.0, 1.0, 0.0),
+}
 
 
 def _parse_int_csv(value: str) -> tuple[int, ...]:
@@ -728,6 +736,35 @@ def _stage_for_goal(
     return str(goals[goal_index].get("stage", f"goal_{goal_index}"))
 
 
+def _subgoal_stage_family(stage: str) -> str:
+    lowered = str(stage).lower()
+    if (
+        lowered.startswith("start")
+        or "hold" in lowered
+        or "settle" in lowered
+        or "grasp" in lowered
+        or "lift" in lowered
+    ):
+        return "grasp_lift"
+    if "align" in lowered:
+        return "align"
+    if "approach" in lowered or "pre_contact" in lowered or "pre-contact" in lowered:
+        return "approach"
+    if (
+        lowered.startswith("action")
+        or "use" in lowered
+        or "move_along" in lowered
+        or "move-along" in lowered
+    ):
+        return "use"
+    return "other"
+
+
+def _blend_subgoal_color(base_color: tuple[float, float, float], opacity: float) -> tuple[float, float, float]:
+    alpha = max(0.0, min(1.0, float(opacity)))
+    return tuple(alpha * float(base_color[i]) + (1.0 - alpha) for i in range(3))
+
+
 def _event_from_info(info: dict[str, Any], key: str) -> bool:
     value = info.get(key)
     if hasattr(value, "sum"):
@@ -1032,12 +1069,9 @@ def _resolve_eval_success_tolerance_m(
             "safety_factor": float(safety_factor),
         }
     scale = max(1e-9, float(simtoolreal_keypoint_scale))
-    semantic_limited = (
-        float(max_functional_target_error_m) / scale * float(safety_factor)
-    )
     return {
-        "value_m": min(float(max_tracking_error_m), semantic_limited),
-        "source": "parttoolgen_semantic_threshold",
+        "value_m": float(max_tracking_error_m),
+        "source": "parttoolgen_tracking_threshold",
         "max_tracking_error_m": float(max_tracking_error_m),
         "max_functional_target_error_m": float(max_functional_target_error_m),
         "simtoolreal_keypoint_scale": scale,
@@ -1081,6 +1115,11 @@ def run_fixed_policy_rollout(
     capture_video: bool = False,
     capture_topdown_video: bool = False,
     capture_side_board_video: bool = False,
+    capture_subgoal_video: bool = False,
+    capture_subgoal_topdown_video: bool = False,
+    capture_subgoal_side_board_video: bool = False,
+    subgoal_video_only: bool = False,
+    subgoal_video_frames_per_goal: int = 12,
     video_fps: int = 30,
     video_stride: int = 2,
     light_preset: str = DEFAULT_RENDER_LIGHT_PRESET,
@@ -1247,11 +1286,12 @@ def run_fixed_policy_rollout(
 
     resolved_device = device or ("cuda" if torch.cuda.is_available() else "cpu")
     _install_cpu_checkpoint_loader(resolved_device)
+    resolved_capture_subgoal_video = bool(capture_subgoal_video or subgoal_video_only)
     can_capture_video, capture_video_reason = _can_capture_camera_frames(
         device=resolved_device,
         headless=headless,
     )
-    if capture_video and not can_capture_video:
+    if (capture_video or resolved_capture_subgoal_video) and not can_capture_video:
         raise RuntimeError(capture_video_reason)
     control_dt = 1.0 / float(control_hz)
     overrides = {
@@ -1298,7 +1338,9 @@ def run_fixed_policy_rollout(
         "task.env.forceNoReset": bool(force_no_reset),
         "task.env.use_hack_object_pos_offset": bool(float(grasp_observation_offset_m) > 0.0),
         "task.env.hack_object_pos_offset": float(grasp_observation_offset_m),
-        "task.env.hideGoalObjectVisual": bool(hide_goal_object_visual),
+        "task.env.hideGoalObjectVisual": (
+            False if resolved_capture_subgoal_video else bool(hide_goal_object_visual)
+        ),
         "task.env.goalObjectVisualColor": [0.0, 1.0, 0.0],
         "task.env.goalObjectVisualOpacity": float(max(0.0, min(1.0, goal_object_visual_opacity))),
         "task.env.goalObjectVisualBlendColor": [1.0, 1.0, 1.0],
@@ -1338,6 +1380,180 @@ def run_fixed_policy_rollout(
     env_state = checkpoint[0].get("env_state") if isinstance(checkpoint, list) else None
     if env_state is not None:
         env.set_env_state(env_state)
+    topdown_camera = (
+        _create_rollout_topdown_camera(env)
+        if (
+            (capture_video and capture_topdown_video)
+            or (resolved_capture_subgoal_video and capture_subgoal_topdown_video)
+        )
+        else None
+    )
+    side_board_camera = (
+        _create_side_board_front_camera(env)
+        if (
+            (capture_video and capture_side_board_video)
+            or (resolved_capture_subgoal_video and capture_subgoal_side_board_video)
+        )
+        else None
+    )
+
+    def _force_fixed_goal_index(goal_index: int) -> None:
+        env.successes[0] = int(goal_index)
+        if hasattr(env, "near_goal_steps"):
+            env.near_goal_steps[0] = 0
+        if hasattr(env, "reset_goal_buf"):
+            env.reset_goal_buf[0] = 0
+        env._reset_target(
+            torch.tensor([0], device=env.device),
+            reset_buf_idxs=None,
+            tensor_reset=True,
+        )
+        if hasattr(env, "set_actor_root_state_tensor_indexed"):
+            env.set_actor_root_state_tensor_indexed()
+        if hasattr(env.gym, "refresh_actor_root_state_tensor"):
+            env.gym.refresh_actor_root_state_tensor(env.sim)
+
+    def _set_goal_visual_stage_color(stage: str) -> dict[str, Any]:
+        stage_family = _subgoal_stage_family(stage)
+        base_color = SUBGOAL_STAGE_BASE_COLORS.get(
+            stage_family,
+            SUBGOAL_STAGE_BASE_COLORS["other"],
+        )
+        color = _blend_subgoal_color(base_color, goal_object_visual_opacity)
+        applied = False
+        reason = None
+        try:
+            env_handle = env.envs[getattr(env, "index_to_view", 0)]
+            goal_handle = env.gym.find_actor_handle(env_handle, "goal_object")
+            if int(goal_handle) < 0:
+                reason = "goal_object_actor_not_found"
+            elif hasattr(env, "_set_actor_color"):
+                env._set_actor_color(env_handle, goal_handle, color)
+                applied = True
+            else:
+                reason = "simtoolreal_env_missing_set_actor_color"
+        except Exception as exc:  # pragma: no cover - IsaacGym binding dependent.
+            reason = f"{type(exc).__name__}: {exc}"
+        return {
+            "stage_family": stage_family,
+            "base_color_rgb": [float(item) for item in base_color],
+            "display_color_rgb": [float(item) for item in color],
+            "applied": applied,
+            "reason": reason,
+        }
+
+    def _capture_subgoal_visualization() -> dict[str, Any]:
+        if hasattr(env, "hide_goal_object_visual"):
+            env.hide_goal_object_visual = False
+        subgoal_dir = output_dir / "subgoal_visualization"
+        frames_per_goal = max(1, int(subgoal_video_frames_per_goal))
+        main_frames: list[Any] = []
+        topdown_frames: list[Any] = []
+        side_board_frames: list[Any] = []
+        frame_index: list[dict[str, Any]] = []
+        for goal_index, goal_pose in enumerate(fixed_goals.get("goals", [])):
+            _force_fixed_goal_index(goal_index)
+            stage = _stage_for_goal(tool_pose_subgoals, goal_index, goal_index_map)
+            color_record = _set_goal_visual_stage_color(stage)
+            for local_frame in range(frames_per_goal):
+                frame = _capture_camera_frame(env)
+                if frame is not None:
+                    main_frames.append(frame)
+                if capture_subgoal_topdown_video and topdown_camera is not None:
+                    topdown_frame = _capture_camera_sensor_frame(
+                        env,
+                        camera_handle=topdown_camera[0],
+                        camera_properties=topdown_camera[1],
+                    )
+                    if topdown_frame is not None:
+                        topdown_frames.append(topdown_frame)
+                if capture_subgoal_side_board_video and side_board_camera is not None:
+                    side_board_frame = _capture_camera_sensor_frame(
+                        env,
+                        camera_handle=side_board_camera[0],
+                        camera_properties=side_board_camera[1],
+                    )
+                    if side_board_frame is not None:
+                        side_board_frames.append(side_board_frame)
+                frame_index.append(
+                    {
+                        "frame": len(frame_index),
+                        "goal_index": int(goal_index),
+                        "stage": stage,
+                        "stage_family": color_record["stage_family"],
+                        "display_color_rgb": color_record["display_color_rgb"],
+                        "local_frame": int(local_frame),
+                        "fixed_goal_pose_xyzw": [float(item) for item in goal_pose[:7]],
+                    }
+                )
+        video_path = subgoal_dir / "subgoal_render.mp4"
+        topdown_video_path = subgoal_dir / "subgoal_topdown_render.mp4"
+        side_board_video_path = subgoal_dir / "subgoal_side_board_front_render.mp4"
+        _write_rollout_video(video_path, main_frames, fps=video_fps)
+        if topdown_frames:
+            _write_rollout_video(topdown_video_path, topdown_frames, fps=video_fps)
+        if side_board_frames:
+            _write_rollout_video(side_board_video_path, side_board_frames, fps=video_fps)
+        summary = {
+            "generated": bool(video_path.exists()),
+            "mode": "subgoal_visualization_only" if subgoal_video_only else "pre_rollout_subgoal_visualization",
+            "num_goals": len(fixed_goals.get("goals", [])),
+            "frames_per_goal": frames_per_goal,
+            "render_video_path": str(video_path) if video_path.exists() else None,
+            "topdown_render_video_path": (
+                str(topdown_video_path) if topdown_video_path.exists() else None
+            ),
+            "side_board_front_render_video_path": (
+                str(side_board_video_path) if side_board_video_path.exists() else None
+            ),
+            "render_video_frames": len(main_frames),
+            "topdown_render_video_frames": len(topdown_frames),
+            "side_board_front_render_video_frames": len(side_board_frames),
+            "goal_object_visual_hidden": False,
+            "goal_object_visual_opacity": float(goal_object_visual_opacity),
+            "stage_color_legend": {
+                key: {
+                    "base_color_rgb": [float(item) for item in value],
+                    "display_color_rgb": [
+                        float(item)
+                        for item in _blend_subgoal_color(value, goal_object_visual_opacity)
+                    ],
+                }
+                for key, value in SUBGOAL_STAGE_BASE_COLORS.items()
+            },
+            "stage_color_application": [
+                {
+                    "goal_index": int(item["frame"] // frames_per_goal),
+                    "stage": item["stage"],
+                    "stage_family": item["stage_family"],
+                    "display_color_rgb": item["display_color_rgb"],
+                }
+                for item in frame_index[::frames_per_goal]
+            ],
+            "frame_index_path": str(subgoal_dir / "subgoal_frame_index.json"),
+            "metadata": {
+                "generated_by": "parttoolgen.execution.simtoolreal_rollout",
+                "policy_loaded": False,
+                "policy_stepped": False,
+                "source": "simtoolreal_fixed_goals",
+            },
+        }
+        _write_json(subgoal_dir / "subgoal_frame_index.json", frame_index)
+        _write_json(subgoal_dir / "subgoal_visualization_summary.json", summary)
+        return summary
+
+    subgoal_visualization_summary: dict[str, Any] | None = None
+    if resolved_capture_subgoal_video:
+        subgoal_visualization_summary = _capture_subgoal_visualization()
+        if hide_goal_object_visual and hasattr(env, "hide_goal_object_visual"):
+            env.hide_goal_object_visual = True
+            _force_fixed_goal_index(0)
+    if subgoal_video_only:
+        return {
+            "subgoal_visualization_summary": subgoal_visualization_summary or {},
+            "output_dir": str(output_dir),
+        }
+
     policy = RlPlayer(
         num_observations=N_OBS,
         num_actions=N_ACT,
@@ -1356,12 +1572,6 @@ def run_fixed_policy_rollout(
     observation = isaac_env.reset()
     benchmark_extra_actor_initial = _benchmark_extra_actor_states(env, benchmark_extra_actors)
     benchmark_extra_actor_samples: list[dict[str, Any]] = []
-    topdown_camera = _create_rollout_topdown_camera(env) if capture_video and capture_topdown_video else None
-    side_board_camera = (
-        _create_side_board_front_camera(env)
-        if capture_video and capture_side_board_video
-        else None
-    )
 
     tracking_samples: list[dict[str, Any]] = []
     contact_events: list[dict[str, Any]] = []
@@ -1371,18 +1581,6 @@ def run_fixed_policy_rollout(
     video_frames: list[Any] = []
     topdown_video_frames: list[Any] = []
     side_board_video_frames: list[Any] = []
-
-    def _force_fixed_goal_index(goal_index: int) -> None:
-        env.successes[0] = int(goal_index)
-        if hasattr(env, "near_goal_steps"):
-            env.near_goal_steps[0] = 0
-        if hasattr(env, "reset_goal_buf"):
-            env.reset_goal_buf[0] = 0
-        env._reset_target(
-            torch.tensor([0], device=env.device),
-            reset_buf_idxs=None,
-            tensor_reset=True,
-        )
 
     def _current_observation() -> Any:
         object_pose = env.object_pose.clone()
@@ -1523,6 +1721,48 @@ def run_fixed_policy_rollout(
             spec=functional_specs.get(goal_index),
             max_functional_target_error_m=max_functional_target_error_m,
         )
+        contact_point_completion_blocked = False
+        if (
+            final_successes > successes_before
+            and isinstance(functional_observation, dict)
+            and functional_observation.get("semantic_gate") is True
+            and functional_observation.get("functional_target_success") is False
+        ):
+            contact_point_completion_blocked = True
+            blocked_successes = final_successes
+            _force_fixed_goal_index(successes_before)
+            final_successes = successes_before
+            observation = _current_observation()
+            contact_events.append(
+                {
+                    "step": int(step),
+                    "goal_index": int(goal_index),
+                    "stage": stage,
+                    "type": "contact_point_completion_blocked_goal_success",
+                    "source": "parttoolgen_contact_point_goal_completion",
+                    "blocked_policy_successes": int(blocked_successes),
+                    "restored_successes": int(successes_before),
+                    "functional_target_error_m": functional_observation.get(
+                        "functional_target_error_m"
+                    ),
+                    "threshold_m": float(max_functional_target_error_m),
+                    "actual_contact_point_world": functional_observation.get(
+                        "actual_contact_point_world"
+                    ),
+                    "expected_contact_target_world": functional_observation.get(
+                        "expected_contact_target_world"
+                    ),
+                    "contact_point_tool_ref": functional_observation.get(
+                        "contact_point_tool_ref"
+                    ),
+                    "contact_target_ref": functional_observation.get("contact_target_ref"),
+                    "note": (
+                        "The unchanged SimToolReal pose/keypoint success signal "
+                        "reached this fixed goal, but the PartToolGen functional "
+                        "contact point had not reached the compiled contact_point_goal."
+                    ),
+                }
+            )
         tracking_samples.append(
             _record_sample(
                 step=step,
@@ -1549,6 +1789,8 @@ def run_fixed_policy_rollout(
                     "note": "Goal tolerance reached by unchanged SimToolReal policy; not a raw contact sensor.",
                 }
             )
+        elif contact_point_completion_blocked:
+            reached_goal_count = max(reached_goal_count, successes_before)
         if _event_from_info(info, "dropped"):
             drop_events.append({"step": int(step), "goal_index": int(goal_index), "stage": stage})
         if _event_from_info(info, "table_force_too_high"):
@@ -1690,9 +1932,30 @@ def run_fixed_policy_rollout(
         "side_board_front_render_video_path": (
             str(side_board_video_path) if side_board_video_path.exists() else None
         ),
+        "subgoal_visualization_summary_path": (
+            str(output_dir / "subgoal_visualization/subgoal_visualization_summary.json")
+            if subgoal_visualization_summary
+            else None
+        ),
+        "subgoal_visualization_render_video_path": (
+            subgoal_visualization_summary.get("render_video_path")
+            if subgoal_visualization_summary
+            else None
+        ),
+        "subgoal_visualization_topdown_render_video_path": (
+            subgoal_visualization_summary.get("topdown_render_video_path")
+            if subgoal_visualization_summary
+            else None
+        ),
+        "subgoal_visualization_side_board_front_render_video_path": (
+            subgoal_visualization_summary.get("side_board_front_render_video_path")
+            if subgoal_visualization_summary
+            else None
+        ),
         "render_video_frames": len(video_frames),
         "topdown_render_video_frames": len(topdown_video_frames),
         "side_board_front_render_video_frames": len(side_board_video_frames),
+        "subgoal_visualization": subgoal_visualization_summary,
         "benchmark_extra_actor_summary": benchmark_extra_actor_summary,
         "grasp_observation_bias": scene_spec_artifact["grasp_observation_bias"],
         "camera": scene_spec_artifact["camera"],
@@ -1704,6 +1967,7 @@ def run_fixed_policy_rollout(
             "simtoolreal_actor_visualization_modified": bool(benchmark_extra_actors),
             "goal_object_visual_hidden": bool(hide_goal_object_visual),
             "goal_object_visual_opacity": float(goal_object_visual_opacity),
+            "subgoal_visualization_captured": bool(subgoal_visualization_summary),
             "render_lighting_preset": lighting.get("name", lighting["preset"]),
             "start_pose_inserted_by_rollout": False,
         },
@@ -1892,6 +2156,38 @@ def main() -> int:
             "This is for vertical whiteboard/side tasks and does not replace tabletop views."
         ),
     )
+    parser.add_argument(
+        "--capture-subgoal-video",
+        action="store_true",
+        help=(
+            "Render a pre-rollout video that shows only SimToolReal's green "
+            "goal-object visual stepping through the compiled fixed subgoals."
+        ),
+    )
+    parser.add_argument(
+        "--capture-subgoal-topdown-video",
+        action="store_true",
+        help="Also capture the robot-forward top-down camera for subgoal-only visualization.",
+    )
+    parser.add_argument(
+        "--capture-subgoal-side-board-video",
+        action="store_true",
+        help="Also capture the side-board front camera for subgoal-only visualization.",
+    )
+    parser.add_argument(
+        "--subgoal-video-only",
+        action="store_true",
+        help=(
+            "Only render the compiled subgoal visualization and exit before "
+            "loading or stepping the fixed policy."
+        ),
+    )
+    parser.add_argument(
+        "--subgoal-video-frames-per-goal",
+        type=int,
+        default=12,
+        help="Number of repeated rendered frames per fixed goal in the subgoal-only video.",
+    )
     parser.add_argument("--video-fps", type=int, default=30)
     parser.add_argument("--video-stride", type=int, default=2)
     args = parser.parse_args()
@@ -1934,6 +2230,11 @@ def main() -> int:
         capture_video=args.capture_video,
         capture_topdown_video=args.capture_topdown_video,
         capture_side_board_video=args.capture_side_board_video,
+        capture_subgoal_video=args.capture_subgoal_video,
+        capture_subgoal_topdown_video=args.capture_subgoal_topdown_video,
+        capture_subgoal_side_board_video=args.capture_subgoal_side_board_video,
+        subgoal_video_only=args.subgoal_video_only,
+        subgoal_video_frames_per_goal=args.subgoal_video_frames_per_goal,
         video_fps=args.video_fps,
         video_stride=args.video_stride,
         light_preset=args.light_preset,

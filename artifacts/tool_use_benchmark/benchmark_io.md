@@ -1,195 +1,279 @@
-# Unified benchmark input/output layout
+# Current Benchmark Input/Output Contract
 
-Date: 2026-05-31
+Date: 2026-06-07
 
-This document defines the stable layout used by benchmark configs and the
-unified launcher. The goal is that adding a new benchmark starts from one
-unified task spec, then synchronizes the compatibility config/registry records
-needed by the current runners, rather than writing a new path convention or a
-new family-specific top-level script.
+This file describes the current ToolFrame 6.4 benchmark I/O. The active
+experiment is full E2E success with manual failure attribution. Historical
+paper/headline suites, red-zone brush variants, dense screwdriver diagnostics,
+and scene-context tool-ref trials are not part of the current result protocol.
 
-## Source-of-truth inputs
+## Source Inputs
 
-New task and scene work should start from a `toolframe_task_spec_v1` file or a
-registry task normalized through `bin/toolframe run-spec`. During the migration,
-reviewed split configs remain in:
-
-Each benchmark split owns one directory:
+Benchmark definitions live under:
 
 ```text
-artifacts/tool_use_benchmark/<task_family>/<split>/
-```
-
-Required files:
-
-```text
-benchmark_config.json        # or benchmark_config.draft.json while provisional
-contract_draft.json          # required for new/provisional tasks
-README.md                    # optional split-specific notes
-```
-
-The task must also be registered in:
-
-```text
+artifacts/tool_use_benchmark/<task_family>/<split>/benchmark_config.json
 artifacts/tool_use_benchmark/benchmark_tasks.json
 ```
 
-The registry/config files are the current compatibility layer for old runner
-backends. They should be treated as generated or synchronized handoff records
-once a split has a reviewed unified spec.
+The active suite is:
 
-## Runtime outputs
+```text
+current_all_runnable
+```
 
-The unified launcher writes outputs under:
+Each current task config defines public task language, tool id, scene asset
+policy, seeded scene variation, rollout policy, and success checker settings.
+It must not contain hidden evaluator target refs, oracle axes, oracle
+trajectories, repair/fallback shortcuts, or seed-specific prompt hacks.
+
+## Runtime Root
+
+Current E2E runs should write to an explicit experiment root, for example:
+
+```text
+artifacts/test008/e2e_10seed_gpt55_20260607/
+```
+
+If no explicit prefix is given, task-family runners may write under:
 
 ```text
 artifacts/image_grounded/<task_family>/<split>_<run_id>/
 ```
 
-Expected subdirectories, when the underlying runner reaches each stage:
+Do not write runtime evidence into `artifacts/tool_use_benchmark/`.
+
+## Module I/O
+
+### Registry Launcher
+
+Input:
 
 ```text
-scene_grounding/
-tool_refs/
-compile/
+benchmark_tasks.json
+benchmark_config.json
+CLI flags: suite/task, trials, seeds, device, output root, tool-ref mode
+```
+
+Output:
+
+```text
+expanded runner commands
+per-task run roots
+aggregate summaries: JSON / CSV / Markdown
+```
+
+Main entry:
+
+```bash
+bin/toolframe current-e2e --trials 10 --device cuda:0 --continue-on-task-error
+```
+
+For single-task debugging:
+
+```bash
+bin/toolframe benchmark \
+  --task brush_sweep/off_table_red \
+  --trials 1 \
+  --device cuda:0 \
+  --tool-refs-mode vlm_per_seed
+```
+
+### Scene Setup And Evidence
+
+Input:
+
+```text
+task config
+seed id
+tool start policy
+target/object sampler
+SimToolReal scene/asset definitions
+```
+
+Output:
+
+```text
+sim_rgbd/
+method_task.json
+run_config.json
+scene/object state metadata
+```
+
+The RGB-D scene evidence is public method input for scene grounding. Tool start
+poses should place tools on the table near the hand unless a reviewed task
+contract says otherwise.
+
+### Tool-Reference Selection
+
+Input:
+
+```text
+tool mesh / P3SAM part evidence
+selected tool part overview
+candidate face/contact/axis evidence images
+task language
+```
+
+Output:
+
+```text
+tool_selection_visual_evidence/
+tool_refs/ or selected_refs/
+part_selection.json
+contact_point_selection.json
+axis_binding.json
+p3sam_tool_ref_selection_summary.json
+```
+
+Current mainline selection is per trial with `--tool-refs-mode vlm_per_seed`.
+The tool-ref prompt uses tool-only evidence; it does not receive the task scene
+image. The VLM may select multiple plausible contact-point and motion-axis
+candidates, and the compiler consumes the valid set rather than a single
+hard-coded face.
+
+### Scene-Reference Grounding
+
+Input:
+
+```text
+task language
+per-seed RGB-D scene evidence
+public default-axis candidates when explicitly exposed by the scene
+```
+
+Output:
+
+```text
+vlm_scene_keypoints/
+scene_keypoints.json
+scene overlay images
+```
+
+The VLM marks task-relevant scene points and action direction references from
+the visible scene. The compiler must not infer private target centers or hidden
+world-axis fallbacks.
+
+### RGB-D Lifting
+
+Input:
+
+```text
+scene_keypoints.json
+camera intrinsics/extrinsics
+depth image
+task config
+```
+
+Output:
+
+```text
+lifted_program/
+constraint_program.json
+lift report / diagnostics
+```
+
+The lifted refs are public 3D scene refs. They are the target geometry used by
+the compiler.
+
+### Tool-Centric Compiler
+
+Input:
+
+```text
+lifted scene refs
+VLM-selected tool contact candidates
+VLM-selected tool motion-axis candidates
+tool part graph / part bbox
+scene support surface metadata
+```
+
+Output:
+
+```text
+compile/tool_pose_subgoals.json
+compile/tool_path_solver_report.json
+compile/tool_part_graph.json
+compile/target_part_graph.json
+compile/simtoolreal_fixed_goals.json
+optional subgoal-only visualization video
+```
+
+Current compiler invariants:
+
+```text
+1. All VLM-valid contact and motion-axis candidates participate in selection.
+2. Align stage rotates the tool so the selected motion axis follows the task
+   use direction; translation is left to approach/use stages.
+3. Approach moves the selected contact point toward the pre-contact point.
+4. Use moves the selected contact point through the lifted scene endpoint and
+   waypoint sequence.
+5. Every generated subgoal must keep the relevant tool part bbox above the
+   support surface; this should be handled during generation, not as a hidden
+   post-hoc repair.
+6. No same/opposite axis polarity fallback may reverse the intended use
+   direction unless that choice is explicitly represented in the public refs.
+```
+
+### Rollout
+
+Input:
+
+```text
+simtoolreal_fixed_goals.json
+task scene assets
+tool start pose
+pretrained SimToolReal policy/runtime
+```
+
+Output:
+
+```text
 rollout/
-visual_evidence/
-logs/
+rollout_summary.json
+videos / frame logs when enabled
+benchmark_extra_actor_summary.json when applicable
 ```
 
-Task runners may create task-specific nested seed directories, but the root
-above is the common run boundary used for cleanup, summaries, and publication
-review.
+The rollout is execution evidence, not a source of oracle refs.
 
-Scene direction is recorded as public method evidence. The VLM should use a
-visible `action_direction` when the use direction is visible in the grounding
-image. For point/depth actions with no reliable visible endpoint, a task may
-expose two support-surface candidates, `support_surface_normal` and
-`opposite_support_surface_normal`; the VLM selection is written as
-`direction_decision`, and the lifter converts only that explicit selection into
-`scene.direction`. The compiler must not guess a default world axis.
+### Success Check And Manual Attribution
 
-## Scratch outputs
-
-Interactive previews and quick review runs stay under:
+Input:
 
 ```text
-test000/<purpose>_<run_id>/
+rollout summary
+task-specific evaluator outputs
+videos and visual evidence
+compile/tool-ref/scene-ref artifacts
 ```
 
-Scratch roots must not be referenced by publishable benchmark configs.
+Output:
 
-## Unified launcher
-
-Dry-run one task:
-
-```bash
-bin/toolframe benchmark \
-  --task brush_sweep/red_zone \
-  --trials 1 \
-  --dry-run
+```text
+trial_result.json
+aggregate summary.json / summary.csv / summary.md
+manual failure attribution table
 ```
 
-Run one task:
+A trial succeeds only when the task outcome is achieved through the expected
+functional tool interaction. Manual attribution uses:
 
-```bash
-bin/toolframe benchmark \
-  --task brush_sweep/red_zone \
-  --trials 20 \
-  --device cuda:0
+```text
+reference
+compilation
+execution
+artifact
+needs_review
 ```
 
-Run the current tabletop suite:
+## Scratch And Legacy Policy
 
-```bash
-bin/toolframe benchmark \
-  --suite current_tabletop \
-  --trials 20 \
-  --device cuda:0
-```
+Use `test000/` for interactive previews and short review runs. Use
+`artifacts/test00*/` for named experiment batches. Historical outputs from
+`test001` through `test007` are development evidence unless a reviewed report
+explicitly promotes them.
 
-Run every current launcher-runnable task, including provisional side-board /
-marker smoke tasks:
-
-```bash
-bin/toolframe run-all \
-  --trials 1 \
-  --device cuda:0 \
-  --continue-on-task-error \
-  --aggregate json,csv,md
-```
-
-Regenerate the reviewed ToolFrame 6.4 headline subset:
-
-```bash
-bin/toolframe preflight-headline
-bin/toolframe paper-headline \
-  --trials 20 \
-  --device cuda:0 \
-  --continue-on-task-error \
-  --aggregate json,csv,md
-```
-
-Regenerate the broader ToolFrame 6.4 paper-review candidate suite:
-
-```bash
-bin/toolframe preflight-paper
-bin/toolframe paper-release \
-  --trials 20 \
-  --device cuda:0 \
-  --continue-on-task-error \
-  --aggregate json,csv,md
-```
-
-`paper_release_6.4` is the current evidence-generation suite for paper review.
-It is not a blanket claim that every included task is already headline-ready;
-use each task's `status` and contract review notes when building final
-statistics tables. Draft side-board smoke tasks and stress variants remain in
-their diagnostic suites.
-
-Run only the side-board smoke-review tasks:
-
-```bash
-bin/toolframe benchmark \
-  --suite current_side_board \
-  --trials 1 \
-  --device cuda:0 \
-  --continue-on-task-error
-```
-
-Useful handoff commands:
-
-```bash
-bin/toolframe list
-bin/toolframe benchmark --validate-registry
-bin/toolframe benchmark --describe brush_sweep/red_zone
-bin/toolframe run-spec --task brush_sweep/red_zone --preflight-only
-bin/toolframe run-spec --suite current_all_runnable --preflight-only
-bin/toolframe run-spec --suite paper_release_6.4_headline --preflight-only
-bin/toolframe run-spec --suite paper_release_6.4 --preflight-only
-bin/toolframe preflight-all \
-  --continue-on-task-error \
-  --aggregate json,csv,md
-```
-
-Use `--output-prefix test000/some_review_root` for explicit local scratch runs.
-Use `--plan-json <path>` to save the exact runner commands before launching a
-suite. Use `--aggregate-output-root <path>` to keep launcher summaries separate
-from per-task runtime evidence.
-
-## Adding a new task or scene
-
-1. Write a `toolframe_task_spec_v1` that names the tool, scene/environment,
-   public evidence policy, mainline params, rollout policy, and success checker.
-2. Validate and inspect it with `bin/toolframe run-spec --spec <spec> --preflight-only`.
-3. For current compatibility runners, synchronize the reviewed split directory,
-   `benchmark_config.json`/`benchmark_config.draft.json`, contract stub, and
-   `benchmark_tasks.json` entry from that spec.
-4. If it is a new family, add it to the appropriate suite only after the
-   contract and smoke evidence are reviewed.
-
-The task language, public scene refs, tool refs, success predicates,
-diagnostics, thresholds, and allowed labels must be explicit in the contract.
-Do not add a new `run_image_grounded_<family>_eval.py` as the first step; extend
-the unified spec/executor boundary first, then add a backend only if the task
-cannot be expressed by existing stage adapters and success plugins.
+Legacy registry tasks may remain for regression checks, but current paper
+statistics should cite only `current_all_runnable` runs launched with the
+current full E2E protocol.

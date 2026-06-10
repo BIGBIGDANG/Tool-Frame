@@ -14,10 +14,19 @@
     "rollout_max_tracking_error_m": 0.018,
     "capture_video_every": 1,
     "approach_offset_m": 0.03,
+    "fixed_start_pose_xyzw": [
+      0.02,
+      0.135,
+      0.560028845279411,
+      0.7198971082016096,
+      -0.010326421680771691,
+      0.00572532125736636,
+      0.6939803594589194
+    ],
     "max_translation_step_m": 0.035,
     "max_rotation_step_rad": 0.3,
     "target_approach_axis_source": "opposite_scene_direction",
-    "initial_grasp_lift_m": 0.08,
+    "initial_grasp_lift_m": 0.12,
     "initial_grasp_lift_steps": 3,
     "initial_grasp_hold_steps": 0
   },
@@ -126,7 +135,7 @@
     "target_approach_axis_source": "opposite_scene_direction",
     "max_translation_step_m": 0.035,
     "max_rotation_step_rad": 0.3,
-    "initial_grasp_lift_m": 0.08,
+    "initial_grasp_lift_m": 0.12,
     "initial_grasp_lift_steps": 3,
     "initial_grasp_hold_steps": 0,
     "rollout_max_tracking_error_m": 0.018,
@@ -196,7 +205,7 @@
   },
   "contract_status": {
     "environment_id": "tabletop_wood_table",
-    "benchmark_status": "fixed/current",
+    "benchmark_status": "current/e2e",
     "success_check_status": "reviewed",
     "tool_label_review_status": "approved",
     "large_statistics_status": "allowed",

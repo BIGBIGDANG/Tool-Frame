@@ -185,6 +185,10 @@ def _sample_depth(
             return float(np.min(last_finite))
         if policy == "p05":
             return float(np.percentile(last_finite, 5))
+        if policy == "p95":
+            return float(np.percentile(last_finite, 95))
+        if policy == "max":
+            return float(np.max(last_finite))
         raise ValueError(f"unsupported depth sample policy {policy!r}")
     raise ValueError(f"no valid depth near pixel ({u:.1f}, {v:.1f})")
 
@@ -410,6 +414,34 @@ def _project_keypoint_to_contact_plane(
     return projected
 
 
+def _project_keypoint_to_axis_line(
+    row: Mapping[str, Any],
+    *,
+    anchor: Mapping[str, Any],
+    axis_world: list[float],
+    policy: str,
+) -> dict[str, Any]:
+    projected = dict(row)
+    position = row.get("position_world")
+    anchor_position = anchor.get("position_world")
+    if not isinstance(position, (list, tuple)) or len(position) != 3:
+        raise ValueError("lifted keypoint has no position_world")
+    if not isinstance(anchor_position, (list, tuple)) or len(anchor_position) != 3:
+        raise ValueError("anchor keypoint has no position_world")
+    axis = np.asarray(_unit_vector(axis_world, name="axis_world"), dtype=float)
+    point = np.asarray([float(item) for item in position], dtype=float)
+    anchor_point = np.asarray([float(item) for item in anchor_position], dtype=float)
+    signed_distance = float(np.dot(point - anchor_point, axis))
+    corrected = anchor_point + axis * signed_distance
+    projected["raw_position_world"] = [float(item) for item in point]
+    projected["position_world"] = corrected.astype(float).tolist()
+    projected["axis_line_policy"] = policy
+    projected["axis_line_anchor_world"] = anchor_point.astype(float).tolist()
+    projected["axis_line_world"] = axis.astype(float).tolist()
+    projected["axis_signed_distance_m"] = signed_distance
+    return projected
+
+
 def _distance_between(a: Mapping[str, Any], b: Mapping[str, Any]) -> float:
     a_pos = a.get("position_world")
     b_pos = b.get("position_world")
@@ -598,13 +630,21 @@ def main() -> int:
     )
     parser.add_argument(
         "--end-surface-policy",
-        choices=["contact_height", "raw_depth", "anchor_contact_plane"],
+        choices=[
+            "contact_height",
+            "raw_depth",
+            "anchor_contact_plane",
+            "entry_contact_plane_end_raw_depth",
+        ],
         default="raw_depth",
         help=(
             "How to set executable end/waypoint surface coordinates. "
             "`anchor_contact_plane` keeps the start-point contact depth along "
             "the public support-surface normal, which is equivalent to keeping "
-            "start.z on tabletop and keeping start's whiteboard-depth on side boards."
+            "start.z on tabletop and keeping start's whiteboard-depth on side boards. "
+            "`entry_contact_plane_end_raw_depth` projects only the start/contact "
+            "anchor to a public entry plane while preserving the VLM raw-depth "
+            "endpoint."
         ),
     )
     parser.add_argument(
@@ -619,12 +659,13 @@ def main() -> int:
     )
     parser.add_argument(
         "--depth-sample-policy",
-        choices=["median", "nearest", "p05"],
+        choices=["median", "nearest", "p05", "p95", "max"],
         default="median",
         help=(
             "Depth sampling policy around VLM pixels. Use nearest for topdown "
             "RGB-D when a target point can lie on an object edge and the median "
-            "window would snap to the tabletop."
+            "window would snap to the tabletop. Entry/interior endpoints use "
+            "the local deepest raw depth under entry_contact_plane_end_raw_depth."
         ),
     )
     args = parser.parse_args()
@@ -784,7 +825,17 @@ def main() -> int:
         )
     lifted_end = None
     if end_point is not None:
-        end_depth = _sample_depth(depth, u=end_point["u"], v=end_point["v"], policy=args.depth_sample_policy)
+        end_depth_policy = (
+            "max"
+            if args.end_surface_policy == "entry_contact_plane_end_raw_depth"
+            else args.depth_sample_policy
+        )
+        end_depth = _sample_depth(
+            depth,
+            u=end_point["u"],
+            v=end_point["v"],
+            policy=end_depth_policy,
+        )
         lifted_end = lift_keypoint(
             ImageKeypoint(
                 "end_point",
@@ -850,6 +901,31 @@ def main() -> int:
         contact_json["role"] = "start_point_fused_xy_z"
         contact_json["topdown_object_position_world"] = object_position
         contact_json["front_contact_height_position_world"] = height_position
+    if args.end_surface_policy == "entry_contact_plane_end_raw_depth":
+        if support_surface_normal_world is None:
+            raise ValueError(
+                "--end-surface-policy entry_contact_plane_end_raw_depth requires "
+                "a public support surface normal"
+            )
+        entry_anchor = _task_metadata_vec3(task_data, "public_target_entry_point_world")
+        if entry_anchor is None:
+            raise ValueError(
+                "--end-surface-policy entry_contact_plane_end_raw_depth requires "
+                "task.metadata.public_target_entry_point_world"
+            )
+        contact_json = _project_keypoint_to_contact_plane(
+            contact_json,
+            anchor={
+                "position_world": entry_anchor,
+                "keypoint_id": "public_target_entry_point_world",
+            },
+            normal_world=support_surface_normal_world,
+            policy="entry_contact_plane_start_projection",
+        )
+        contact_json["role"] = "start_point_entry_contact_plane"
+        contact_json["source"] = (
+            "vlm_start_xy_plus_public_entry_plane_z_endpoint_raw_depth_preserved"
+        )
 
     if lifted_action_start is not None and lifted_action_end is not None:
         if args.action_direction_z_policy == "anchor_height":
@@ -961,6 +1037,16 @@ def main() -> int:
             )
             for path_point in motion_path_point_jsons
         ]
+    elif (
+        end_surface_policy == "entry_contact_plane_end_raw_depth"
+        and selected_default_axis is not None
+    ):
+        end_json = _project_keypoint_to_axis_line(
+            end_json,
+            anchor=contact_json,
+            axis_world=selected_default_axis,
+            policy="entry_endpoint_raw_depth_along_selected_default_axis",
+        )
     if selected_default_axis is not None:
         direction_axis = selected_default_axis
         direction_source_label = str(selected_default_axis_source)

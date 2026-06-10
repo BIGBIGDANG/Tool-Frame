@@ -44,18 +44,30 @@ def test_tool_selection_evidence_copies_contact_and_axis_images(tmp_path: Path) 
     )
     _write_json(
         tool_refs / "contact_point_selection.json",
-        {
-            "tool_id": "hammer",
-            "selected_part": {"marker": "2", "part_ref": "tool.parts.head"},
-            "contact_point": {"marker": "F3", "surface_ref": "candidate.surfaces.head_bottom"},
-            "motion_axis": {"marker": "F1", "surface_ref": "candidate.surfaces.head_side"},
-            "confidence": 0.8,
+            {
+                "tool_id": "hammer",
+                "selected_part": {"marker": "2", "part_ref": "tool.parts.head"},
+                "contact_point": {"marker": "F3", "surface_ref": "candidate.surfaces.head_bottom"},
+                "contact_point_candidates": [
+                    {"marker": "F3", "surface_ref": "candidate.surfaces.head_bottom"}
+                ],
+                "motion_axis": {"marker": "F1", "surface_ref": "candidate.surfaces.head_side"},
+                "motion_axis_candidates": [
+                    {"marker": "F1", "surface_ref": "candidate.surfaces.head_side"}
+                ],
+                "confidence": 0.8,
             "reason": "strike with the bottom face and align by the side axis",
-            "visual_evidence": {
-                "visual_evidence": "tool_refs/hammer/evidence/02_contact_marker_selection/visual_evidence.json"
+                "visual_evidence": {
+                    "visual_evidence": "tool_refs/hammer/evidence/02_contact_marker_selection/visual_evidence.json"
+                },
+                "raw_response": {
+                    "contact_point_motion_axis": {
+                        "candidate_contact_point_markers": ["F3"],
+                        "candidate_motion_axis_markers": ["F1"],
+                    }
+                },
             },
-        },
-    )
+        )
     _write_json(
         tool_refs / "axis_binding.json",
         {
@@ -138,8 +150,14 @@ def test_tool_selection_evidence_copies_contact_and_axis_images(tmp_path: Path) 
     assert (evidence_dir / "part_selection/hammer/part_cards/candidate_001_card.png").exists()
     assert (evidence_dir / "part_selection/hammer/part_cards/candidate_002_card.png").exists()
     assert (evidence_dir / "contact_motion_selection/hammer/selected_part_bbox_overview/bbox.png").exists()
-    assert (evidence_dir / "contact_motion_selection/hammer/selected_part_face_highlights/contact_f3.png").exists()
-    assert (evidence_dir / "contact_motion_selection/hammer/selected_part_face_highlights/axis_f1.png").exists()
+    assert (
+        evidence_dir
+        / "contact_motion_selection/hammer/vlm_contact_candidate_face_highlights/structured_vlm_contact_candidate_face_highlight_F3.png"
+    ).exists()
+    assert (
+        evidence_dir
+        / "contact_motion_selection/hammer/vlm_motion_axis_candidate_face_highlights/structured_vlm_motion_axis_candidate_face_highlight_F1.png"
+    ).exists()
     summary = json.loads((evidence_dir / "decision_summary.json").read_text(encoding="utf-8"))
     assert summary["selected_markers"] == {
         "part": "2",

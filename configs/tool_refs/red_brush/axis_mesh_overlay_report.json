@@ -1,7 +1,7 @@
 {
   "schema_version": "parttoolgen_contact_point_motion_axis_mesh_evidence_v1",
   "tool_id": "red_brush",
-  "task_id": "brush_sweep_forward",
+  "task_id": "brush_sweep/off_table_red",
   "selected_part": {
     "marker": "3",
     "part_ref": "tool.parts.part_002"
@@ -46,41 +46,41 @@
   },
   "motion_axis_surface": {
     "frame_source": "contact_point_bbox_face",
-    "patch_id": "y_positive_contact",
-    "surface_ref": "candidate.surfaces.part_002_y_positive_contact",
+    "patch_id": "y_negative_contact",
+    "surface_ref": "candidate.surfaces.part_002_y_negative_contact",
     "surface_center_xyz_tool": [
-      0.16621045182151986,
-      0.03317043655672021,
-      0.05116884335349644
+      0.18396509852230847,
+      -0.03683701301047563,
+      0.056813286543359966
     ],
-    "normal_role": "mesh_patch_normal",
+    "normal_role": "bbox_axis_tool",
     "motion_axis_ref": "tool.motion_axis",
     "motion_axis_tool": [
-      0.11062908535097059,
-      0.9704888965341569,
-      -0.21427204012264855
+      0.0,
+      -1.0,
+      0.0
     ],
     "mesh_normal_tool": [
-      0.11062908535097059,
-      0.9704888965341569,
-      -0.21427204012264855
+      -0.0611034292580865,
+      -0.9430036352991981,
+      -0.32712461653840624
     ]
   },
   "motion_axis": {
     "source": "selected_motion_axis_surface",
-    "marker": "F4",
-    "role": "mesh_patch_normal",
+    "marker": "F3",
+    "role": "bbox_axis_tool",
     "ref": "tool.motion_axis",
     "vector_tool": [
-      0.11062908535097059,
-      0.9704888965341569,
-      -0.21427204012264855
+      0.0,
+      -1.0,
+      0.0
     ],
-    "surface_ref": "candidate.surfaces.part_002_y_positive_contact",
+    "surface_ref": "candidate.surfaces.part_002_y_negative_contact",
     "mesh_normal_tool": [
-      0.11062908535097059,
-      0.9704888965341569,
-      -0.21427204012264855
+      -0.0611034292580865,
+      -0.9430036352991981,
+      -0.32712461653840624
     ]
   },
   "axis_candidates": [
@@ -88,17 +88,17 @@
       "candidate_id": "candidate.surfaces.part_002_y_negative_contact",
       "axis_marker": "F3",
       "marker": "F3",
-      "axis_role": "mesh_patch_normal",
-      "role": "mesh_patch_normal",
+      "axis_role": "bbox_axis_tool",
+      "role": "bbox_axis_tool",
       "axis_ref": "candidate.surfaces.part_002_y_negative_contact",
       "ref": "candidate.surfaces.part_002_y_negative_contact",
       "surface_ref": "candidate.surfaces.part_002_y_negative_contact",
       "patch_id": "y_negative_contact",
       "polarity": "negative",
       "vector_tool": [
-        -0.0611034292580865,
-        -0.9430036352991981,
-        -0.32712461653840624
+        0.0,
+        -1.0,
+        0.0
       ],
       "mesh_normal_tool": [
         -0.0611034292580865,
@@ -110,17 +110,17 @@
       "candidate_id": "candidate.surfaces.part_002_y_positive_contact",
       "axis_marker": "F4",
       "marker": "F4",
-      "axis_role": "mesh_patch_normal",
-      "role": "mesh_patch_normal",
+      "axis_role": "bbox_axis_tool",
+      "role": "bbox_axis_tool",
       "axis_ref": "candidate.surfaces.part_002_y_positive_contact",
       "ref": "candidate.surfaces.part_002_y_positive_contact",
       "surface_ref": "candidate.surfaces.part_002_y_positive_contact",
       "patch_id": "y_positive_contact",
       "polarity": "positive",
       "vector_tool": [
-        0.11062908535097059,
-        0.9704888965341569,
-        -0.21427204012264855
+        0.0,
+        1.0,
+        0.0
       ],
       "mesh_normal_tool": [
         0.11062908535097059,
@@ -131,7 +131,7 @@
   ],
   "metadata": {
     "source_prior": "artifacts/tool_prior/p3sam/red_brush/tool_prior",
-    "visual_evidence": "configs/tool_refs/red_brush/evidence/02_contact_marker_selection/visual_evidence.json",
+    "visual_evidence": "artifacts/test006/tool_refs_gpt55_thinking_redbrush_bristle_side_prompt_20260607/brush_sweep/off_table_red/red_brush/evidence/02_contact_marker_selection/visual_evidence.json",
     "created_by": "parttoolgen.cli.tool_prior.select_p3sam_tool_refs"
   }
 }

@@ -13,7 +13,7 @@
     "rollout_max_steps": 1200,
     "rollout_max_tracking_error_m": 0.012,
     "capture_video_every": 1,
-    "initial_grasp_lift_m": 0.08,
+    "initial_grasp_lift_m": 0.12,
     "initial_grasp_lift_steps": 3,
     "initial_grasp_hold_steps": 0,
     "grasp_observation_offset_m": 0.0,
@@ -63,7 +63,7 @@
     "tool_motion_axis_relation": "parallel",
     "max_translation_step_m": 0.035,
     "max_rotation_step_rad": 0.3,
-    "initial_grasp_lift_m": 0.08,
+    "initial_grasp_lift_m": 0.12,
     "initial_grasp_lift_steps": 3,
     "initial_grasp_hold_steps": 0,
     "approach_offset_m": 0.12,
@@ -93,6 +93,6 @@
     "benchmark_status": "diagnostic/legacy_directional_displacement",
     "success_check_status": "diagnostic_only",
     "large_statistics_status": "not_headline_statistics",
-    "notes": "Leftward directional displacement is retained for regression and attribution; red_zone is the headline brush-sweep predicate."
+    "notes": "Leftward directional displacement is retained only for regression and attribution; off_table_red/off_table_blue are the current brush-sweep benchmark predicates."
   }
 }

@@ -191,6 +191,9 @@ def apply_runner_overrides(
     seed_start: int | None = None,
     device: str | None = None,
     capture_video_every: int | None = None,
+    tool_refs_mode: str | None = None,
+    tool_ref_model: str | None = None,
+    tool_ref_base_url: str | None = None,
     resume: bool = False,
     skip_rollout: bool = False,
 ) -> dict[str, Any]:
@@ -203,6 +206,12 @@ def apply_runner_overrides(
         args["device"] = device
     if capture_video_every is not None:
         args["capture_video_every"] = capture_video_every
+    if tool_refs_mode:
+        args["tool_refs_mode"] = tool_refs_mode
+    if tool_ref_model:
+        args["tool_ref_model"] = tool_ref_model
+    if tool_ref_base_url:
+        args["tool_ref_base_url"] = tool_ref_base_url
     if resume:
         args["resume"] = True
     if skip_rollout:
@@ -327,6 +336,9 @@ def registry_launcher_command(
         "seed_start",
         "device",
         "capture_video_every",
+        "tool_refs_mode",
+        "tool_ref_model",
+        "tool_ref_base_url",
         "aggregate",
         "aggregate_output_root",
     ):
@@ -447,6 +459,9 @@ def build_plan(
                 seed_start=getattr(overrides, "seed_start", None),
                 device=getattr(overrides, "device", None),
                 capture_video_every=getattr(overrides, "capture_video_every", None),
+                tool_refs_mode=getattr(overrides, "tool_refs_mode", None),
+                tool_ref_model=getattr(overrides, "tool_ref_model", None),
+                tool_ref_base_url=getattr(overrides, "tool_ref_base_url", None),
                 resume=bool(getattr(overrides, "resume", False)),
                 skip_rollout=bool(getattr(overrides, "skip_rollout", False)),
             )

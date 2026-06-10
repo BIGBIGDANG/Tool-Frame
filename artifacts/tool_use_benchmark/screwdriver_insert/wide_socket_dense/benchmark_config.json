@@ -15,7 +15,6 @@
     "capture_video_every": 1,
     "approach_offset_m": 0.045,
     "target_approach_axis_source": "opposite_scene_direction",
-    "terminal_inside_depth_m": 0.035,
     "success_min_inside_depth_m": 0.005,
     "socket_asset": "urdf/parttoolgen_benchmark/screwdriver_insert_socket/deep_socket_wide_048x055.urdf",
     "socket_size_xyz": [
@@ -27,7 +26,7 @@
     "socket_inner_diameter_m": 0.024,
     "socket_tip_radial_tolerance_m": 0.012,
     "max_translation_step_m": 0.012,
-    "initial_grasp_lift_m": 0.08,
+    "initial_grasp_lift_m": 0.12,
     "initial_grasp_lift_steps": 3,
     "initial_grasp_hold_steps": 0
   },
@@ -37,7 +36,6 @@
       "asset": "urdf/parttoolgen_benchmark/screwdriver_insert_socket/deep_socket_wide_048x055.urdf",
       "inner_diameter_m": 0.024,
       "tip_radial_tolerance_m": 0.012,
-      "terminal_inside_depth_m": 0.035,
       "success_min_inside_depth_m": 0.005,
       "socket_axis_world": [
         0.0,

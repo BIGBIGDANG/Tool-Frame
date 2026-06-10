@@ -25,6 +25,19 @@ class VLMClientError(RuntimeError):
     """Raised when a VLM client cannot produce raw response text."""
 
 
+def _optional_bool(value: bool | None, env_value: str | None) -> bool | None:
+    if value is not None:
+        return bool(value)
+    if env_value is None:
+        return None
+    text = str(env_value).strip().lower()
+    if text in {"1", "true", "yes", "on", "enable", "enabled"}:
+        return True
+    if text in {"0", "false", "no", "off", "disable", "disabled"}:
+        return False
+    return None
+
+
 @dataclass(frozen=True)
 class VLMRawResponse:
     """Raw model response and metadata captured before parser validation."""
@@ -60,6 +73,7 @@ class OpenAICompatibleVLMClient:
         timeout_s: float = 180.0,
         temperature: float = 0.0,
         max_retries: int = 2,
+        enable_thinking: bool | None = None,
     ) -> None:
         self.api_key = api_key or os.environ.get("OPENAI_API_KEY") or os.environ.get("VLM_API_KEY")
         self.model = model or os.environ.get("VLM_MODEL") or "gpt-5.4"
@@ -74,6 +88,10 @@ class OpenAICompatibleVLMClient:
         self.timeout_s = timeout_s
         self.temperature = temperature
         self.max_retries = max(0, int(max_retries))
+        self.enable_thinking = _optional_bool(
+            enable_thinking,
+            os.environ.get("VLM_ENABLE_THINKING") or os.environ.get("DASHSCOPE_ENABLE_THINKING"),
+        )
         if not self.api_key:
             raise VLMClientError("OpenAI-compatible VLM mode requires OPENAI_API_KEY or VLM_API_KEY")
         for path in self.image_paths:
@@ -213,6 +231,8 @@ class OpenAICompatibleVLMClient:
                 {"role": "user", "content": self._user_content(prompt)},
             ],
         }
+        if self.enable_thinking is not None:
+            chat_payload["enable_thinking"] = self.enable_thinking
         endpoint = "chat/completions"
         try:
             response_body, latency_s = self._post_json(endpoint, chat_payload)
@@ -242,6 +262,7 @@ class OpenAICompatibleVLMClient:
                 "image_paths": [str(path) for path in self.image_paths],
                 "latency_s": latency_s,
                 "max_new_tokens": self.max_new_tokens,
+                "enable_thinking": self.enable_thinking,
                 "context_id": context_id,
             },
         )
@@ -255,6 +276,7 @@ def build_vlm_client(
     image_path: str | Path | None = None,
     image_paths: list[str | Path] | tuple[str | Path, ...] | None = None,
     max_new_tokens: int = 768,
+    enable_thinking: bool | None = None,
 ) -> VLMClient:
     """Construct the only 5.15 VLM backend: OpenAI-compatible chat completions."""
 
@@ -266,4 +288,5 @@ def build_vlm_client(
         image_path=image_path,
         image_paths=image_paths,
         max_new_tokens=max_new_tokens,
+        enable_thinking=enable_thinking,
     )

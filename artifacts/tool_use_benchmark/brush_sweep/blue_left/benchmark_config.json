@@ -12,7 +12,7 @@
     "rollout_max_steps": 1500,
     "rollout_max_tracking_error_m": 0.012,
     "capture_video_every": 1,
-    "initial_grasp_lift_m": 0.08,
+    "initial_grasp_lift_m": 0.12,
     "initial_grasp_lift_steps": 3,
     "initial_grasp_hold_steps": 0,
     "grasp_observation_offset_m": 0.0,
@@ -38,7 +38,7 @@
       "task_type": "brush_sweep",
       "tool_id": "blue_brush",
       "label_source": "manual_review_required",
-      "manual_review_status": "pending_tool_refs",
+      "manual_review_status": "retired_use_brush_sweep_off_table_blue",
       "notes": "Same left-sweep contract as red_brush/left; not ready for statistics until blue_brush refs and smoke pass."
     },
     "min_xy_displacement_m": 0.06,
@@ -46,8 +46,9 @@
   },
   "contract_status": {
     "environment_id": "tabletop_wood_table",
-    "benchmark_status": "same_difficulty_variant/pending_tool_refs",
+    "benchmark_status": "legacy/retired_directional_tool_variant",
     "success_check_status": "inherits_brush_sweep_directional_displacement",
-    "large_statistics_status": "blocked_until_blue_brush_tool_refs_and_smoke"
+    "large_statistics_status": "retired_use_brush_sweep_off_table_blue",
+    "notes": "Retired directional split. Use brush_sweep/off_table_blue for the current blue_brush tool-shape variant."
   }
 }

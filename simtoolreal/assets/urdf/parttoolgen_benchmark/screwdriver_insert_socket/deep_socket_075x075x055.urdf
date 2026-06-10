@@ -13,6 +13,15 @@
         <mesh filename="thin_guide_socket_036x055.obj" scale="1 1 1"/>
       </geometry>
     </visual>
+    <visual>
+      <material name="guide_socket_dark_visible_bottom">
+        <color rgba="0.015 0.015 0.015 1.0"/>
+      </material>
+      <origin xyz="0 0 0.001" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.0035" length="0.001"/>
+      </geometry>
+    </visual>
 
     <collision>
       <origin xyz="0.005 0 0.0275"/>

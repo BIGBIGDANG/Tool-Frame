@@ -89,12 +89,16 @@ def _prompt(
         default_axis_note = (
             "\nPublic default direction-axis candidates are available for cases "
             "where the task acts along a support-surface normal and no reliable "
-            "visible 2D endpoint exists. These candidates are task/world priors, "
+            "visible 2D direction exists. These candidates are task/world priors, "
             "not hidden robot motion plans:\n"
             f"{json.dumps(public_scene_context.get('default_axis_candidates'), indent=2)}\n"
             "Use a default-axis candidate only when the task semantics require "
             "motion into/away from the support surface and a visible action "
-            "direction would be misleading. Otherwise choose visible_action_direction."
+            "direction would be misleading. This can be true even when both "
+            "start_point and end_point are visible, such as entering a visible "
+            "opening where the 2D points mark the mouth and interior but the "
+            "physical use axis is depth/normal. Otherwise choose "
+            "visible_action_direction."
         )
         default_axis_schema = (
             '\n  "direction_decision": {\n'
@@ -123,12 +127,20 @@ visible scene references that are justified by the pixels and task language.
 Do not invent intermediate robot waypoints, smooth trajectories, approach
 poses, controller hints, or hidden 3D motion. RGB-D lifting and the compiler
 derive metric axes, depths, subgoals, and executable trajectories downstream.
-All returned points must lie on the selected target object or target support
-surface itself. Do not place start_point, end_point, or path_points on a table,
-floor, boundary seam, occluding tool, gripper, shadow, or nearby background just
-because it is adjacent to the target. For tasks on a writable, wipeable, or
-otherwise usable surface, choose points inside the usable visible surface, not
-on its lower/upper edge unless the task explicitly targets that edge.
+Returned points are task-level scene references. The start_point is where the
+tool first functionally acts on the selected target. For tasks that use a
+surface in place, such as wiping, writing, pressing, inserting, or striking a
+visible target point, end_point and path_points should lie on the selected
+target object or its usable target support surface. For tasks that move a
+target object to a different visible state or location, such as pushing,
+sweeping, sliding, or moving an object out of an area, end_point should mark the
+target object's intended final scene reference or the visible direction it must
+cross; it may lie on the visible support surface beyond the target object when
+that is what the task asks for. Do not place points on an occluding tool,
+gripper, shadow, or arbitrary nearby background just because it is adjacent to
+the target. For tasks on a writable, wipeable, or otherwise usable surface,
+choose points inside the usable visible surface, not on its lower/upper edge
+unless the task explicitly targets that edge.
 
 Then ground two task-level point-reference sets, while returning the compact
 fields below for the compiler. The VLM interface is point-only: return one
@@ -137,14 +149,21 @@ task target itself cannot be represented by a single start/end pair. The
 compiler interprets these point refs and turns them into tool motion.
 1. start refs: the visible place where the tool first functionally acts on the
    selected target.
-2. use-stage refs: point refs on the selected target. If the task needs only a
-   single target point, return start_point=end_point. If the task concerns a
-   region, return only start/end points that span the region. If the task
-   concerns a non-straight 2D locus on the visible surface, return a short
+2. use-stage refs: point refs for the selected target's intended use outcome.
+   If the task needs only a single target point, return start_point=end_point.
+   If the task concerns a region, return only start/end points that span the
+   region. If the task moves an object to another location or out of an area,
+   return an end_point that represents the intended final scene reference or
+   crossed boundary direction, not merely the far edge of the object. If the
+   task concerns a non-straight 2D locus on the visible surface, return a short
    ordered point list on that locus, whether it is already visible or specified
-   by the task language. If the use-stage motion is into/through the target,
-   along an unseen depth axis, or otherwise has no separate 2D point endpoint,
-   do not draw a 2D motion endpoint; return end_point equal to start_point.
+   by the task language. If the task enters a visible opening, slot, recess, or
+   interior target, make start_point the visible entry/mouth point where the
+   tool first enters the target, and place end_point on the deepest visible
+   interior point that best represents where the tool contact point should
+   finish, not on the rim or entrance. If the final contact point is truly not
+   visible, return the best visible target point and use a default axis
+   decision to describe the hidden direction.
 
 For the current point/direction scaffold, mark 2D scene references:
 1. target_object: a short natural-language identifier for the selected target
@@ -153,13 +172,16 @@ For the current point/direction scaffold, mark 2D scene references:
    task language and current image evidence. Choose the visible scene point
    where the tool first functionally
    acts on the target. This point is the tool contact path start. Contact height
-   may be grounded from another view.
+   may be grounded from another view. For entry/interior tasks, this is the
+   visible entry point at the target mouth, not the deepest interior endpoint.
 3. action_direction: a compact visible use-stage cue. Put the start at
    start_point. If there is a visible endpoint or visible extent, put the end
-   on that visible scene reference. If there is no separate visible endpoint
-   because the task acts at a point or moves along a hidden/depth direction,
-   put the end equal to start_point. The arrow is a scene-reference cue, not a
-   robot trajectory.
+   on that visible scene reference. If the final contact point lies at the same
+   visible xy but a different visible depth, put the end on the visible pixel
+   whose RGB-D depth best represents that final target. If there is no separate
+   visible endpoint, put the end equal to start_point and use direction_decision
+   for the task axis. The arrow is a scene-reference cue, not a robot
+   trajectory.
 4. path_points: optional ordered scene point refs on the selected target. Use
    multiple path_points only when the task target itself needs more than a
    start/end pair, such as a non-straight 2D locus on the visible surface. The
@@ -185,9 +207,12 @@ For the current point/direction scaffold, mark 2D scene references:
 
 Before returning, perform this consistency check:
 - If end_point_decision.applicability is "not_applicable", then the task must
-  be contact-only or depth-axis-only with no separate 2D point endpoint. In
+  be contact-only or have no visible final contact point. In
   that case end_point, action_direction.end, and start_point must be the same
   visible point, and path_points must be empty or contain only that same point.
+  If the selected target has a visible opening, slot, recess, interior bottom,
+  or other visible inside point where the tool contact point should finish,
+  do not use "not_applicable"; mark that visible inside point as end_point.
   Do not mark an ordered 2D point target as "not_applicable" merely because it
   is specified by task language rather than already visible pixels.
 - If path_points has more than two points, each intermediate point must be a

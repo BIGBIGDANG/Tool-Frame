@@ -1,10 +1,10 @@
 {
   "schema_version": "parttoolgen_contact_point_motion_axis_selection_v1",
   "selection_semantics": "p3sam_vlm_contact_point_motion_axis",
-  "artifact_id": "red_brush_brush_sweep_forward_p3sam_contact_point_selection",
+  "artifact_id": "red_brush_brush_sweep/off_table_red_p3sam_contact_point_selection",
   "tool_id": "red_brush",
-  "task_id": "brush_sweep_forward",
-  "task_instruction": "Use this brush to sweep the block forward.",
+  "task_id": "brush_sweep/off_table_red",
+  "task_instruction": "Use the side of the brush bristles to sweep the object off the table.",
   "selected_part": {
     "marker": "3",
     "part_ref": "tool.parts.part_002"
@@ -34,6 +34,16 @@
         -0.9430036352991981,
         -0.32712461653840624
       ],
+      "bbox_axis_tool": [
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "axis_role": "bbox_face_axis",
+      "bbox_face_area_m2": 0.014452762093063202,
+      "overlapped_part_ids": [],
+      "is_internal_tool_surface": false,
+      "tool_surface_visibility": "exposed_or_unblocked",
       "face_marker": "F3",
       "contact_marker": "F3",
       "selection_semantics": "contact_point_bbox_face",
@@ -67,6 +77,16 @@
           -0.9430036352991981,
           -0.32712461653840624
         ],
+        "bbox_axis_tool": [
+          0.0,
+          -1.0,
+          0.0
+        ],
+        "axis_role": "bbox_face_axis",
+        "bbox_face_area_m2": 0.014452762093063202,
+        "overlapped_part_ids": [],
+        "is_internal_tool_surface": false,
+        "tool_surface_visibility": "exposed_or_unblocked",
         "face_marker": "F3",
         "contact_marker": "F3",
         "selection_semantics": "contact_point_bbox_face",
@@ -99,6 +119,16 @@
           0.9704888965341569,
           -0.21427204012264855
         ],
+        "bbox_axis_tool": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "axis_role": "bbox_face_axis",
+        "bbox_face_area_m2": 0.014452762093063202,
+        "overlapped_part_ids": [],
+        "is_internal_tool_surface": false,
+        "tool_surface_visibility": "exposed_or_unblocked",
         "face_marker": "F4",
         "contact_marker": "F4",
         "selection_semantics": "contact_point_bbox_face",
@@ -108,34 +138,44 @@
     }
   ],
   "motion_axis": {
-    "marker": "F4",
-    "surface_ref": "candidate.surfaces.part_002_y_positive_contact",
-    "patch_id": "y_positive_contact",
+    "marker": "F3",
+    "surface_ref": "candidate.surfaces.part_002_y_negative_contact",
+    "patch_id": "y_negative_contact",
     "row": {
       "tool_id": "red_brush",
       "part_marker": "3",
       "part_id": "part_002",
       "part_ref": "tool.parts.part_002",
-      "point_ref": "candidate.points.part_002_y_positive_contact",
-      "surface_ref": "candidate.surfaces.part_002_y_positive_contact",
-      "polarity": "positive",
-      "patch_id": "y_positive_contact",
+      "point_ref": "candidate.points.part_002_y_negative_contact",
+      "surface_ref": "candidate.surfaces.part_002_y_negative_contact",
+      "polarity": "negative",
+      "patch_id": "y_negative_contact",
       "role": null,
       "xyz_tool": [
-        0.16621045182151986,
-        0.03317043655672021,
-        0.05116884335349644
+        0.18396509852230847,
+        -0.03683701301047563,
+        0.056813286543359966
       ],
       "normal_tool": [
-        0.11062908535097059,
-        0.9704888965341569,
-        -0.21427204012264855
+        -0.0611034292580865,
+        -0.9430036352991981,
+        -0.32712461653840624
       ],
-      "face_marker": "F4",
-      "contact_marker": "F4",
+      "bbox_axis_tool": [
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "axis_role": "bbox_face_axis",
+      "bbox_face_area_m2": 0.014452762093063202,
+      "overlapped_part_ids": [],
+      "is_internal_tool_surface": false,
+      "tool_surface_visibility": "exposed_or_unblocked",
+      "face_marker": "F3",
+      "contact_marker": "F3",
       "selection_semantics": "contact_point_bbox_face",
-      "derived_point_ref": "candidate.points.part_002_y_positive_contact",
-      "source_surface_ref": "candidate.surfaces.part_002_y_positive_contact"
+      "derived_point_ref": "candidate.points.part_002_y_negative_contact",
+      "source_surface_ref": "candidate.surfaces.part_002_y_negative_contact"
     }
   },
   "motion_axis_candidates": [
@@ -163,6 +203,16 @@
           -0.9430036352991981,
           -0.32712461653840624
         ],
+        "bbox_axis_tool": [
+          0.0,
+          -1.0,
+          0.0
+        ],
+        "axis_role": "bbox_face_axis",
+        "bbox_face_area_m2": 0.014452762093063202,
+        "overlapped_part_ids": [],
+        "is_internal_tool_surface": false,
+        "tool_surface_visibility": "exposed_or_unblocked",
         "face_marker": "F3",
         "contact_marker": "F3",
         "selection_semantics": "contact_point_bbox_face",
@@ -194,6 +244,16 @@
           0.9704888965341569,
           -0.21427204012264855
         ],
+        "bbox_axis_tool": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "axis_role": "bbox_face_axis",
+        "bbox_face_area_m2": 0.014452762093063202,
+        "overlapped_part_ids": [],
+        "is_internal_tool_surface": false,
+        "tool_surface_visibility": "exposed_or_unblocked",
         "face_marker": "F4",
         "contact_marker": "F4",
         "selection_semantics": "contact_point_bbox_face",
@@ -202,9 +262,9 @@
       }
     }
   ],
-  "contact_point_selection_policy": "compiler_min_rotation_from_vlm_contact_point_candidate_set",
-  "confidence": 1.0,
-  "reason": "reference P3SAM contact-point and motion-axis selection",
+  "contact_point_selection_policy": "compiler_optimizes_over_public_vlm_contact_candidates",
+  "confidence": 0.77,
+  "reason": "For sweeping an object off a table with the selected bristle part, a person would normally use one of the broad side faces of the bristle bundle and push along that side-facing direction. The endpoint faces F1/F2 and upper face F6 are less natural for side sweeping.",
   "contact_point_marker_table": [
     {
       "tool_id": "red_brush",
@@ -226,6 +286,16 @@
         -0.03144979641129438,
         0.0062193059591467165
       ],
+      "bbox_axis_tool": [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "axis_role": "bbox_face_axis",
+      "bbox_face_area_m2": 0.007858437244515001,
+      "overlapped_part_ids": [],
+      "is_internal_tool_surface": false,
+      "tool_surface_visibility": "exposed_or_unblocked",
       "face_marker": "F1",
       "contact_marker": "F1",
       "selection_semantics": "contact_point_bbox_face",
@@ -252,6 +322,16 @@
         0.0037821463626831007,
         -0.2958387529291667
       ],
+      "bbox_axis_tool": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "axis_role": "bbox_face_axis",
+      "bbox_face_area_m2": 0.007858437244515001,
+      "overlapped_part_ids": [],
+      "is_internal_tool_surface": false,
+      "tool_surface_visibility": "exposed_or_unblocked",
       "face_marker": "F2",
       "contact_marker": "F2",
       "selection_semantics": "contact_point_bbox_face",
@@ -278,6 +358,16 @@
         -0.9430036352991981,
         -0.32712461653840624
       ],
+      "bbox_axis_tool": [
+        0.0,
+        -1.0,
+        0.0
+      ],
+      "axis_role": "bbox_face_axis",
+      "bbox_face_area_m2": 0.014452762093063202,
+      "overlapped_part_ids": [],
+      "is_internal_tool_surface": false,
+      "tool_surface_visibility": "exposed_or_unblocked",
       "face_marker": "F3",
       "contact_marker": "F3",
       "selection_semantics": "contact_point_bbox_face",
@@ -304,37 +394,21 @@
         0.9704888965341569,
         -0.21427204012264855
       ],
+      "bbox_axis_tool": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "axis_role": "bbox_face_axis",
+      "bbox_face_area_m2": 0.014452762093063202,
+      "overlapped_part_ids": [],
+      "is_internal_tool_surface": false,
+      "tool_surface_visibility": "exposed_or_unblocked",
       "face_marker": "F4",
       "contact_marker": "F4",
       "selection_semantics": "contact_point_bbox_face",
       "derived_point_ref": "candidate.points.part_002_y_positive_contact",
       "source_surface_ref": "candidate.surfaces.part_002_y_positive_contact"
-    },
-    {
-      "tool_id": "red_brush",
-      "part_marker": "3",
-      "part_id": "part_002",
-      "part_ref": "tool.parts.part_002",
-      "point_ref": "candidate.points.part_002_z_negative_contact",
-      "surface_ref": "candidate.surfaces.part_002_z_negative_contact",
-      "polarity": "negative",
-      "patch_id": "z_negative_contact",
-      "role": null,
-      "xyz_tool": [
-        0.17681989147358415,
-        0.0004928822050259705,
-        0.0086199545535174
-      ],
-      "normal_tool": [
-        0.31686870004791184,
-        -0.0037874483124207,
-        -0.9484618506641302
-      ],
-      "face_marker": "F5",
-      "contact_marker": "F5",
-      "selection_semantics": "contact_point_bbox_face",
-      "derived_point_ref": "candidate.points.part_002_z_negative_contact",
-      "source_surface_ref": "candidate.surfaces.part_002_z_negative_contact"
     },
     {
       "tool_id": "red_brush",
@@ -356,6 +430,16 @@
         0.249500373527809,
         0.9664636775943527
       ],
+      "bbox_axis_tool": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "axis_role": "bbox_face_axis",
+      "bbox_face_area_m2": 0.016593953377430002,
+      "overlapped_part_ids": [],
+      "is_internal_tool_surface": false,
+      "tool_surface_visibility": "exposed_or_unblocked",
       "face_marker": "F6",
       "contact_marker": "F6",
       "selection_semantics": "contact_point_bbox_face",
@@ -370,22 +454,76 @@
   "raw_response": {
     "part": {
       "selected_marker": "3",
-      "confidence": 1.0,
-      "reason": "reference P3SAM part selection"
+      "confidence": 0.94,
+      "reason": "Bristles are the broad sweeping surface that should face and contact the block.",
+      "_raw_response": {
+        "raw_text": "{\"selected_marker\":\"3\",\"confidence\":0.94,\"reason\":\"Bristles are the broad sweeping surface that should face and contact the block.\"}",
+        "metadata": {
+          "client": "openai_compatible",
+          "endpoint": "chat/completions",
+          "model": "gpt-5.5",
+          "base_url": "https://xcode.best/v1",
+          "image_paths": [
+            "artifacts/test006/tool_refs_gpt55_thinking_partfocus_brush_smoke_20260607/brush_sweep/off_table_red/red_brush/evidence/01_part_selection/red_brush/overview/red_brush_whole_mesh_part_choice_overview.png",
+            "artifacts/test006/tool_refs_gpt55_thinking_partfocus_brush_smoke_20260607/brush_sweep/off_table_red/red_brush/evidence/01_part_selection/red_brush/overview/red_brush_isolated_part_choice_overview.png"
+          ],
+          "latency_s": 14.415,
+          "max_new_tokens": 768,
+          "enable_thinking": true,
+          "context_id": "red_brush:p3sam_part_selection"
+        }
+      }
     },
     "contact_point_motion_axis": {
+      "ordinary_use_modes": [
+        {
+          "description": "Press a broad side of the bristle bundle against the object and sweep sideways across the table.",
+          "contact_markers": [
+            "F3",
+            "F4"
+          ],
+          "motion_axis_markers": [
+            "F3",
+            "F4"
+          ]
+        }
+      ],
       "selected_contact_point_marker": "F3",
       "candidate_contact_point_markers": [
         "F3",
         "F4"
       ],
-      "selected_motion_axis_marker": "F4",
+      "selected_motion_axis_marker": "F3",
       "candidate_motion_axis_markers": [
         "F3",
         "F4"
       ],
-      "confidence": 1.0,
-      "reason": "reference P3SAM contact-point and motion-axis selection"
+      "confidence": 0.77,
+      "reason": "For sweeping an object off a table with the selected bristle part, a person would normally use one of the broad side faces of the bristle bundle and push along that side-facing direction. The endpoint faces F1/F2 and upper face F6 are less natural for side sweeping.",
+      "_raw_response": {
+        "raw_text": "{\n  \"ordinary_use_modes\": [\n    {\n      \"description\": \"Press a broad side of the bristle bundle against the object and sweep sideways across the table.\",\n      \"contact_markers\": [\n        \"F3\",\n        \"F4\"\n      ],\n      \"motion_axis_markers\": [\n        \"F3\",\n        \"F4\"\n      ]\n    }\n  ],\n  \"selected_contact_point_marker\": \"F3\",\n  \"candidate_contact_point_markers\": [\n    \"F3\",\n    \"F4\"\n  ],\n  \"selected_motion_axis_marker\": \"F3\",\n  \"candidate_motion_axis_markers\": [\n    \"F3\",\n    \"F4\"\n  ],\n  \"confidence\": 0.77,\n  \"reason\": \"For sweeping an object off a table with the selected bristle part, a person would normally use one of the broad side faces of the bristle bundle and push along that side-facing direction. The endpoint faces F1/F2 and upper face F6 are less natural for side sweeping.\"\n}",
+        "metadata": {
+          "client": "openai_compatible",
+          "endpoint": "chat/completions",
+          "model": "gpt-5.5",
+          "base_url": "https://xcode.best/v1",
+          "image_paths": [
+            "artifacts/test006/tool_refs_gpt55_thinking_redbrush_bristle_side_prompt_20260607/brush_sweep/off_table_red/red_brush/evidence/02_contact_marker_selection/red_brush/overview/red_brush_whole_mesh_part_choice_overview.png",
+            "artifacts/test006/tool_refs_gpt55_thinking_redbrush_bristle_side_prompt_20260607/brush_sweep/off_table_red/red_brush/evidence/02_contact_marker_selection/red_brush/overview/red_brush_isolated_part_choice_overview.png",
+            "artifacts/test006/tool_refs_gpt55_thinking_redbrush_bristle_side_prompt_20260607/brush_sweep/off_table_red/red_brush/evidence/02_contact_marker_selection/red_brush/part_cards/candidate_003_card.png",
+            "artifacts/test006/tool_refs_gpt55_thinking_redbrush_bristle_side_prompt_20260607/brush_sweep/off_table_red/red_brush/evidence/02_contact_marker_selection/red_brush/selected_part_bbox_overview/candidate_003_bbox_overview.png",
+            "artifacts/test006/tool_refs_gpt55_thinking_redbrush_bristle_side_prompt_20260607/brush_sweep/off_table_red/red_brush/evidence/02_contact_marker_selection/red_brush/selected_part_face_highlights/candidate_003_face_F1_highlight.png",
+            "artifacts/test006/tool_refs_gpt55_thinking_redbrush_bristle_side_prompt_20260607/brush_sweep/off_table_red/red_brush/evidence/02_contact_marker_selection/red_brush/selected_part_face_highlights/candidate_003_face_F2_highlight.png",
+            "artifacts/test006/tool_refs_gpt55_thinking_redbrush_bristle_side_prompt_20260607/brush_sweep/off_table_red/red_brush/evidence/02_contact_marker_selection/red_brush/selected_part_face_highlights/candidate_003_face_F3_highlight.png",
+            "artifacts/test006/tool_refs_gpt55_thinking_redbrush_bristle_side_prompt_20260607/brush_sweep/off_table_red/red_brush/evidence/02_contact_marker_selection/red_brush/selected_part_face_highlights/candidate_003_face_F4_highlight.png",
+            "artifacts/test006/tool_refs_gpt55_thinking_redbrush_bristle_side_prompt_20260607/brush_sweep/off_table_red/red_brush/evidence/02_contact_marker_selection/red_brush/selected_part_face_highlights/candidate_003_face_F6_highlight.png"
+          ],
+          "latency_s": 19.206,
+          "max_new_tokens": 768,
+          "enable_thinking": true,
+          "context_id": "red_brush:p3sam_contact_selection"
+        }
+      }
     }
   },
   "metadata": {

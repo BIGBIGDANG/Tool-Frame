@@ -551,13 +551,9 @@ def build_program(ctx):
     assert lift_index < align_index < contact_index
     assert subgoals["sanity_checks"]["tool_axis_align_waypoints"] == 1
     assert subgoals["sanity_checks"]["tool_axis_align_clearance_waypoints"] == 0
-    align_delta = sub(
-        subgoals["goals"][align_index]["pose_world_tool"]["position"],
-        subgoals["goals"][lift_index]["pose_world_tool"]["position"],
-    )
-    assert abs(align_delta[0]) < 1e-9
-    assert abs(align_delta[1]) < 1e-9
-    assert abs(align_delta[2]) < 1e-9
+    align_goal = subgoals["goals"][align_index]
+    lift_goal = subgoals["goals"][lift_index]
+    assert norm(sub(align_goal["pose_world_tool"]["position"], lift_goal["pose_world_tool"]["position"])) < 1e-9
     projection = subgoals["sanity_checks"]["table_bbox_clearance_projection"]
     assert projection["enabled"] is False
     assert projection["num_bbox_corners"] == 0
@@ -630,7 +626,7 @@ def test_coupled_axis_alignment_uses_secondary_axis_to_choose_roll() -> None:
     assert resolution["coupled_axis_count"] == 2
 
 
-def test_auto_axis_alignment_selects_lower_rotation_candidate() -> None:
+def test_auto_axis_alignment_preserves_motion_axis_direction() -> None:
     program_ir = {
         "schema_version": "v0.1",
         "program_id": "auto_axis_test",
@@ -682,13 +678,13 @@ def test_auto_axis_alignment_selects_lower_rotation_candidate() -> None:
     )
 
     goal = subgoals["goals"][-1]
-    assert quat_angle_rad(goal["pose_world_tool"]["orientation_xyzw"], start_orientation) < 1e-8
+    assert quat_angle_rad(goal["pose_world_tool"]["orientation_xyzw"], start_orientation) > 3.0
     stage_errors = subgoals["sanity_checks"]["compiler_stages"][0]["constraint_errors"]
     assert stage_errors["auto_axis.axis_cosine"] == 1.0
     pose_selection = subgoals["sanity_checks"]["compiler_stages"][0]["pose_selection"]
     assert pose_selection["algorithm"] == "constrained_minimum_change_v0"
     assert pose_selection["axis_resolutions"][0]["requested_polarity"] == "auto"
-    assert pose_selection["axis_resolutions"][0]["resolved_polarity"] == "opposite"
+    assert pose_selection["axis_resolutions"][0]["resolved_polarity"] == "same"
 
 
 def test_axis_alignment_selects_lower_rotation_source_axis_candidate() -> None:
@@ -752,6 +748,7 @@ def test_axis_alignment_selects_lower_rotation_source_axis_candidate() -> None:
     assert resolution["source_axis_candidate_count"] == 2
     assert resolution["selected_source_axis_candidate_id"] == "side_tangent_axis"
     assert resolution["selected_source_axis_tool"] == [0.0, 1.0, 0.0]
+    assert resolution["candidate_selection_scope"] == "joint_axis_roll_and_vlm_contact_point_candidates"
 
 
 def test_compiler_records_goal_pose_delta_metrics() -> None:

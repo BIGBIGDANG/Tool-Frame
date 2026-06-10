@@ -54,10 +54,11 @@ bin/toolframe env-check
 ```
 
 The bootstrap creates `.venv_parttoolgen_py38` inside this repository. The
-environment wrapper uses that local venv first. It may also read optional local
-fallback paths from `.parttoolgen.local.env`, but those are workstation
-overrides only. Keep secrets, model endpoints, pretrained policy paths, and
-large runtime artifacts out of git.
+environment wrapper uses that local venv unless `PARTTOOLGEN_CORE_VENV` is set
+explicitly. It may read optional local runtime paths from
+`.parttoolgen.local.env`, but those are workstation overrides only. Keep
+secrets, model endpoints, pretrained policy paths, and large runtime artifacts
+out of git.
 
 Core compiler/tests are reproducible from the checked-in requirements. Full
 SimToolReal/IsaacGym rollouts additionally require IsaacGym binaries,
@@ -76,6 +77,46 @@ python3.10 -m pip install --target .planner_vlm_py310_pkgs -r requirements-vlm.t
 See `docs/quickstart.md` for the recommended first smoke commands and expected
 output locations.
 
+## Reproduce Results
+
+Use the public wrapper for all reproduction paths:
+
+```bash
+bin/toolframe bootstrap-env
+bin/toolframe env-check --mode core
+bin/toolframe check --quick
+```
+
+For artifact/config validation without rollout:
+
+```bash
+bin/toolframe env-check --mode rollout
+bin/toolframe preflight-current
+bin/toolframe benchmark --validate-registry
+```
+
+For full SimToolReal rollout statistics, provide IsaacGym, policy weights, GPU
+runtime packages, and VLM credentials through `.parttoolgen.local.env`, then run
+the current full E2E suite:
+
+```bash
+bin/toolframe current-e2e \
+  --trials 10 \
+  --seed-start 0 \
+  --device cuda:0 \
+  --capture-video-every 1 \
+  --continue-on-task-error \
+  --tool-ref-model gpt-5.5 \
+  --tool-ref-base-url "$VLM_API_BASE" \
+  --output-prefix artifacts/test008/e2e_10seed_gpt55_20260607 \
+  --aggregate json,csv,md
+```
+
+Expected runtime outputs are regenerated under
+`artifacts/image_grounded/<task_family>/<split>_<run_id>/` unless an explicit
+`--output-prefix` is provided. Do not commit rollout videos, temporary test
+roots, local virtual environments, model checkpoints, or private credentials.
+
 For new tools, use `bin/toolframe tool-ref` to produce reviewed
 `configs/tool_refs/<tool_id>/` bindings. For new scenes or task variants, start
 from a unified task spec and inspect it with:
@@ -86,26 +127,21 @@ bin/toolframe run-spec --spec <task_spec.json> --preflight-only
 
 Current benchmark configs normalize into this same spec layer; the
 family-specific runners are compatibility backends, not the extension API.
+The current paper-development result is full E2E success plus manual failure
+attribution, not fixed/oracle-ref baselines or dense module-accuracy tables.
 
 ## Current benchmark scope
 
-Current table-top task families:
+Current runnable benchmark suite:
 
 ```text
-brush_sweep
-hammer_strike
-eraser_wipe
-screwdriver_insert
+current_all_runnable
 ```
 
-Current side-board task families:
-
-```text
-marker_trace/write_l
-marker_trace/write_c
-side-board eraser wipe drafts
-side-board hammer/screwdriver smoke drafts
-```
+It contains brush sweep, eraser wipe, hammer strike, screwdriver insert, and
+marker trace variants. Legacy brush red-zone/directional splits, dense
+screwdriver stress variants, and unapproved side-board drafts are diagnostic
+only.
 
 Benchmark configs and contract drafts live under
 `artifacts/tool_use_benchmark/`. Generated RGB-D evidence, VLM outputs, rollout
@@ -141,12 +177,8 @@ For normal handoff use, stay at the thin public wrapper:
 
 ```bash
 bin/toolframe list
-bin/toolframe preflight-headline
-bin/toolframe paper-headline --trials 20 --device cuda:0 --continue-on-task-error
-bin/toolframe preflight-paper
-bin/toolframe paper-release --trials 20 --device cuda:0 --continue-on-task-error
-bin/toolframe preflight-all
-bin/toolframe benchmark --task brush_sweep/red_zone --trials 1 --device cuda:0
+bin/toolframe benchmark --suite current_all_runnable --preflight-only --skip-rollout
+bin/toolframe benchmark --task brush_sweep/off_table_red --trials 1 --device cuda:0
 bin/toolframe tool-ref --help
 ```
 

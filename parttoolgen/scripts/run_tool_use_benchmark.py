@@ -11,6 +11,8 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
+import re
 import subprocess
 import sys
 from datetime import datetime
@@ -212,6 +214,19 @@ def _validate_registry(registry: dict[str, Any]) -> dict[str, Any]:
                     "suite_unknown_task",
                     f"suite `{suite_name}` references unknown task `{member}`",
                 )
+                continue
+            member_task = tasks.get(member)
+            if isinstance(member_task, dict):
+                member_status = str(member_task.get("status") or "")
+                if suite_name.startswith(("current", "paper_release")) and (
+                    "legacy" in member_status or "retired" in member_status
+                ):
+                    add(
+                        "warning",
+                        "legacy_task_in_current_suite",
+                        f"suite `{suite_name}` includes legacy/retired task `{member}`",
+                        task=member,
+                    )
 
     required_fields = ("task_family", "split", "status", "config", "runner", "runnable")
     for task_name, task in sorted(tasks.items()):
@@ -241,6 +256,16 @@ def _validate_registry(registry: dict[str, Any]) -> dict[str, Any]:
                 "non-runnable task should explain `blocked_reason`",
                 task=task_name,
             )
+        blocked_reason = str(task.get("blocked_reason") or "")
+        for match in re.finditer(r"configs/tool_refs/[A-Za-z0-9_.-]+", blocked_reason):
+            blocked_path = ROOT / match.group(0)
+            if blocked_path.exists():
+                add(
+                    "warning",
+                    "blocked_reason_ref_exists",
+                    f"blocked_reason references existing tool refs: {match.group(0)}",
+                    task=task_name,
+                )
 
         runner = task.get("runner")
         if isinstance(runner, str):
@@ -252,6 +277,13 @@ def _validate_registry(registry: dict[str, Any]) -> dict[str, Any]:
         config_rel = task.get("config")
         if isinstance(config_rel, str):
             config_path = ROOT / config_rel
+            if task.get("runnable") is True and config_rel.endswith(".draft.json"):
+                add(
+                    "warning",
+                    "runnable_task_uses_draft_config",
+                    "runnable tasks should use benchmark_config.json; draft configs are for non-runnable proposals",
+                    task=task_name,
+                )
             if not config_path.exists():
                 add("error", "config_missing", f"config does not exist: {config_rel}", task=task_name)
             else:
@@ -573,13 +605,27 @@ def _aggregate_formats(value: str) -> set[str]:
 
 
 def _subprocess_env() -> dict[str, str]:
-    return _pipeline_subprocess_env(ROOT, _toolframe_env())
+    env = _pipeline_subprocess_env(ROOT, _toolframe_env())
+    # Keep the repository env wrapper as the baseline, but let the current
+    # shell select the online VLM endpoint/model for reproducible experiments.
+    for key in (
+        "OPENAI_API_KEY",
+        "VLM_API_KEY",
+        "VLM_API_BASE",
+        "VLM_MODEL",
+        "VLM_ENABLE_THINKING",
+        "DASHSCOPE_API_KEY",
+        "DASHSCOPE_ENABLE_THINKING",
+    ):
+        if key in os.environ:
+            env[key] = os.environ[key]
+    return env
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--registry", type=Path, default=DEFAULT_REGISTRY)
-    parser.add_argument("--task", action="append", help="Task name such as brush_sweep/red_zone.")
+    parser.add_argument("--task", action="append", help="Task name such as brush_sweep/off_table_red.")
     parser.add_argument("--suite", action="append", help="Suite name from benchmark_tasks.json.")
     parser.add_argument("--run-id", default=None)
     parser.add_argument("--output-root", default=None, help="Only valid for a single --task run.")
@@ -589,6 +635,14 @@ def main() -> None:
     parser.add_argument("--seed-start", type=int, default=None)
     parser.add_argument("--device", default=None)
     parser.add_argument("--capture-video-every", type=int, default=None)
+    parser.add_argument(
+        "--tool-refs-mode",
+        choices=["static", "vlm_per_seed"],
+        default=None,
+        help="Override runner tool-ref source. static is human/config refs; vlm_per_seed regenerates VLM refs per trial.",
+    )
+    parser.add_argument("--tool-ref-model", default=None)
+    parser.add_argument("--tool-ref-base-url", default=None)
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--skip-rollout", action="store_true")
     parser.add_argument("--continue-on-task-error", action="store_true")

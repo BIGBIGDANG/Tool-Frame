@@ -41,6 +41,15 @@ BRUSH_SWEEP_TARGET_ZONE_SUCCESS_POLICY = {
     "requires_semantic_execution_passed": False,
 }
 
+BRUSH_SWEEP_OFF_TABLE_SUCCESS_POLICY = {
+    "name": "brush_sweep_off_table",
+    "task_type": "brush_sweep",
+    "requires_target_off_table": True,
+    "requires_tracking_execution_passed": False,
+    "requires_policy_goal_passed": False,
+    "requires_semantic_execution_passed": False,
+}
+
 ERASER_WIPE_SUCCESS_POLICY = {
     "name": "eraser_wipe_contact_coverage",
     "task_type": "eraser_wipe",
@@ -638,22 +647,29 @@ def check_brush_sweep_success(
     skip_rollout: bool = False,
 ) -> dict[str, Any]:
     uses_target_region = bool(effect and effect.get("target_region"))
+    uses_off_table = bool(effect and effect.get("off_table_region"))
     effect_passed = bool(
         effect
         and (
             effect.get("target_region_passed")
             if uses_target_region
+            else effect.get("off_table_passed")
+            if uses_off_table
             else effect.get("target_effect_passed")
         )
     )
     policy = (
         dict(BRUSH_SWEEP_TARGET_ZONE_SUCCESS_POLICY)
         if uses_target_region
+        else dict(BRUSH_SWEEP_OFF_TABLE_SUCCESS_POLICY)
+        if uses_off_table
         else dict(BRUSH_SWEEP_SUCCESS_POLICY)
     )
     predicate_name = (
         "target_region_occupancy"
         if uses_target_region
+        else "target_off_table"
+        if uses_off_table
         else "target_directional_displacement"
     )
     predicate_value = (
@@ -664,6 +680,14 @@ def check_brush_sweep_success(
             "target_region": effect.get("target_region") if isinstance(effect, Mapping) else None,
         }
         if uses_target_region
+        else {
+            "target_final_xy_world": effect.get("target_final_xy_world")
+            if isinstance(effect, Mapping)
+            else None,
+            "off_table_region": effect.get("off_table_region") if isinstance(effect, Mapping) else None,
+            "off_table_passed": effect.get("off_table_passed") if isinstance(effect, Mapping) else None,
+        }
+        if uses_off_table
         else {
             "target_xy_displacement_m": effect.get("target_xy_displacement_m")
             if isinstance(effect, Mapping)
@@ -677,6 +701,8 @@ def check_brush_sweep_success(
     predicate_threshold = (
         {"requires_final_target_center_inside_region": True}
         if uses_target_region
+        else {"requires_target_center_outside_table_or_below_table": True}
+        if uses_off_table
         else {"min_xy_displacement_m": 0.06, "min_direction_cosine": 0.6}
     )
     predicates = [
@@ -701,6 +727,8 @@ def check_brush_sweep_success(
     failure_category = None if passed else (
         "brush_target_region_failure"
         if uses_target_region
+        else "brush_off_table_failure"
+        if uses_off_table
         else "brush_directional_displacement_failure"
     )
     return {
@@ -990,6 +1018,7 @@ def check_task_success(task_type: str, **kwargs: Any) -> dict[str, Any]:
 
 
 __all__ = [
+    "BRUSH_SWEEP_OFF_TABLE_SUCCESS_POLICY",
     "BRUSH_SWEEP_SUCCESS_POLICY",
     "BRUSH_SWEEP_TARGET_ZONE_SUCCESS_POLICY",
     "ERASER_WIPE_SUCCESS_POLICY",

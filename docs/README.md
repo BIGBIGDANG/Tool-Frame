@@ -9,11 +9,11 @@ Current ToolFrame 6.4 docs are grouped by reader intent.
   workstation.
 - `paper_pipeline_and_benchmark_6.4.md`: paper-facing method pipeline,
   benchmark suites, metrics, and result/artifact citation boundary.
-- `paper_next_execution_plan_6.4.md`: distilled next execution plan from the
-  paper-outline feedback and multi-agent review.
 - `current_pipeline.md`: runnable brush, hammer, eraser, and screwdriver
   image-grounded benchmark path, plus side-board marker writing and
   success-contract policy.
+- `benchmark_status_20260606.md`: current cleanup status and which historical
+  experiment roots are not paper statistics.
 
 ## Method and implementation
 
@@ -24,6 +24,13 @@ Current ToolFrame 6.4 docs are grouped by reader intent.
   publish-oriented repository layout.
 - `legacy_components.md`: V0 symbolic planner modules that are retained for
   debugging but are not the current image-grounded benchmark interface.
+
+## Historical writing drafts
+
+The `ral_*`, `advisor_*`, and `paper_next_execution_plan_6.4.md` files are
+paper-writing drafts or historical planning notes. Use `current_pipeline.md`
+and `paper_pipeline_and_benchmark_6.4.md` as the active method/experiment
+contract.
 
 ## Benchmark and artifacts
 

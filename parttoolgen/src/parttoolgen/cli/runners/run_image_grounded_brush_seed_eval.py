@@ -30,6 +30,10 @@ from parttoolgen.evaluation.tool_selection_evidence import (
 from parttoolgen.adapters.simtoolreal_policy_priors import (
     table_contact_start_pose_from_state_bundle,
 )
+from parttoolgen.pipeline.trial_tool_refs import (
+    add_tool_ref_mode_args,
+    resolve_trial_tool_refs,
+)
 
 
 def repo_root() -> Path:
@@ -41,11 +45,13 @@ TOOL_REFS_DIR = ROOT / "configs/tool_refs/red_brush"
 TABLE_ASSET = "urdf/parttoolgen_benchmark/tabletop_polyhaven_wood_table/tabletop_polyhaven_wood_table.urdf"
 TOOL_MESH = "simtoolreal/assets/urdf/dextoolbench/brush/red_brush/red_brush.obj"
 TOOL_START_POSE_SOURCE = "simtoolreal/dextoolbench/trajectories/brush/red_brush/sweep_forward.json"
-BLOCK_ASSET = "urdf/parttoolgen_benchmark/brush_sweep_block/sweep_block_045.urdf"
+BLOCK_ASSET = "urdf/parttoolgen_benchmark/brush_sweep_block/sweep_block_036.urdf"
 RED_TARGET_ZONE_ASSET = "urdf/parttoolgen_benchmark/brush_sweep_target_zone/red_target_zone_014x010.urdf"
 TABLE_Z = 0.38
 TOOL_TABLE_CLEARANCE_M = 0.003
-BLOCK_Z = 0.5525
+BLOCK_Z = 0.548
+TABLE_HALF_EXTENT_X_M = 0.35
+TABLE_HALF_EXTENT_Y_M = 0.25
 BASE_BLOCK_XY = [0.24, -0.13]
 DEFAULT_TARGET_ZONE_CENTER_XY = [0.24, -0.205]
 DEFAULT_TARGET_ZONE_SIZE_XY = [0.14, 0.10]
@@ -78,6 +84,11 @@ SWEEP_DIRECTIONS = {
         "instruction": "Use this brush to sweep the block to the left.",
     },
 }
+SEEDED_EDGE_SWEEP_DIRECTIONS = ("forward", "backward", "left", "right")
+
+EDGE_SPAWN_DEFAULT_MARGIN_M = 0.035
+EDGE_SPAWN_DEFAULT_JITTER_M = 0.06
+EDGE_SPAWN_DEFAULT_MIN_TOOL_DISTANCE_M = 0.16
 
 
 def _quat_mul(a: list[float], b: list[float]) -> list[float]:
@@ -93,6 +104,12 @@ def _quat_mul(a: list[float], b: list[float]) -> list[float]:
 
 def _quat_from_z_yaw(yaw_rad: float) -> list[float]:
     return [0.0, 0.0, math.sin(0.5 * yaw_rad), math.cos(0.5 * yaw_rad)]
+
+
+def _clamp(value: float, lo: float, hi: float) -> float:
+    if lo > hi:
+        lo, hi = hi, lo
+    return max(float(lo), min(float(hi), float(value)))
 
 
 def _quat_rotate(q: list[float], p: list[float]) -> list[float]:
@@ -308,6 +325,8 @@ def _load_benchmark_config_defaults(argv: list[str]) -> tuple[Path | None, dict[
         "line_x_min",
         "line_x_max",
         "line_y",
+        "edge_spawn_margin_m",
+        "edge_spawn_jitter_m",
         "sweep_direction",
         "start_orientation_mode",
         "tool_id",
@@ -376,8 +395,21 @@ def _run(
     return proc
 
 
+def _effective_sweep_direction(seed: int, requested: str) -> str:
+    if requested == "seeded_edge":
+        return SEEDED_EDGE_SWEEP_DIRECTIONS[int(seed) % len(SEEDED_EDGE_SWEEP_DIRECTIONS)]
+    return requested
+
+
 def _sample_seed_params(seed: int, *, index: int, total: int, args: argparse.Namespace) -> dict[str, Any]:
     rng = random.Random(seed)
+    sweep_direction = _effective_sweep_direction(seed, str(args.sweep_direction))
+    start_pose, start_yaw_delta_deg = _start_pose_for_sweep_direction(
+        [float(item) for item in args.fixed_start_pose_xyzw],
+        sweep_direction,
+        args.start_orientation_mode,
+    )
+    start_pose = _table_contact_tool_pose(start_pose, tool_mesh=args.tool_mesh)
     # SimToolReal's fixed policy is sensitive to the initial grasp pose. Keep
     # the brush at a stable grasp-ready pose near the robot-arm center, and
     # randomize only the target block. This makes the seeded benchmark test
@@ -388,17 +420,60 @@ def _sample_seed_params(seed: int, *, index: int, total: int, args: argparse.Nam
         alpha = float(index) / float(denom)
         block_x = float(args.line_x_min) * (1.0 - alpha) + float(args.line_x_max) * alpha
         block_y = float(args.line_y)
+    elif args.block_position_mode == "edge":
+        margin = max(0.02, float(args.edge_spawn_margin_m))
+        jitter = max(0.0, float(args.edge_spawn_jitter_m))
+        min_tool_distance = max(0.0, float(args.edge_spawn_min_tool_distance_m))
+        max_tool_distance = float(args.edge_spawn_max_tool_distance_m)
+        x_limit = TABLE_HALF_EXTENT_X_M - margin
+        y_limit = TABLE_HALF_EXTENT_Y_M - margin
+        block_x = block_y = 0.0
+        for _ in range(80):
+            if sweep_direction == "forward":
+                candidate_x = rng.uniform(-x_limit + jitter, x_limit - jitter)
+                candidate_y = -y_limit + rng.uniform(-0.5 * jitter, 0.5 * jitter)
+            elif sweep_direction == "backward":
+                candidate_x = rng.uniform(-x_limit + jitter, x_limit - jitter)
+                candidate_y = y_limit + rng.uniform(-0.5 * jitter, 0.5 * jitter)
+            elif sweep_direction == "right":
+                candidate_x = x_limit + rng.uniform(-0.5 * jitter, 0.5 * jitter)
+                candidate_y = rng.uniform(-y_limit + jitter, y_limit - jitter)
+            elif sweep_direction == "left":
+                candidate_x = -x_limit + rng.uniform(-0.5 * jitter, 0.5 * jitter)
+                candidate_y = rng.uniform(-y_limit + jitter, y_limit - jitter)
+            else:
+                raise ValueError(f"unsupported sweep direction for edge block placement: {sweep_direction}")
+            candidate_x = _clamp(
+                candidate_x,
+                -TABLE_HALF_EXTENT_X_M + margin,
+                TABLE_HALF_EXTENT_X_M - margin,
+            )
+            candidate_y = _clamp(
+                candidate_y,
+                -TABLE_HALF_EXTENT_Y_M + margin,
+                TABLE_HALF_EXTENT_Y_M - margin,
+            )
+            candidate_tool_distance = math.hypot(
+                float(start_pose[0]) - candidate_x,
+                float(start_pose[1]) - candidate_y,
+            )
+            if candidate_tool_distance < min_tool_distance:
+                continue
+            if max_tool_distance > 0.0 and candidate_tool_distance > max_tool_distance:
+                continue
+            block_x, block_y = candidate_x, candidate_y
+            break
+        else:
+            block_x, block_y = candidate_x, candidate_y
+        block_x = _clamp(block_x, -TABLE_HALF_EXTENT_X_M + margin, TABLE_HALF_EXTENT_X_M - margin)
+        block_y = _clamp(block_y, -TABLE_HALF_EXTENT_Y_M + margin, TABLE_HALF_EXTENT_Y_M - margin)
     else:
         block_x = BASE_BLOCK_XY[0] + rng.uniform(-0.045, 0.035)
         block_y = BASE_BLOCK_XY[1] + rng.uniform(-0.035, 0.045)
-    start_pose, start_yaw_delta_deg = _start_pose_for_sweep_direction(
-        [float(item) for item in args.fixed_start_pose_xyzw],
-        args.sweep_direction,
-        args.start_orientation_mode,
-    )
-    start_pose = _table_contact_tool_pose(start_pose, tool_mesh=args.tool_mesh)
     return {
         "block_xy": [block_x, block_y],
+        "sweep_direction": sweep_direction,
+        "requested_sweep_direction": str(args.sweep_direction),
         "start_pose": start_pose,
         "start_yaw_delta_deg": start_yaw_delta_deg,
         "start_yaw_total_deg": BRUSH_BACK_TO_ARM_YAW_OFFSET_DEG + start_yaw_delta_deg,
@@ -468,13 +543,24 @@ def _build_task(
             "target_zone_size_xy_m": zone_size,
             "success_policy": "brush_sweep_target_zone_occupancy",
         }
+    elif target_mode == "off_table":
+        target_zone_metadata = {
+            "target_mode": "off_table",
+            "success_policy": "brush_sweep_off_table",
+            "table_bounds_xy_world": {
+                "x": [-TABLE_HALF_EXTENT_X_M, TABLE_HALF_EXTENT_X_M],
+                "y": [-TABLE_HALF_EXTENT_Y_M, TABLE_HALF_EXTENT_Y_M],
+            },
+            "table_top_z_world": TABLE_Z + 0.15,
+        }
     start_pose = [float(item) for item in params["start_pose"]]
     tool_refs_rel = _repo_rel(_tool_refs_dir(args))
-    instruction = (
-        "Use this brush to sweep the blue block into the red target zone."
-        if target_mode == "red_zone"
-        else str(direction["instruction"])
-    )
+    if target_mode == "red_zone":
+        instruction = "Use this brush to sweep the blue block into the red target zone."
+    elif target_mode == "off_table":
+        instruction = "Use this brush to sweep the blue block off the table."
+    else:
+        instruction = str(direction["instruction"])
     return {
         "schema_version": "parttoolgen_tool_use_task_v0",
         "task_id": task_id,
@@ -498,7 +584,13 @@ def _build_task(
                 "table_z": TABLE_Z,
                 "object_name": args.tool_id,
                 "object_category": "brush",
-                "task_name": "sweep_block_to_red_zone" if target_mode == "red_zone" else "sweep_forward",
+                "task_name": (
+                    "sweep_block_to_red_zone"
+                    if target_mode == "red_zone"
+                    else "sweep_block_off_table"
+                    if target_mode == "off_table"
+                    else "sweep_forward"
+                ),
                 "target_collision_role": "dynamic_manipulable",
                 "min_tool_table_clearance_m": 0.0003,
                 "parttoolgen_benchmark_extra_actors": extra_actors,
@@ -574,6 +666,32 @@ def _target_zone_from_task(task: dict[str, Any]) -> dict[str, Any] | None:
     }
 
 
+def _off_table_region_from_task(task: dict[str, Any]) -> dict[str, Any] | None:
+    metadata = task.get("metadata", {})
+    if not isinstance(metadata, dict) or metadata.get("target_mode") != "off_table":
+        return None
+    bounds = metadata.get("table_bounds_xy_world")
+    table_top_z = metadata.get("table_top_z_world")
+    if not isinstance(bounds, dict):
+        return None
+    x_bounds = bounds.get("x")
+    y_bounds = bounds.get("y")
+    if not (
+        isinstance(x_bounds, list)
+        and len(x_bounds) >= 2
+        and isinstance(y_bounds, list)
+        and len(y_bounds) >= 2
+    ):
+        return None
+    return {
+        "bounds_xy_world": {
+            "x": [float(x_bounds[0]), float(x_bounds[1])],
+            "y": [float(y_bounds[0]), float(y_bounds[1])],
+        },
+        "table_top_z_world": float(table_top_z) if table_top_z is not None else TABLE_Z + 0.15,
+    }
+
+
 def _actor_by_name(actors: list[Any], name: str) -> dict[str, Any]:
     for actor in actors:
         if isinstance(actor, dict) and actor.get("name") == name:
@@ -596,6 +714,7 @@ def _effect_metrics(
     delta = [float(final[i]) - float(init[i]) for i in range(3)]
     xy = math.hypot(delta[0], delta[1])
     target_region = _target_zone_from_task(task)
+    off_table_region = _off_table_region_from_task(task)
     target_region_passed = None
     if target_region is not None:
         bounds = target_region["bounds_xy_world"]
@@ -604,6 +723,18 @@ def _effect_metrics(
             float(bounds["x"][0]) <= final_xy[0] <= float(bounds["x"][1])
             and float(bounds["y"][0]) <= final_xy[1] <= float(bounds["y"][1])
         )
+    off_table_passed = None
+    if off_table_region is not None:
+        bounds = off_table_region["bounds_xy_world"]
+        final_xy = [float(final[0]), float(final[1])]
+        outside_xy = (
+            final_xy[0] < float(bounds["x"][0])
+            or final_xy[0] > float(bounds["x"][1])
+            or final_xy[1] < float(bounds["y"][0])
+            or final_xy[1] > float(bounds["y"][1])
+        )
+        below_table = float(final[2]) < float(off_table_region["table_top_z_world"]) - 0.02
+        off_table_passed = bool(outside_xy or below_table)
     direction = lifted_refs.get("direction")
     if not isinstance(direction, list) or len(direction) < 2:
         metrics = {
@@ -612,10 +743,18 @@ def _effect_metrics(
             "target_final_xy_world": [float(final[0]), float(final[1])],
             "target_region": target_region,
             "target_region_passed": target_region_passed,
+            "off_table_region": off_table_region,
+            "off_table_passed": off_table_passed,
             "scene_direction_world": None,
             "projected_displacement_m": None,
             "direction_cosine": None,
-            "target_effect_passed": bool(target_region_passed) if target_region is not None else False,
+            "target_effect_passed": (
+                bool(target_region_passed)
+                if target_region is not None
+                else bool(off_table_passed)
+                if off_table_region is not None
+                else False
+            ),
             "unresolved_reason": "missing_lifted_direction",
         }
         return metrics
@@ -627,12 +766,16 @@ def _effect_metrics(
         "target_final_xy_world": [float(final[0]), float(final[1])],
         "target_region": target_region,
         "target_region_passed": target_region_passed,
+        "off_table_region": off_table_region,
+        "off_table_passed": off_table_passed,
         "scene_direction_world": [float(item) for item in direction[:3]],
         "projected_displacement_m": projected,
         "direction_cosine": direction_cosine,
         "target_effect_passed": (
             bool(target_region_passed)
             if target_region is not None
+            else bool(off_table_passed)
+            if off_table_region is not None
             else xy >= 0.06 and direction_cosine >= 0.6
         ),
     }
@@ -729,7 +872,7 @@ def _run_trial(*, seed: int, index: int, args: argparse.Namespace) -> dict[str, 
         task_id=task_id,
         seed=seed,
         params=params,
-        sweep_direction=args.sweep_direction,
+        sweep_direction=str(params.get("sweep_direction") or args.sweep_direction),
         block_asset=args.block_asset,
         block_friction=args.block_friction,
         args=args,
@@ -739,6 +882,18 @@ def _run_trial(*, seed: int, index: int, args: argparse.Namespace) -> dict[str, 
     _write_json(task_path, task)
     _write_json(method_task_path, _method_facing_task(task))
     py = _python()
+    trial_tool_refs_dir = resolve_trial_tool_refs(
+        repo_root=ROOT,
+        python=py,
+        args=args,
+        trial_dir=trial_dir,
+        static_tool_refs_dir=_tool_refs_dir(args),
+        tool_id=args.tool_id,
+        task_id=task_id,
+        task_instruction=str(task.get("instruction") or ""),
+        log_path=trial_dir / "logs/tool_refs.json",
+        env=_env(),
+    )
 
     render_dir = trial_dir / "sim_rgbd"
     _run(
@@ -827,11 +982,11 @@ def _run_trial(*, seed: int, index: int, args: argparse.Namespace) -> dict[str, 
             "--program",
             str(lifted_dir / "constraint_program.json"),
             "--axis-binding",
-            str(_tool_refs_dir(args) / "axis_binding.json"),
+            str(trial_tool_refs_dir / "axis_binding.json"),
             "--axis-mesh-report",
-            str(_tool_refs_dir(args) / "axis_mesh_overlay_report.json"),
+            str(trial_tool_refs_dir / "axis_mesh_overlay_report.json"),
             "--contact-point-selection",
-            str(_tool_refs_dir(args) / "contact_point_selection.json"),
+            str(trial_tool_refs_dir / "contact_point_selection.json"),
             "--output",
             str(enriched_program),
         ],
@@ -912,13 +1067,23 @@ def _run_trial(*, seed: int, index: int, args: argparse.Namespace) -> dict[str, 
                 [
                     "--capture-video",
                     "--capture-topdown-video",
-                    "--hide-goal-object-visual",
+                    "--capture-subgoal-video",
+                    "--capture-subgoal-topdown-video",
                     "--video-fps",
                     "24",
                     "--video-stride",
                     "12",
                 ]
             )
+            if args.show_goal_object_visual:
+                rollout_cmd.extend(
+                    [
+                        "--goal-object-visual-opacity",
+                        str(args.goal_object_visual_opacity),
+                    ]
+                )
+            else:
+                rollout_cmd.append("--hide-goal-object-visual")
         rollout_proc = _run(
             rollout_cmd, log_path=trial_dir / "logs/rollout.json", allow_failure=True
         )
@@ -938,7 +1103,7 @@ def _run_trial(*, seed: int, index: int, args: argparse.Namespace) -> dict[str, 
             trial_dir=trial_dir,
             render_dir=render_dir,
             grounding_dir=grounding_dir,
-            tool_refs_dir=_tool_refs_dir(args),
+            tool_refs_dir=trial_tool_refs_dir,
             compile_dir=compile_dir,
             rollout_dir=rollout_dir,
         )
@@ -1029,7 +1194,7 @@ def _run_trial(*, seed: int, index: int, args: argparse.Namespace) -> dict[str, 
         trial_dir=trial_dir,
         render_dir=render_dir,
         grounding_dir=grounding_dir,
-        tool_refs_dir=_tool_refs_dir(args),
+        tool_refs_dir=trial_tool_refs_dir,
         compile_dir=compile_dir,
         rollout_dir=rollout_dir,
     )
@@ -1261,14 +1426,14 @@ def main() -> int:
     parser.add_argument("--rollout-max-steps", type=int, default=1500)
     parser.add_argument("--rollout-max-tracking-error-m", type=float, default=0.012)
     parser.add_argument("--capture-video-every", type=int, default=0)
-    parser.add_argument("--initial-grasp-lift-m", type=float, default=0.08)
+    parser.add_argument("--initial-grasp-lift-m", type=float, default=0.12)
     parser.add_argument("--initial-grasp-lift-steps", type=int, default=3)
     parser.add_argument("--initial-grasp-hold-steps", type=int, default=0)
     parser.add_argument("--grasp-observation-offset-m", type=float, default=0.0)
     parser.add_argument("--approach-offset-m", type=float, default=0.12)
     parser.add_argument(
         "--target-mode",
-        choices=["directional_displacement", "red_zone"],
+        choices=["directional_displacement", "red_zone", "off_table"],
         default="directional_displacement",
     )
     parser.add_argument("--target-zone-asset", default=RED_TARGET_ZONE_ASSET)
@@ -1287,13 +1452,35 @@ def main() -> int:
     parser.add_argument("--target-zone-z", type=float, default=DEFAULT_TARGET_ZONE_Z)
     parser.add_argument("--block-asset", default=None)
     parser.add_argument("--block-friction", type=float, default=None)
-    parser.add_argument("--block-position-mode", choices=["random", "line_x"], default="random")
+    parser.add_argument("--block-position-mode", choices=["random", "line_x", "edge"], default="random")
     parser.add_argument("--line-x-min", type=float, default=BASE_BLOCK_XY[0] - 0.08)
     parser.add_argument("--line-x-max", type=float, default=BASE_BLOCK_XY[0] + 0.08)
     parser.add_argument("--line-y", type=float, default=BASE_BLOCK_XY[1])
-    parser.add_argument("--sweep-direction", choices=sorted(SWEEP_DIRECTIONS), default="forward")
+    parser.add_argument("--edge-spawn-margin-m", type=float, default=EDGE_SPAWN_DEFAULT_MARGIN_M)
+    parser.add_argument("--edge-spawn-jitter-m", type=float, default=EDGE_SPAWN_DEFAULT_JITTER_M)
+    parser.add_argument(
+        "--edge-spawn-min-tool-distance-m",
+        type=float,
+        default=EDGE_SPAWN_DEFAULT_MIN_TOOL_DISTANCE_M,
+    )
+    parser.add_argument(
+        "--edge-spawn-max-tool-distance-m",
+        type=float,
+        default=0.0,
+        help="Optional maximum xy distance from the fixed tool start to edge-spawned blocks; <=0 disables.",
+    )
+    parser.add_argument(
+        "--sweep-direction",
+        choices=sorted([*SWEEP_DIRECTIONS, "seeded_edge"]),
+        default="forward",
+        help=(
+            "Task direction. Use seeded_edge for the current off-table benchmark: "
+            "each seed picks one table edge and publishes the corresponding scene direction."
+        ),
+    )
     parser.add_argument("--tool-id", default="red_brush")
     parser.add_argument("--tool-refs-dir", type=Path, default=TOOL_REFS_DIR)
+    add_tool_ref_mode_args(parser)
     parser.add_argument("--tool-mesh", default=TOOL_MESH)
     parser.add_argument("--tool-start-pose-source", default=TOOL_START_POSE_SOURCE)
     parser.add_argument("--fixed-start-pose-xyzw", nargs=7, type=float, default=FIXED_GRASP_READY_START_POSE)
@@ -1304,6 +1491,12 @@ def main() -> int:
     )
     parser.add_argument("--skip-rollout", action="store_true")
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument(
+        "--show-goal-object-visual",
+        action="store_true",
+        help="Show SimToolReal's tracked goal/subgoal object in rollout videos.",
+    )
+    parser.add_argument("--goal-object-visual-opacity", type=float, default=0.55)
     parser.set_defaults(**benchmark_defaults)
     args = parser.parse_args()
 
@@ -1348,6 +1541,8 @@ def main() -> int:
             "rollout_max_steps": args.rollout_max_steps,
             "rollout_max_tracking_error_m": args.rollout_max_tracking_error_m,
             "capture_video_every": args.capture_video_every,
+            "show_goal_object_visual": args.show_goal_object_visual,
+            "goal_object_visual_opacity": args.goal_object_visual_opacity,
             "skip_rollout": args.skip_rollout,
             "initial_grasp_lift_m": args.initial_grasp_lift_m,
             "initial_grasp_lift_steps": args.initial_grasp_lift_steps,
@@ -1365,6 +1560,10 @@ def main() -> int:
             "line_x_min": args.line_x_min,
             "line_x_max": args.line_x_max,
             "line_y": args.line_y,
+            "edge_spawn_margin_m": args.edge_spawn_margin_m,
+            "edge_spawn_jitter_m": args.edge_spawn_jitter_m,
+            "edge_spawn_min_tool_distance_m": args.edge_spawn_min_tool_distance_m,
+            "edge_spawn_max_tool_distance_m": args.edge_spawn_max_tool_distance_m,
             "sweep_direction": args.sweep_direction,
             "start_orientation_mode": args.start_orientation_mode,
             "mainline_params": {

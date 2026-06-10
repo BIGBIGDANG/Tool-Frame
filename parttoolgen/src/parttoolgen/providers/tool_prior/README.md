@@ -49,13 +49,13 @@ The same builder is used for P3SAM by setting `segmentation_mode=p3sam`.
 
 The clean image-grounded pipeline uses P3SAM as a tool-side provider. This
 provider lane builds structured tool geometry refs; the public visualization
-lane should render only 5.15-style part-overview evidence.
+lane should render only the standard part-overview evidence.
 
 ```text
 P3SAM auto_mask on tool mesh
 -> p3sam_face_labels.npy
 -> ToolPartGraph / FunctionalToolParts / GroundingCandidates
--> render 5.15-style part visual evidence
+-> render standard part visual evidence
 -> VLM selects contact-point part marker
 -> render selected-part bbox face evidence with highlighted F markers
 -> VLM selects F contact/motion-axis markers
@@ -69,7 +69,7 @@ task-conditioned: the same segmented tool may choose different refs for a
 different instruction, so those refs are exported only after the VLM sees the
 task wording.
 
-The key rule is that public tool-side figures use 5.15-style part overview,
+The key rule is that public tool-side figures use the standard part overview,
 part-card, selected-part bbox overview, and selected-part face-highlight
 evidence. F markers and highlighted bbox faces are kept because the VLM needs
 them for task-conditioned contact/motion-axis selection, but they appear only

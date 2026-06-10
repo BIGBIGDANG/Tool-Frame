@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render 5.15-style SAMPart3D tool-part evidence.
+"""Render standard SAMPart3D tool-part evidence.
 
 This renderer is intentionally separate from the older anonymous region overlay
 flow. It supports the paper-style two-stage assets:
@@ -565,6 +565,61 @@ def _axis_polarity_from_patch(patch_id: str) -> tuple[str | None, str | None]:
     return None, None
 
 
+def _bbox_axis_from_patch_id(patch_id: Any) -> list[float] | None:
+    axis_name, polarity = _axis_polarity_from_patch(str(patch_id or ""))
+    if axis_name is None or polarity is None:
+        return None
+    sign = -1.0 if polarity == "negative" else 1.0
+    if axis_name == "x":
+        return [sign, 0.0, 0.0]
+    if axis_name == "y":
+        return [0.0, sign, 0.0]
+    if axis_name == "z":
+        return [0.0, 0.0, sign]
+    return None
+
+
+def _bbox_face_area(part: Mapping[str, Any], patch_id: Any) -> float | None:
+    axis_name, _ = _axis_polarity_from_patch(str(patch_id or ""))
+    if axis_name not in AXIS_NAMES:
+        return None
+    extent = part.get("obb", {}).get("extent_xyz")
+    if not (isinstance(extent, list) and len(extent) == 3):
+        return None
+    values = [max(float(item), 0.0) for item in extent]
+    if axis_name == "x":
+        return values[1] * values[2]
+    if axis_name == "y":
+        return values[0] * values[2]
+    if axis_name == "z":
+        return values[0] * values[1]
+    return None
+
+
+def _point_inside_part_obb(part: Mapping[str, Any], point: Sequence[float], *, tolerance: float = 1e-4) -> bool:
+    obb = part.get("obb", {})
+    center = obb.get("center_xyz_tool")
+    extent = obb.get("extent_xyz")
+    if not (isinstance(center, list) and len(center) == 3 and isinstance(extent, list) and len(extent) == 3):
+        return False
+    axes = obb.get("axes_tool") if isinstance(obb.get("axes_tool"), Mapping) else {}
+    basis: list[np.ndarray] = []
+    for axis_index, axis_name in enumerate(AXIS_NAMES):
+        raw_axis = axes.get(axis_name) if isinstance(axes, Mapping) else None
+        if isinstance(raw_axis, list) and len(raw_axis) == 3:
+            axis = np.asarray(raw_axis, dtype=np.float64)
+        else:
+            axis = np.zeros(3, dtype=np.float64)
+            axis[axis_index] = 1.0
+        norm = np.linalg.norm(axis)
+        if norm <= 1e-12:
+            return False
+        basis.append(axis / norm)
+    local = np.stack(basis, axis=1).T @ (np.asarray(point, dtype=np.float64) - np.asarray(center, dtype=np.float64))
+    half_extent = np.asarray(extent, dtype=np.float64) * 0.5
+    return bool(np.all(np.abs(local) <= half_extent + float(tolerance)))
+
+
 def _contact_sort_key(row: Mapping[str, Any]) -> tuple[int, int, str]:
     axis_name, _ = _axis_polarity_from_patch(str(row.get("patch_id") or ""))
     axis_index = AXIS_NAMES.index(str(axis_name)) if axis_name in AXIS_NAMES else len(AXIS_NAMES)
@@ -577,6 +632,8 @@ def _contact_marker_table(
     *,
     part_id: str,
     part_ref: str,
+    part: Mapping[str, Any],
+    all_parts: Mapping[str, Any],
     marker: str,
     grounding_candidates: Mapping[str, Any],
 ) -> list[dict[str, Any]]:
@@ -597,6 +654,15 @@ def _contact_marker_table(
             continue
         patch_id = _candidate_patch_id(str(candidate_id), candidate)
         _, polarity = _axis_polarity_from_patch(patch_id)
+        bbox_axis = _bbox_axis_from_patch_id(patch_id)
+        bbox_area = _bbox_face_area(part, patch_id)
+        overlapped_part_ids = [
+            str(other_part_id)
+            for other_part_id, other_part in sorted(all_parts.items())
+            if str(other_part_id) != str(part_id)
+            and isinstance(other_part, Mapping)
+            and _point_inside_part_obb(other_part, xyz)
+        ]
         rows.append(
             {
                 "part_marker": marker,
@@ -609,6 +675,12 @@ def _contact_marker_table(
                 "role": candidate.get("role"),
                 "xyz_tool": [float(value) for value in xyz],
                 "normal_tool": [float(value) for value in normal],
+                "bbox_axis_tool": bbox_axis,
+                "axis_role": "bbox_face_axis" if bbox_axis is not None else "mesh_patch_normal",
+                "bbox_face_area_m2": bbox_area,
+                "overlapped_part_ids": overlapped_part_ids,
+                "is_internal_tool_surface": bool(overlapped_part_ids),
+                "tool_surface_visibility": "overlaps_other_part_obb" if overlapped_part_ids else "exposed_or_unblocked",
             }
         )
     rows = sorted(rows, key=_contact_sort_key)
@@ -619,6 +691,18 @@ def _contact_marker_table(
         row["selection_semantics"] = "contact_point_bbox_face"
         row["derived_point_ref"] = row["point_ref"]
         row["source_surface_ref"] = f"candidate.surfaces.{str(row['point_ref']).split('.')[-1]}"
+    exposed_rows = [row for row in rows if not row.get("is_internal_tool_surface")]
+    if exposed_rows or not rows:
+        return exposed_rows
+    # Some SAMPart3D functional parts are nested inside a larger whole-tool
+    # segment OBB.  If every candidate is marked overlapped, filtering would
+    # erase the entire selected part.  Keep the rows and annotate the situation;
+    # partial overlap cases still filter internal candidates such as a hidden
+    # face endpoint inside a neighboring part.
+    for row in rows:
+        row["is_internal_tool_surface"] = False
+        row["tool_surface_visibility"] = "nested_part_retained_all_candidates"
+        row["overlap_filter_action"] = "retained_because_all_candidates_overlap_parent_part"
     return rows
 
 
@@ -679,6 +763,28 @@ def _draw_projected_obb(
     return pixels
 
 
+def _projected_part_mask(
+    *,
+    image_size: tuple[int, int],
+    mesh_faces: np.ndarray,
+    vertex_front: np.ndarray,
+    vertex_pixels: np.ndarray,
+    face_indices: np.ndarray,
+    pad_px: int = 2,
+) -> Image.Image:
+    mask = Image.new("L", image_size, 0)
+    draw = ImageDraw.Draw(mask)
+    for face_index in face_indices:
+        vertices = mesh_faces[int(face_index)]
+        if not np.all(vertex_front[vertices]):
+            continue
+        polygon = [(float(vertex_pixels[v, 0]), float(vertex_pixels[v, 1])) for v in vertices]
+        draw.polygon(polygon, fill=255)
+    if pad_px > 0:
+        mask = mask.filter(ImageFilter.MaxFilter(pad_px * 2 + 1))
+    return mask
+
+
 def _best_contact_view_indices(
     *,
     contact_rows: list[dict[str, Any]],
@@ -709,6 +815,75 @@ def _best_contact_view_indices(
             )
         span = float(np.linalg.norm(np.max(visible, axis=0) - np.min(visible, axis=0))) if visible else 0.0
         score = len(visible) * 1000.0 + min_separation + 0.08 * span
+        scored.append((score, view_index))
+    if not scored:
+        return view_indices[:max_views]
+    scored.sort(reverse=True)
+    selected: list[int] = []
+    for _score, view_index in scored:
+        if view_index in selected:
+            continue
+        selected.append(view_index)
+        if len(selected) >= max_views:
+            break
+    return selected
+
+
+def _polygon_area_2d(points: np.ndarray) -> float:
+    if len(points) < 3:
+        return 0.0
+    x = points[:, 0]
+    y = points[:, 1]
+    return float(abs(np.dot(x, np.roll(y, -1)) - np.dot(y, np.roll(x, -1))) * 0.5)
+
+
+def _best_bbox_face_view_indices(
+    *,
+    face_row: Mapping[str, Any],
+    part: Mapping[str, Any],
+    meta: Mapping[str, Any],
+    view_indices: list[int],
+    max_views: int,
+) -> list[int]:
+    axis_name, polarity = _axis_polarity_from_patch(str(face_row.get("patch_id") or ""))
+    face_corners = (
+        _obb_face_corners(part, axis_name=axis_name, polarity=polarity)
+        if axis_name is not None and polarity is not None
+        else None
+    )
+    if face_corners is None:
+        return view_indices[:max_views]
+    normal_tool = np.asarray(
+        face_row.get("bbox_axis_tool") or face_row.get("normal_tool") or [0.0, 0.0, 1.0],
+        dtype=np.float64,
+    )
+    norm = float(np.linalg.norm(normal_tool))
+    if norm <= 1e-12:
+        return view_indices[:max_views]
+    normal_render = (normal_tool / norm) @ SAMPart3D_RENDER_ROTATION
+    normal_render = normal_render / max(float(np.linalg.norm(normal_render)), 1e-12)
+    scored: list[tuple[float, int]] = []
+    for view_index in view_indices:
+        face_front, face_pixels = _project_tool_points(
+            points_tool=face_corners,
+            meta=meta,
+            view_index=view_index,
+        )
+        if int(np.count_nonzero(face_front)) < 3:
+            continue
+        c2w = np.asarray(meta["transforms"][view_index], dtype=np.float64)
+        # Projected front-facing tests use the vector from the point toward the
+        # camera.  For the SAMPart3D camera transforms this is +camera Z in
+        # world/render coordinates, not the camera's viewing direction.
+        view_dir = c2w[:3, 2]
+        view_norm = float(np.linalg.norm(view_dir))
+        if view_norm <= 1e-12:
+            continue
+        view_dir = view_dir / view_norm
+        facing = max(0.0, float(normal_render @ view_dir))
+        area = _polygon_area_2d(face_pixels[np.asarray(face_front, dtype=bool)])
+        span = float(np.linalg.norm(np.max(face_pixels, axis=0) - np.min(face_pixels, axis=0)))
+        score = facing * 100000.0 + area + 0.05 * span
         scored.append((score, view_index))
     if not scored:
         return view_indices[:max_views]
@@ -1070,14 +1245,14 @@ def _export_ppt_vector_assets(
         "schema_version": "toolframe_ppt_vector_assets_v0",
         "tool_id": tool_id,
         "source_renderer": "render_sampart3d_part_role_evidence.py",
-        "source_style": "5.15-style SAMPart3D projection geometry exported as SVG vector paths",
+        "source_style": "standard SAMPart3D projection geometry exported as SVG vector paths",
         "contact_region_svgs": contact_svgs,
         "subgoal_ghost_strip_svg": str(ghost_strip),
         "clean_mesh_svgs": [item["path"] for item in clean_panels],
         "notes": [
             "Contact-region SVG preserves bbox and highlighted face, but has no text, face-center dot, or normal arrow.",
             "Subgoal SVGs are clean mesh ghost assets with no bbox, highlighted face, marker, or arrow.",
-            "These are vector exports from the vendored 5.15-style renderer, not simplified standalone mesh redraw scripts.",
+            "These are vector exports from the vendored SAMPart3D renderer, not simplified standalone mesh redraw scripts.",
         ],
     }
     _save_json(vector_root / "manifest.json", manifest)
@@ -1304,6 +1479,8 @@ def _single_face_highlight_card(
     view_indices: list[int],
     panel_width: int,
     marker_font: ImageFont.ImageFont,
+    show_contact_point: bool = True,
+    show_motion_axis: bool = True,
 ) -> Image.Image | None:
     mesh_faces = context["mesh_geometry"]["faces"]
     mesh_labels = np.asarray(context["mesh_geometry"]["labels"], dtype=np.int64)
@@ -1326,6 +1503,7 @@ def _single_face_highlight_card(
             meta=dict(meta),
             view_index=view_index,
         )
+        vertex_front, vertex_pixels = _project_mesh_vertices(dict(context), view_index)
         face_indices = _filtered_face_indices_for_label(
             context=context,
             labels=mesh_labels,
@@ -1342,8 +1520,17 @@ def _single_face_highlight_card(
         )
         if int(np.count_nonzero(face_front)) < 3:
             continue
-        base = _presentation_image(raw, reference=raw, foreground_mask=foreground, crop=False).convert("RGBA")
-        composed = base.convert("RGB")
+        base = _presentation_image(raw, reference=raw, foreground_mask=foreground, crop=False).convert("RGB")
+        composed = Image.blend(Image.new("RGB", raw.size, (248, 248, 248)), base, 0.36)
+        part_mask = _projected_part_mask(
+            image_size=raw.size,
+            mesh_faces=np.asarray(mesh_faces, dtype=np.int64),
+            vertex_front=vertex_front,
+            vertex_pixels=vertex_pixels,
+            face_indices=face_indices,
+            pad_px=3,
+        )
+        composed.paste(base, (0, 0), part_mask)
         draw = ImageDraw.Draw(composed)
         bbox_pixels = _draw_projected_obb(
             draw,
@@ -1363,7 +1550,10 @@ def _single_face_highlight_card(
         draw = ImageDraw.Draw(composed)
 
         center = np.mean(face_corners, axis=0)
-        normal = np.asarray(face_row.get("normal_tool") or [0.0, 0.0, 1.0], dtype=np.float64)
+        normal = np.asarray(
+            face_row.get("bbox_axis_tool") or face_row.get("normal_tool") or [0.0, 0.0, 1.0],
+            dtype=np.float64,
+        )
         norm = np.linalg.norm(normal)
         if norm <= 1e-12:
             normal = np.asarray(face_row.get("xyz_tool") or center, dtype=np.float64) - center
@@ -1375,7 +1565,8 @@ def _single_face_highlight_card(
             meta=meta,
             view_index=view_index,
         )
-        if bool(arrow_front[0]) and bool(arrow_front[1]):
+        arrow_visible = bool(arrow_front[0]) and bool(arrow_front[1])
+        if show_motion_axis and arrow_visible:
             _draw_arrow(
                 draw,
                 (float(arrow_pixels[0, 0]), float(arrow_pixels[0, 1])),
@@ -1397,7 +1588,19 @@ def _single_face_highlight_card(
             min(max(px + 24.0, 40.0), float(composed.width - 40)),
             min(max(py - 20.0, 40.0), float(composed.height - 40)),
         )
-        draw.ellipse((px - 6, py - 6, px + 6, py + 6), fill=(255, 230, 74), outline=(25, 25, 25), width=2)
+        if show_contact_point:
+            contact_radius = 10.0
+            draw.ellipse(
+                (
+                    px - contact_radius,
+                    py - contact_radius,
+                    px + contact_radius,
+                    py + contact_radius,
+                ),
+                fill=(32, 235, 70),
+                outline=(10, 45, 15),
+                width=3,
+            )
         _draw_marker_circle(
             draw,
             xy=label_xy,
@@ -1431,6 +1634,16 @@ def _single_face_highlight_card(
                     float(bbox_pixels[:, 1].min()),
                     float(bbox_pixels[:, 0].max()),
                     float(bbox_pixels[:, 1].max()),
+                ),
+                fill=255,
+            )
+        if show_motion_axis and arrow_visible:
+            crop_draw.rectangle(
+                (
+                    float(arrow_pixels[:, 0].min()) - 18.0,
+                    float(arrow_pixels[:, 1].min()) - 18.0,
+                    float(arrow_pixels[:, 0].max()) + 18.0,
+                    float(arrow_pixels[:, 1].max()) + 18.0,
                 ),
                 fill=255,
             )
@@ -1495,6 +1708,8 @@ def render_tool(
         "part_cards",
         "selected_part_bbox_overview",
         "selected_part_face_highlights",
+        "selected_contact_point_highlights",
+        "selected_motion_axis_highlights",
         "contact_marker_overviews",
         "function_contact_choices",
         "contact_point_choices",
@@ -1511,6 +1726,8 @@ def render_tool(
     part_cards: dict[str, str] = {}
     selected_part_bbox_overviews: dict[str, str] = {}
     face_highlight_cards: list[dict[str, Any]] = []
+    contact_point_highlight_cards: list[dict[str, Any]] = []
+    motion_axis_highlight_cards: list[dict[str, Any]] = []
     part_choice_overview: str | None = None
     isolated_part_choice_overview: str | None = None
     contact_marker_rows: list[dict[str, Any]] = []
@@ -1578,6 +1795,8 @@ def render_tool(
         part_contact_rows = _contact_marker_table(
             part_id=part_id,
             part_ref=row["part_ref"],
+            part=part,
+            all_parts=parts,
             marker=marker,
             grounding_candidates=grounding_candidates,
         )
@@ -1607,43 +1826,72 @@ def render_tool(
             selected_bbox_overview.save(bbox_path)
             selected_part_bbox_overviews[part_id] = str(bbox_path)
         face_highlight_dir = tool_out / "selected_part_face_highlights"
+        contact_highlight_dir = tool_out / "selected_contact_point_highlights"
+        motion_axis_highlight_dir = tool_out / "selected_motion_axis_highlights"
         for face_row in part_contact_rows:
             face_marker = str(face_row.get("face_marker") or face_row.get("contact_marker"))
-            face_view_indices = _best_contact_view_indices(
-                contact_rows=[face_row],
-                context=context,
+            face_view_indices = _best_bbox_face_view_indices(
+                face_row=face_row,
+                part=part,
                 meta=meta,
                 view_indices=view_indices,
                 max_views=max(3, int(contact_card_views)),
             )
-            face_card = _single_face_highlight_card(
-                render_paths=render_paths,
-                context=context,
-                meta=meta,
-                part=part,
-                part_label=part_label,
-                marker=marker,
-                face_row=face_row,
-                view_indices=face_view_indices,
-                panel_width=panel_width,
-                marker_font=marker_font,
-            )
+            common_card_kwargs = {
+                "render_paths": render_paths,
+                "context": context,
+                "meta": meta,
+                "part": part,
+                "part_label": part_label,
+                "marker": marker,
+                "face_row": face_row,
+                "view_indices": face_view_indices,
+                "panel_width": panel_width,
+                "marker_font": marker_font,
+            }
+            face_card = _single_face_highlight_card(**common_card_kwargs)
             if face_card is None:
                 continue
+            contact_card = _single_face_highlight_card(
+                **common_card_kwargs,
+                show_contact_point=True,
+                show_motion_axis=False,
+            )
+            motion_axis_card = _single_face_highlight_card(
+                **common_card_kwargs,
+                show_contact_point=False,
+                show_motion_axis=True,
+            )
             face_highlight_dir.mkdir(parents=True, exist_ok=True)
             face_path = face_highlight_dir / f"candidate_{int(marker):03d}_face_{face_marker}_highlight.png"
             face_card.save(face_path)
-            face_highlight_cards.append(
-                {
-                    "part_id": part_id,
-                    "part_marker": marker,
-                    "face_marker": face_marker,
-                    "path": str(face_path),
-                    "point_ref": face_row.get("point_ref"),
-                    "surface_ref": face_row.get("surface_ref"),
-                    "patch_id": face_row.get("patch_id"),
-                }
-            )
+            card_info = {
+                "part_id": part_id,
+                "part_marker": marker,
+                "face_marker": face_marker,
+                "point_ref": face_row.get("point_ref"),
+                "surface_ref": face_row.get("surface_ref"),
+                "patch_id": face_row.get("patch_id"),
+                "axis_role": face_row.get("axis_role"),
+                "bbox_axis_tool": face_row.get("bbox_axis_tool"),
+                "bbox_face_area_m2": face_row.get("bbox_face_area_m2"),
+                "normal_tool": face_row.get("normal_tool"),
+            }
+            face_highlight_cards.append({**card_info, "path": str(face_path)})
+            if contact_card is not None:
+                contact_highlight_dir.mkdir(parents=True, exist_ok=True)
+                contact_path = (
+                    contact_highlight_dir / f"candidate_{int(marker):03d}_face_{face_marker}_contact.png"
+                )
+                contact_card.save(contact_path)
+                contact_point_highlight_cards.append({**card_info, "path": str(contact_path)})
+            if motion_axis_card is not None:
+                motion_axis_highlight_dir.mkdir(parents=True, exist_ok=True)
+                motion_path = (
+                    motion_axis_highlight_dir / f"candidate_{int(marker):03d}_face_{face_marker}_axis.png"
+                )
+                motion_axis_card.save(motion_path)
+                motion_axis_highlight_cards.append({**card_info, "path": str(motion_path)})
         if export_ppt_vector_assets and part_contact_rows and not ppt_vector_assets:
             ppt_vector_assets = _export_ppt_vector_assets(
                 output_root=output_root,
@@ -1676,6 +1924,8 @@ def render_tool(
         "part_cards": part_cards,
         "selected_part_bbox_overviews": selected_part_bbox_overviews,
         "face_highlight_cards": face_highlight_cards,
+        "contact_point_highlight_cards": contact_point_highlight_cards,
+        "motion_axis_highlight_cards": motion_axis_highlight_cards,
         "region_marker_table": rows,
         "contact_marker_table": contact_marker_rows,
         "selected_contact_markers": sorted(selected_contact_markers) if selected_contact_markers else None,
@@ -1748,16 +1998,27 @@ def _write_index(output_root: Path, results: list[dict[str, Any]]) -> Path:
             for card in result.get("face_highlight_cards", [])
             if isinstance(card, Mapping) and card.get("path")
         )
+        contact_links = " ".join(
+            f"<a href='{Path(str(card['path'])).relative_to(output_root)}'>{card['part_marker']}/{card['face_marker']}</a>"
+            for card in result.get("contact_point_highlight_cards", [])
+            if isinstance(card, Mapping) and card.get("path")
+        )
+        axis_links = " ".join(
+            f"<a href='{Path(str(card['path'])).relative_to(output_root)}'>{card['part_marker']}/{card['face_marker']}</a>"
+            for card in result.get("motion_axis_highlight_cards", [])
+            if isinstance(card, Mapping) and card.get("path")
+        )
         rows.append(
             f"<tr><td>{tool_id}</td><td>{result['part_count']}</td><td>{overview_link}</td>"
             f"<td>{isolated_overview_link}</td><td>{card_links}</td>"
-            f"<td>{bbox_links}</td><td>{face_links}</td></tr>"
+            f"<td>{bbox_links}</td><td>{contact_links}</td><td>{axis_links}</td><td>{face_links}</td></tr>"
         )
     html_path = output_root / "index.html"
     html_path.write_text(
         "<!doctype html><html><body>"
         "<table><thead><tr><th>tool</th><th>parts</th><th>whole mesh overview</th>"
-        "<th>isolated overview</th><th>part cards</th><th>selected bbox</th><th>face highlights</th>"
+        "<th>isolated overview</th><th>part cards</th><th>selected bbox</th>"
+        "<th>contact point highlights</th><th>motion axis highlights</th><th>combined debug highlights</th>"
         f"</tr></thead><tbody>{''.join(rows)}</tbody></table></body></html>\n",
         encoding="utf-8",
     )
@@ -1831,7 +2092,7 @@ def main() -> int:
         "--export-ppt-vector-assets",
         action="store_true",
         help=(
-            "Also export PPT-oriented SVG vector assets from the same 5.15-style "
+            "Also export PPT-oriented SVG vector assets from the same standard "
             "projection geometry: contact-region SVGs and clean subgoal ghost SVGs."
         ),
     )
@@ -1940,7 +2201,7 @@ def main() -> int:
                     "path": path,
                     "part_marker": str(marker),
                     "description": (
-                        f"5.15-style selected-part bbox overview for part candidate {marker} on {tool_id}."
+                        f"Standard selected-part bbox overview for part candidate {marker} on {tool_id}."
                     ),
                     "provider_id": "sampart3d_part_role_evidence",
                     "source_stage": "offline_tool_part_visualization",
@@ -1965,9 +2226,63 @@ def main() -> int:
                     "surface_ref": card.get("surface_ref"),
                     "patch_id": card.get("patch_id"),
                     "description": (
-                        f"5.15-style selected-part face evidence for {tool_id} part {marker}, face {face_marker}: "
-                        "part bbox is drawn, only this bbox face is highlighted, and the contact point plus "
-                        "surface-normal/motion-axis arrow are shown."
+                        f"Planning combined selected-part face evidence for {tool_id} part {marker}, face {face_marker}: "
+                        "part bbox is drawn, only this bbox face is highlighted, and both the contact point and "
+                        "bbox-face motion-axis arrow are shown."
+                    ),
+                    "provider_id": "sampart3d_part_role_evidence",
+                    "source_stage": "offline_tool_part_visualization",
+                    "allowed_use": "planning_context",
+                }
+            )
+        for card in result.get("contact_point_highlight_cards", []):
+            if not isinstance(card, Mapping):
+                continue
+            marker = str(card.get("part_marker"))
+            face_marker = str(card.get("face_marker"))
+            path = str(card.get("path"))
+            items.append(
+                {
+                    "id": f"{tool_id}_part_candidate_{marker}_face_{face_marker}_contact_point_highlight",
+                    "kind": "selected_part_contact_point_highlight",
+                    "media_type": "image",
+                    "path": path,
+                    "part_marker": marker,
+                    "face_marker": face_marker,
+                    "point_ref": card.get("point_ref"),
+                    "surface_ref": card.get("surface_ref"),
+                    "patch_id": card.get("patch_id"),
+                    "description": (
+                        f"Planning contact-point evidence for {tool_id} part {marker}, face {face_marker}: "
+                        "part bbox and only this bbox face are highlighted, with the green contact point shown. "
+                        "No motion-axis arrow is drawn."
+                    ),
+                    "provider_id": "sampart3d_part_role_evidence",
+                    "source_stage": "offline_tool_part_visualization",
+                    "allowed_use": "planning_context",
+                }
+            )
+        for card in result.get("motion_axis_highlight_cards", []):
+            if not isinstance(card, Mapping):
+                continue
+            marker = str(card.get("part_marker"))
+            face_marker = str(card.get("face_marker"))
+            path = str(card.get("path"))
+            items.append(
+                {
+                    "id": f"{tool_id}_part_candidate_{marker}_face_{face_marker}_motion_axis_highlight",
+                    "kind": "selected_part_motion_axis_highlight",
+                    "media_type": "image",
+                    "path": path,
+                    "part_marker": marker,
+                    "face_marker": face_marker,
+                    "point_ref": card.get("point_ref"),
+                    "surface_ref": card.get("surface_ref"),
+                    "patch_id": card.get("patch_id"),
+                    "description": (
+                        f"Planning motion-axis evidence for {tool_id} part {marker}, face {face_marker}: "
+                        "part bbox and only this bbox face are highlighted, with the red bbox-face motion-axis "
+                        "arrow shown. No green contact point is drawn."
                     ),
                     "provider_id": "sampart3d_part_role_evidence",
                     "source_stage": "offline_tool_part_visualization",
@@ -1997,9 +2312,13 @@ def main() -> int:
                 "The whole-mesh part-choice overview exposes anonymous SAMPart3D regions in full-tool context "
                 "as one multi-view sheet with colored part overlays for contact-region selection. "
                 "Isolated cards are auxiliary debug views. After a part is selected, the renderer emits a "
-                "selected-part bbox overview plus one selected-part face-highlight card per F marker; each "
-                "face card shows the bbox, one highlighted bbox face, the contact point, and the surface "
-                "normal/motion-axis arrow. This renderer must not emit legacy per-face/contact-choice paths."
+                "selected-part bbox overview plus split contact-point and motion-axis cards per F marker. "
+                "Per-face bbox context cards isolate the selected part and highlight one bbox face to clarify "
+                "which local side each F marker denotes. "
+                "Contact-point cards show the highlighted bbox face and green contact point only; motion-axis "
+                "cards show the highlighted bbox face and red bbox-face motion-axis arrow only. Combined "
+                "face-highlight cards are debug-only. The arrow is derived from the bbox face patch id, not "
+                "from noisy mesh surface normals. This renderer must not emit legacy per-face/contact-choice paths."
             ),
         },
     }

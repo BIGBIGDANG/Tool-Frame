@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the image-grounded long-screwdriver deep-socket insertion smoke."""
+"""Run the image-grounded screwdriver socket-insertion benchmark."""
 
 from __future__ import annotations
 
@@ -34,6 +34,10 @@ from parttoolgen.evaluation.tool_selection_evidence import (
 from parttoolgen.adapters.simtoolreal_policy_priors import (
     table_contact_start_pose_from_state_bundle,
 )
+from parttoolgen.pipeline.trial_tool_refs import (
+    add_tool_ref_mode_args,
+    resolve_trial_tool_refs,
+)
 
 
 def repo_root() -> Path:
@@ -43,13 +47,13 @@ def repo_root() -> Path:
 ROOT = repo_root()
 DEFAULT_TOOL_REFS_DIR = ROOT / "configs/tool_refs/long_screwdriver"
 TABLE_ASSET = "urdf/parttoolgen_benchmark/tabletop_polyhaven_wood_table/tabletop_polyhaven_wood_table.urdf"
+DEFAULT_TOOL_ID = "long_screwdriver"
 TOOL_MESH = "simtoolreal/assets/urdf/dextoolbench/screwdriver/long_screwdriver/long_screwdriver.obj"
 TOOL_TRAJECTORY = "simtoolreal/dextoolbench/trajectories/screwdriver/long_screwdriver/spin_vertical.json"
 SOCKET_ASSET = "urdf/parttoolgen_benchmark/screwdriver_insert_socket/deep_socket_075x075x055.urdf"
 TABLE_Z = 0.38
 TABLE_TOP_Z = 0.53
 SOCKET_TOP_LOCAL_Z = 0.055
-SOCKET_TERMINAL_INSIDE_DEPTH_M = 0.035
 SUCCESS_MIN_INSIDE_DEPTH_M = 0.005
 SOCKET_SIZE_XYZ = [0.036, 0.036, 0.055]
 SOCKET_INNER_DIAMETER_M = 0.008
@@ -119,7 +123,7 @@ def _clamp(value: float, lo: float, hi: float) -> float:
     return max(float(lo), min(float(hi), float(value)))
 
 
-def _table_contact_tool_pose(pose_xyzw: list[float]) -> list[float]:
+def _table_contact_tool_pose(pose_xyzw: list[float], *, tool_mesh: str = TOOL_MESH) -> list[float]:
     projected = table_contact_start_pose_from_state_bundle(
         start_pose={
             "position": [float(item) for item in pose_xyzw[:3]],
@@ -129,7 +133,7 @@ def _table_contact_tool_pose(pose_xyzw: list[float]) -> list[float]:
             "table_pose_xyzw": [0.0, 0.0, TABLE_Z, 0.0, 0.0, 0.0, 1.0],
             "table_asset": TABLE_ASSET,
         },
-        tool_mesh_path=TOOL_MESH,
+        tool_mesh_path=tool_mesh,
         min_tool_table_clearance_m=TOOL_TABLE_CLEARANCE_M,
     )
     return [
@@ -141,11 +145,15 @@ def _table_contact_tool_pose(pose_xyzw: list[float]) -> list[float]:
 def _sample_seed_params(
     seed: int,
     *,
+    tool_mesh: str = TOOL_MESH,
+    start_pose_insert: list[float] | None = None,
     socket_top_local_z_m: float = SOCKET_TOP_LOCAL_Z,
     socket_size_xyz: list[float] | None = None,
 ) -> dict[str, Any]:
     if socket_size_xyz is None:
         socket_size_xyz = list(SOCKET_SIZE_XYZ)
+    if start_pose_insert is None:
+        start_pose_insert = list(START_POSE_INSERT)
     rng = random.Random(int(seed))
     cols, rows = [int(item) for item in SEED_VARIATION_POLICY["target_grid_shape"]]
     col = int(seed) % cols
@@ -168,7 +176,10 @@ def _sample_seed_params(
     )
     target_yaw_deg = 0.0
 
-    tool_pose = _table_contact_tool_pose([float(item) for item in START_POSE_INSERT])
+    tool_pose = _table_contact_tool_pose(
+        [float(item) for item in start_pose_insert],
+        tool_mesh=tool_mesh,
+    )
     tool_x = float(tool_pose[0])
     tool_y = float(tool_pose[1])
     rel_x = tool_x - target_x
@@ -187,15 +198,14 @@ def _sample_seed_params(
         "tool_target_distance_m": tool_distance,
         "tool_xy_relative_to_target_m": [tool_x - target_x, tool_y - target_y],
         "tool_xy_offset_from_nominal_m": [
-            tool_x - float(START_POSE_INSERT[0]),
-            tool_y - float(START_POSE_INSERT[1]),
+            tool_x - float(start_pose_insert[0]),
+            tool_y - float(start_pose_insert[1]),
         ],
         "tool_yaw_jitter_deg": tool_yaw_deg,
         "target_center_world": opening_world,
         "target_yaw_deg": target_yaw_deg,
         "target_pose_xyzw": socket_pose,
         "target_size_xyz": [float(item) for item in socket_size_xyz],
-        "terminal_inside_depth_m": SOCKET_TERMINAL_INSIDE_DEPTH_M,
         "sampler_policy": copy.deepcopy(SEED_VARIATION_POLICY),
     }
 
@@ -286,7 +296,6 @@ def _load_benchmark_config_defaults(
         "capture_video_every",
         "approach_offset_m",
         "target_approach_axis_source",
-        "terminal_inside_depth_m",
         "success_min_inside_depth_m",
         "initial_grasp_lift_m",
         "initial_grasp_lift_steps",
@@ -404,12 +413,16 @@ def _method_facing_task(task: dict[str, Any]) -> dict[str, Any]:
         "public_scene": copy.deepcopy(task.get("public_scene", {})),
         "metadata": {
             "method_contract": (
-                "method-facing task keeps public benchmark actors visible in "
-                "the VLM scene evidence; hidden evaluator-only geometry remains omitted"
+                "method-facing task keeps public benchmark actors and public "
+                "entry-plane geometry visible to the VLM/lift stages; hidden "
+                "evaluator-only geometry remains omitted"
             ),
             "private_scene_geometry_omitted": False,
             "public_support_surface_normal_world": copy.deepcopy(
                 task.get("metadata", {}).get("public_support_surface_normal_world", [0.0, 0.0, 1.0])
+            ),
+            "public_target_entry_point_world": copy.deepcopy(
+                task.get("metadata", {}).get("public_target_entry_point_world")
             ),
         },
     }
@@ -421,6 +434,9 @@ def _task_spec(
     seed: int,
     tool_refs_dir: Path,
     seed_params: dict[str, Any],
+    tool_id: str = DEFAULT_TOOL_ID,
+    tool_mesh: str = TOOL_MESH,
+    tool_start_pose_source: str = TOOL_TRAJECTORY,
     variant: str = "deep_socket",
     socket_asset: str = SOCKET_ASSET,
     socket_size_xyz: list[float] | None = None,
@@ -437,21 +453,21 @@ def _task_spec(
         "split": "dev",
         "instruction": "Use this screwdriver to insert its tip into the socket.",
         "tool": {
-            "tool_id": "long_screwdriver",
+            "tool_id": tool_id,
             "tool_prior_dir": _repo_display(tool_refs_dir),
         },
         "execution": {
             "simtoolreal_category": "screwdriver",
             "simtoolreal_table_asset": TABLE_ASSET,
-            "simtoolreal_tool_mesh": TOOL_MESH,
-            "simtoolreal_start_pose_source": TOOL_TRAJECTORY,
-            "start_pose_policy": "seeded_dextoolbench_long_screwdriver_insert_start",
+            "simtoolreal_tool_mesh": tool_mesh,
+            "simtoolreal_start_pose_source": tool_start_pose_source,
+            "start_pose_policy": "fixed_near_hand_table_contact_start",
             "simtoolreal_start_pose": start_pose,
             "state_bundle": {
                 "table_pose_xyzw": [0.0, 0.0, TABLE_Z, 0.0, 0.0, 0.0, 1.0],
                 "table_asset": TABLE_ASSET,
                 "table_z": TABLE_Z,
-                "object_name": "long_screwdriver",
+                "object_name": tool_id,
                 "object_category": "screwdriver",
                 "task_name": "screwdriver_insert",
                 "target_collision_role": "movable_public_hammer_style_hollow_column_socket",
@@ -476,7 +492,7 @@ def _task_spec(
             "method_inputs": [
                 "task language",
                 "SimToolReal RGB-D render",
-                "public long_screwdriver tool refs from P3SAM/VLM part-face grounding",
+                f"public {tool_id} tool refs from P3SAM/VLM part-face grounding",
                 "public visible screw-hole actor geometry in the scene render",
             ],
             "forbidden_method_inputs": [
@@ -493,12 +509,12 @@ def _task_spec(
             "benchmark_role": f"image_grounded_screwdriver_insert_{variant}_smoke",
             "target_kind": f"public_{variant}_opening",
             "public_support_surface_normal_world": [0.0, 0.0, 1.0],
+            "public_target_entry_point_world": target_center,
             "socket_opening_center_world": target_center,
             "socket_root_pose_xyzw": target_pose,
             "socket_yaw_deg": float(seed_params["target_yaw_deg"]),
             "socket_size_xyz": [float(item) for item in socket_size_xyz],
             "socket_top_local_z_m": float(socket_top_local_z_m),
-            "terminal_inside_depth_m": float(seed_params["terminal_inside_depth_m"]),
             "start_pose_xyzw": start_pose,
             "target_grid_cell": list(seed_params["target_grid_cell"]),
             "tool_target_angle_deg": float(seed_params["tool_target_angle_deg"]),
@@ -513,10 +529,10 @@ def _task_spec(
             "seed_variation_policy": copy.deepcopy(SEED_VARIATION_POLICY),
             "tool_start_policy": "fixed_near_hand_start_pose_shared_by_vlm_render_and_rollout",
             "notes": (
-                "Long-screwdriver insertion uses a public, movable deep-socket "
-                "actor. The VLM grounds the opening center from RGB-D evidence; "
-                "the use-stage direction comes from VLM point refs, with the "
-                "terminal inside-socket goal supplied by the task contract."
+                f"{tool_id} insertion uses a public, movable deep-socket "
+                "actor. The VLM grounds visible point refs from RGB-D evidence; "
+                "the compiler uses the lifted VLM endpoint directly, without "
+                "a hidden task-contract insertion depth."
             ),
         },
     }
@@ -552,103 +568,8 @@ def _validate_tool_refs_dir(path: Path) -> None:
         raise FileNotFoundError(
             "missing screwdriver tool refs in "
             f"{path}: {', '.join(missing)}. Generate task-conditioned "
-            "long_screwdriver refs before running this benchmark."
+            "screwdriver refs before running this benchmark."
         )
-
-
-def _point_along(point: list[float], axis: list[float], distance_m: float) -> list[float]:
-    unit = _unit_vector(axis)
-    return [float(point[i]) + unit[i] * float(distance_m) for i in range(3)]
-
-
-def _rewrite_scene_refs_for_socket_terminal_goal(
-    scene_refs: dict[str, Any],
-    *,
-    terminal_inside_depth_m: float,
-) -> dict[str, Any]:
-    contact = scene_refs.get("start_point") or scene_refs.get("start")
-    if not isinstance(contact, dict) or not isinstance(contact.get("position_world"), list):
-        raise ValueError("lifted scene refs missing start_point.position_world")
-    axis = None
-    axis_source = "vlm_scene_direction"
-    direction = scene_refs.get("direction")
-    if isinstance(direction, list) and len(direction) >= 3:
-        axis = [float(item) for item in direction[:3]]
-    if axis is None:
-        raise ValueError("screwdriver insertion requires lifted VLM scene.direction")
-    axis = _unit_vector(axis)
-    contact_position = [float(item) for item in contact["position_world"][:3]]
-    end = dict(contact)
-    end["keypoint_id"] = "target_socket_inside_terminal"
-    end["role"] = "target_socket_inside_terminal"
-    end["position_world"] = _point_along(contact_position, axis, float(terminal_inside_depth_m))
-    end["source"] = f"task_contract_socket_inside_goal_along_{axis_source}"
-    end["terminal_inside_depth_m"] = float(terminal_inside_depth_m)
-    motion_path = [dict(contact), end]
-    scene_refs["end"] = end
-    scene_refs["use"] = end
-    scene_refs["action_endpoint"] = end
-    scene_refs["direction"] = axis
-    scene_refs["motion_path"] = motion_path
-    scene_refs["direction_source"] = f"{axis_source}_plus_task_socket_inside_goal"
-    scene_refs["action_distance_m"] = float(terminal_inside_depth_m)
-    scene_refs["action_distance_source"] = f"task_contract_socket_inside_goal_along_{axis_source}"
-    scene_refs["terminal_socket_goal"] = {
-        "type": "tip_inside_socket",
-        "socket_center_ref": "scene.start",
-        "terminal_ref": "scene.end",
-        "axis_ref": "scene.direction",
-        "terminal_inside_depth_m": float(terminal_inside_depth_m),
-        "source": "public_task_contract",
-    }
-    scene_refs["target_approach_axis"] = {
-        "vector_world": [-axis[0], -axis[1], -axis[2]],
-        "source": f"opposite_{axis_source}",
-    }
-    semantic_refs = scene_refs.get("semantic_refs")
-    if isinstance(semantic_refs, dict):
-        use_stage = semantic_refs.get("use_stage")
-        if isinstance(use_stage, dict):
-            use_stage["end"] = end
-            use_stage["path"] = motion_path
-            use_stage["action_distance_m"] = float(terminal_inside_depth_m)
-            use_stage["terminal_socket_goal"] = dict(scene_refs["terminal_socket_goal"])
-            axis_ref = use_stage.get("axis")
-            if isinstance(axis_ref, dict):
-                axis_ref["vector_world"] = axis
-                axis_ref["source"] = f"{axis_source}_plus_task_socket_inside_goal"
-        semantic_refs["use_stage_refs"] = semantic_refs.get("use_stage")
-    return scene_refs
-
-
-def _apply_socket_terminal_goal(lifted_dir: Path, *, terminal_inside_depth_m: float) -> None:
-    for filename in ("lifted_refs.json", "constraint_program.json"):
-        path = lifted_dir / filename
-        data = _load_json(path)
-        if filename == "constraint_program.json":
-            scene_refs = data.get("scene_refs")
-            if not isinstance(scene_refs, dict):
-                raise ValueError("constraint_program.json missing scene_refs")
-            data["scene_refs"] = _rewrite_scene_refs_for_socket_terminal_goal(
-                scene_refs,
-                terminal_inside_depth_m=terminal_inside_depth_m,
-            )
-            metadata = data.setdefault("metadata", {})
-            if isinstance(metadata, dict):
-                metadata["screwdriver_terminal_socket_goal"] = {
-                    "terminal_inside_depth_m": float(terminal_inside_depth_m),
-                    "source": "public_task_contract",
-                }
-        else:
-            _rewrite_scene_refs_for_socket_terminal_goal(
-                data,
-                terminal_inside_depth_m=terminal_inside_depth_m,
-            )
-            data["screwdriver_terminal_socket_goal"] = {
-                "terminal_inside_depth_m": float(terminal_inside_depth_m),
-                "source": "public_task_contract",
-            }
-        _write_json(path, data)
 
 
 def _stage_passed(execution_report: dict[str, Any], stage_prefix: str) -> bool:
@@ -858,18 +779,11 @@ def _insertion_metrics(
         if isinstance(report, Mapping) and report.get("semantic_execution_passed") is not None:
             semantic_passed = bool(report["semantic_execution_passed"])
             break
-    terminal_goal = lifted_refs.get("terminal_socket_goal")
-    terminal_depth = (
-        terminal_goal.get("terminal_inside_depth_m")
-        if isinstance(terminal_goal, Mapping)
-        else None
-    )
-    if terminal_depth is None:
-        terminal_depth = lifted_refs.get("action_distance_m")
+    terminal_depth = lifted_refs.get("action_distance_m")
     try:
-        terminal_inside_depth_m = float(terminal_depth)
+        vlm_lifted_action_distance_m = float(terminal_depth)
     except (TypeError, ValueError):
-        terminal_inside_depth_m = None
+        vlm_lifted_action_distance_m = None
     semantic_contact_error = (
         _semantic_contact_error(execution_report)
         if isinstance(execution_report, Mapping)
@@ -906,13 +820,13 @@ def _insertion_metrics(
         "tip_insertion_depth_m": None,
         "tip_end_3d_error_m": semantic_contact_error,
         "semantic_contact_error_to_depth_end_m": semantic_contact_error,
-        "terminal_inside_depth_m": terminal_inside_depth_m,
+        "vlm_lifted_action_distance_m": vlm_lifted_action_distance_m,
         "axis_cosine": axis_cosine,
         "semantic_execution_passed": semantic_passed,
     }
     if isinstance(path_metrics, Mapping):
         metrics.update(path_metrics)
-        metrics["terminal_inside_depth_m"] = terminal_inside_depth_m
+        metrics["vlm_lifted_action_distance_m"] = vlm_lifted_action_distance_m
         metrics["axis_cosine"] = axis_cosine
         metrics["semantic_execution_passed"] = semantic_passed
         metrics["semantic_contact_error_to_depth_end_m"] = semantic_contact_error
@@ -1032,7 +946,7 @@ def _refresh_success_fields(
 
 def _run_trial(*, seed: int, index: int, args: argparse.Namespace) -> dict[str, Any]:
     variant = _variant_slug(getattr(args, "task_variant", "deep_socket"))
-    task_id = f"long_screwdriver_{variant}_insert_seed_{seed:03d}"
+    task_id = f"{args.tool_id}_{variant}_insert_seed_{seed:03d}"
     trial_dir = args.output_root / task_id
     if args.resume and (trial_dir / "trial_result.json").exists():
         result = _refresh_success_fields(
@@ -1057,15 +971,19 @@ def _run_trial(*, seed: int, index: int, args: argparse.Namespace) -> dict[str, 
 
     seed_params = _sample_seed_params(
         seed,
+        tool_mesh=str(args.tool_mesh),
+        start_pose_insert=[float(item) for item in args.fixed_start_pose],
         socket_top_local_z_m=float(args.socket_top_local_z_m),
         socket_size_xyz=[float(item) for item in args.socket_size_xyz],
     )
-    seed_params["terminal_inside_depth_m"] = float(args.terminal_inside_depth_m)
     task = _task_spec(
         task_id=task_id,
         seed=seed,
         tool_refs_dir=args.tool_refs_dir,
         seed_params=seed_params,
+        tool_id=args.tool_id,
+        tool_mesh=str(args.tool_mesh),
+        tool_start_pose_source=str(args.tool_start_pose_source),
         variant=variant,
         socket_asset=str(args.socket_asset),
         socket_size_xyz=[float(item) for item in args.socket_size_xyz],
@@ -1076,6 +994,18 @@ def _run_trial(*, seed: int, index: int, args: argparse.Namespace) -> dict[str, 
     _write_json(task_path, task)
     _write_json(method_task_path, _method_facing_task(task))
     py = _python()
+    trial_tool_refs_dir = resolve_trial_tool_refs(
+        repo_root=ROOT,
+        python=py,
+        args=args,
+        trial_dir=trial_dir,
+        static_tool_refs_dir=args.tool_refs_dir,
+        tool_id=args.tool_id,
+        task_id=task_id,
+        task_instruction=str(task.get("instruction") or ""),
+        log_path=trial_dir / "logs/tool_refs.json",
+        env=_env(),
+    )
 
     render_dir = trial_dir / "sim_rgbd"
     _run(
@@ -1163,7 +1093,7 @@ def _run_trial(*, seed: int, index: int, args: argparse.Namespace) -> dict[str, 
             "--target-approach-axis-source",
             args.target_approach_axis_source,
             "--end-surface-policy",
-            "anchor_contact_plane",
+            "entry_contact_plane_end_raw_depth",
             "--target-surface-normal-world",
             "0",
             "0",
@@ -1171,11 +1101,6 @@ def _run_trial(*, seed: int, index: int, args: argparse.Namespace) -> dict[str, 
         ],
         log_path=trial_dir / "logs/lift.json",
     )
-    _apply_socket_terminal_goal(
-        lifted_dir,
-        terminal_inside_depth_m=float(args.terminal_inside_depth_m),
-    )
-
     enriched_program = lifted_dir / "constraint_program_with_tool_refs.json"
     _run(
         [
@@ -1184,11 +1109,11 @@ def _run_trial(*, seed: int, index: int, args: argparse.Namespace) -> dict[str, 
             "--program",
             str(lifted_dir / "constraint_program.json"),
             "--axis-binding",
-            str(args.tool_refs_dir / "axis_binding.json"),
+            str(trial_tool_refs_dir / "axis_binding.json"),
             "--axis-mesh-report",
-            str(args.tool_refs_dir / "axis_mesh_overlay_report.json"),
+            str(trial_tool_refs_dir / "axis_mesh_overlay_report.json"),
             "--contact-point-selection",
-            str(args.tool_refs_dir / "contact_point_selection.json"),
+            str(trial_tool_refs_dir / "contact_point_selection.json"),
             "--output",
             str(enriched_program),
         ],
@@ -1244,7 +1169,7 @@ def _run_trial(*, seed: int, index: int, args: argparse.Namespace) -> dict[str, 
             "--state-bundle",
             str(trial_dir / "state_bundle.json"),
             "--tool-mesh",
-            TOOL_MESH,
+            str(args.tool_mesh),
             "--output-dir",
             str(rollout_dir),
             "--device",
@@ -1265,6 +1190,8 @@ def _run_trial(*, seed: int, index: int, args: argparse.Namespace) -> dict[str, 
                 [
                     "--capture-video",
                     "--capture-topdown-video",
+                    "--capture-subgoal-video",
+                    "--capture-subgoal-topdown-video",
                     "--hide-goal-object-visual",
                     "--video-fps",
                     "24",
@@ -1320,7 +1247,7 @@ def _run_trial(*, seed: int, index: int, args: argparse.Namespace) -> dict[str, 
         trial_dir=trial_dir,
         render_dir=render_dir,
         grounding_dir=grounding_dir,
-        tool_refs_dir=args.tool_refs_dir,
+        tool_refs_dir=trial_tool_refs_dir,
         compile_dir=compile_dir,
         rollout_dir=trial_dir / "rollout",
         copy_files=False,
@@ -1343,11 +1270,7 @@ def _run_trial(*, seed: int, index: int, args: argparse.Namespace) -> dict[str, 
         "insertion_axis_world": lifted_refs.get("direction"),
         "direction_source": lifted_refs.get("direction_source"),
         "action_distance_m": lifted_refs.get("action_distance_m"),
-        "terminal_inside_depth_m": (
-            lifted_refs.get("terminal_socket_goal", {}).get("terminal_inside_depth_m")
-            if isinstance(lifted_refs.get("terminal_socket_goal"), Mapping)
-            else None
-        ),
+        "vlm_lifted_action_distance_m": lifted_refs.get("action_distance_m"),
         "selected_contact_point_face": selected_tool_refs.get("contact_point_face_marker"),
         "selected_contact_point_ref": (
             selected_tool_refs.get("contact_point_ref")
@@ -1553,6 +1476,11 @@ def main() -> int:
         default=ROOT / "artifacts/image_grounded/screwdriver_insert/deep_socket_original_rgb_smoke",
     )
     parser.add_argument("--tool-refs-dir", type=Path, default=DEFAULT_TOOL_REFS_DIR)
+    add_tool_ref_mode_args(parser)
+    parser.add_argument("--tool-id", default=DEFAULT_TOOL_ID)
+    parser.add_argument("--tool-mesh", default=TOOL_MESH)
+    parser.add_argument("--tool-start-pose-source", default=TOOL_TRAJECTORY)
+    parser.add_argument("--fixed-start-pose", nargs=7, type=float, default=list(START_POSE_INSERT))
     parser.add_argument("--seed-start", type=int, default=0)
     parser.add_argument("--trials", type=int, default=3)
     parser.add_argument("--device", default="cuda:0")
@@ -1565,15 +1493,6 @@ def main() -> int:
         "--target-approach-axis-source",
         choices=["opposite_scene_direction"],
         default="opposite_scene_direction",
-    )
-    parser.add_argument(
-        "--terminal-inside-depth-m",
-        type=float,
-        default=SOCKET_TERMINAL_INSIDE_DEPTH_M,
-        help=(
-            "Compiler terminal goal depth inside the socket aperture along the "
-            "VLM/default insertion axis. This defines the 3D task endpoint."
-        ),
     )
     parser.add_argument(
         "--success-min-inside-depth-m",
@@ -1593,7 +1512,7 @@ def main() -> int:
         type=float,
         default=SOCKET_TIP_RADIAL_TOLERANCE_M,
     )
-    parser.add_argument("--initial-grasp-lift-m", type=float, default=0.08)
+    parser.add_argument("--initial-grasp-lift-m", type=float, default=0.12)
     parser.add_argument("--initial-grasp-lift-steps", type=int, default=3)
     parser.add_argument("--initial-grasp-hold-steps", type=int, default=0)
     parser.add_argument("--response-mode", default="openai-compatible")
@@ -1633,6 +1552,7 @@ def main() -> int:
             else None,
             "task_source": "runner_generated_image_grounded_screwdriver_insert_task",
             "task_variant": args.task_variant,
+            "tool_id": args.tool_id,
             "tool_refs_dir": str(args.tool_refs_dir),
             "tool_selection_visual_evidence": tool_selection_evidence,
             "table_asset": TABLE_ASSET,
@@ -1641,10 +1561,11 @@ def main() -> int:
             "socket_top_local_z_m": float(args.socket_top_local_z_m),
             "socket_inner_diameter_m": float(args.socket_inner_diameter_m),
             "socket_tip_radial_tolerance_m": float(args.socket_tip_radial_tolerance_m),
-            "terminal_inside_depth_m": float(args.terminal_inside_depth_m),
             "success_min_inside_depth_m": float(args.success_min_inside_depth_m),
             "seed_variation_policy": copy.deepcopy(SEED_VARIATION_POLICY),
-            "tool_mesh": TOOL_MESH,
+            "tool_mesh": str(args.tool_mesh),
+            "tool_start_pose_source": str(args.tool_start_pose_source),
+            "fixed_start_pose_xyzw": [float(item) for item in args.fixed_start_pose],
             "seed_start": args.seed_start,
             "trials": args.trials,
             "device": args.device,
@@ -1664,7 +1585,7 @@ def main() -> int:
             "mainline_params": {
                 "depth_sample_policy": "nearest",
                 "direction_source": "vlm_scene_direction_plus_task_socket_inside_goal",
-                "end_depth_policy": "task_contract_socket_inside_goal_along_vlm_scene_direction",
+                "end_depth_policy": "vlm_lifted_scene_endpoint",
                 "tool_motion_axis_ref": "tool.motion_axis",
                 "tool_motion_axis_target_ref": "scene.direction",
                 "tool_motion_axis_relation": "parallel",
@@ -1687,7 +1608,7 @@ def main() -> int:
         try:
             row = _run_trial(seed=seed, index=index, args=args)
         except Exception as exc:
-            task_id = f"long_screwdriver_{args.task_variant}_insert_seed_{seed:03d}"
+            task_id = f"{args.tool_id}_{args.task_variant}_insert_seed_{seed:03d}"
             row = {
                 "index": index,
                 "seed": seed,

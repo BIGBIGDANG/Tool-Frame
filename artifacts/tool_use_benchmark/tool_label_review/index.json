@@ -3,34 +3,58 @@
   "purpose": "Human-reviewed evaluator-side audit labels. Candidate refs are method outputs, not ground truth for selection; approved labels are diagnostic-only checks for post-hoc attribution.",
   "entries": [
     {
+      "task_type": "brush_sweep",
+      "tool_id": "red_brush",
+      "review_file": "artifacts/tool_use_benchmark/tool_label_review/brush_sweep__red_brush.json",
+      "manual_review_status": "approved"
+    },
+    {
+      "task_type": "brush_sweep",
+      "tool_id": "blue_brush",
+      "review_file": "artifacts/tool_use_benchmark/tool_label_review/brush_sweep__blue_brush.json",
+      "manual_review_status": "approved"
+    },
+    {
       "task_type": "eraser_wipe",
       "tool_id": "flat_eraser",
       "review_file": "artifacts/tool_use_benchmark/tool_label_review/eraser_wipe__flat_eraser.json",
       "manual_review_status": "approved"
     },
     {
-      "task_type": "brush_sweep",
-      "tool_id": "red_brush",
-      "review_file": "artifacts/tool_use_benchmark/tool_label_review/brush_sweep__red_brush.json",
-      "manual_review_status": "pending"
+      "task_type": "eraser_wipe",
+      "tool_id": "handle_eraser",
+      "review_file": "artifacts/tool_use_benchmark/tool_label_review/eraser_wipe__handle_eraser.json",
+      "manual_review_status": "approved"
     },
     {
-      "task_type": "hammer_down_strike",
+      "task_type": "hammer_strike",
       "tool_id": "claw_hammer",
-      "review_file": "artifacts/tool_use_benchmark/tool_label_review/hammer_down_strike__claw_hammer.json",
-      "manual_review_status": "pending"
+      "review_file": "artifacts/tool_use_benchmark/tool_label_review/hammer_strike__claw_hammer.json",
+      "manual_review_status": "approved"
+    },
+    {
+      "task_type": "hammer_strike",
+      "tool_id": "mallet_hammer",
+      "review_file": "artifacts/tool_use_benchmark/tool_label_review/hammer_strike__mallet_hammer.json",
+      "manual_review_status": "approved"
     },
     {
       "task_type": "screwdriver_insert",
       "tool_id": "long_screwdriver",
       "review_file": "artifacts/tool_use_benchmark/tool_label_review/screwdriver_insert__long_screwdriver.json",
-      "manual_review_status": "pending"
+      "manual_review_status": "approved"
+    },
+    {
+      "task_type": "screwdriver_insert",
+      "tool_id": "short_screwdriver",
+      "review_file": "artifacts/tool_use_benchmark/tool_label_review/screwdriver_insert__short_screwdriver.json",
+      "manual_review_status": "approved"
     },
     {
       "task_type": "marker_trace",
       "tool_id": "staples_marker",
       "review_file": "artifacts/tool_use_benchmark/tool_label_review/marker_trace__staples_marker.json",
-      "manual_review_status": "pending"
+      "manual_review_status": "approved"
     }
   ]
 }

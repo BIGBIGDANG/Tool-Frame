@@ -138,12 +138,12 @@ def test_contact_prompt_keeps_all_semantically_valid_working_faces() -> None:
         ],
     )
 
-    assert "after downstream pose optimization" in prompt
-    assert "broad exposed working surfaces" in prompt
-    assert "symmetric or opposite working faces" in prompt
-    assert "Contact candidates are not motion-axis candidates" in prompt
-    assert "may appear in both candidate_contact_point_markers and candidate_motion_axis_markers" in prompt
-    assert "thin, flat, or geometrically near-degenerate functional parts" in prompt
+    assert "green dot is a representative point" in prompt
+    assert "red arrow is the candidate motion axis" in prompt
+    assert "candidate face a person would normally use to touch the target" in prompt
+    assert "which axis of the working part would be used to approach the target" in prompt
+    assert "A marker may be useful as a contact point, a motion axis, both, or neither" in prompt
+    assert "include all of them as candidates" in prompt
 
 
 def test_part_prompt_images_include_whole_and_isolated_overviews(tmp_path: Path) -> None:

@@ -13,7 +13,7 @@
     "rollout_max_steps": 1500,
     "rollout_max_tracking_error_m": 0.012,
     "capture_video_every": 1,
-    "initial_grasp_lift_m": 0.08,
+    "initial_grasp_lift_m": 0.12,
     "initial_grasp_lift_steps": 3,
     "initial_grasp_hold_steps": 0,
     "grasp_observation_offset_m": 0.0,
@@ -81,7 +81,7 @@
     "approach_offset_m": 0.12,
     "max_translation_step_m": 0.035,
     "max_rotation_step_rad": 0.3,
-    "initial_grasp_lift_m": 0.08,
+    "initial_grasp_lift_m": 0.12,
     "initial_grasp_lift_steps": 3,
     "initial_grasp_hold_steps": 0,
     "rollout_max_tracking_error_m": 0.012,
@@ -108,9 +108,9 @@
   },
   "contract_status": {
     "environment_id": "tabletop_wood_table",
-    "benchmark_status": "fixed/current",
-    "success_check_status": "reviewed_task_predicate",
-    "large_statistics_status": "allowed_after_smoke",
-    "notes": "This is the preferred brush-sweep benchmark for paper reporting because the final state is more semantically grounded and directly measurable than pure directional displacement."
+    "benchmark_status": "legacy/retired_red_zone",
+    "success_check_status": "legacy_target_zone_predicate",
+    "large_statistics_status": "excluded_use_brush_sweep_off_table",
+    "notes": "Retired brush-sweep split kept only for attribution/regression diagnostics. Use brush_sweep/off_table_red or brush_sweep/off_table_blue for current paper reporting."
   }
 }
