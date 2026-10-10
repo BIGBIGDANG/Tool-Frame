@@ -1,0 +1,48 @@
+{
+  "schema_version": "toolframe_scene_evidence_v0",
+  "task_id": "long_screwdriver_insert",
+  "instruction": "Use this screwdriver to insert its tip into the socket.",
+  "items": [
+    {
+      "id": "scene_rgb",
+      "kind": "scene_rgb",
+      "path": "scene_rgb.png"
+    },
+    {
+      "id": "scene_depth",
+      "kind": "scene_depth",
+      "path": "scene_depth.npy"
+    },
+    {
+      "id": "scene_camera",
+      "kind": "camera",
+      "path": "scene_camera.json"
+    }
+  ],
+  "metadata": {
+    "prompt_images": [
+      "scene_rgb.png"
+    ],
+    "grounding_image_index": 0,
+    "public_scene_context": {
+      "default_axis_candidates": [
+        {
+          "id": "support_surface_normal",
+          "vector_world": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "id": "opposite_support_surface_normal",
+          "vector_world": [
+            -0.0,
+            -0.0,
+            -1.0
+          ]
+        }
+      ]
+    }
+  }
+}

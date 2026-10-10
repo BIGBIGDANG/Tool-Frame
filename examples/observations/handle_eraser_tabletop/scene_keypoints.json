@@ -1,0 +1,40 @@
+{
+  "start_point": {
+    "u": 290,
+    "v": 390
+  },
+  "end_point": {
+    "u": 400,
+    "v": 450
+  },
+  "path_points": [
+    {
+      "u": 400,
+      "v": 390
+    },
+    {
+      "u": 400,
+      "v": 420
+    },
+    {
+      "u": 290,
+      "v": 420
+    },
+    {
+      "u": 290,
+      "v": 450
+    }
+  ],
+  "action_direction": {
+    "start": {
+      "u": 290,
+      "v": 390
+    },
+    "end": {
+      "u": 400,
+      "v": 390
+    }
+  },
+  "grounding_image_index": 0,
+  "fixture_source": "manual_pixel_annotation_of_current_render_no_vlm"
+}

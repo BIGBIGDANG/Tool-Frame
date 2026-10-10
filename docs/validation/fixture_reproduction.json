@@ -1,0 +1,47 @@
+[
+  {
+    "task": "blue_brush_sweep_block",
+    "num_goals": 36,
+    "matches_recorded_run": true
+  },
+  {
+    "task": "claw_hammer_strike",
+    "num_goals": 25,
+    "matches_recorded_run": true
+  },
+  {
+    "task": "handle_eraser_tabletop",
+    "num_goals": 42,
+    "matches_recorded_run": true
+  },
+  {
+    "task": "handle_eraser_whiteboard",
+    "num_goals": 30,
+    "matches_recorded_run": true
+  },
+  {
+    "task": "long_screwdriver_insert",
+    "num_goals": 21,
+    "matches_recorded_run": true
+  },
+  {
+    "task": "mallet_hammer_strike",
+    "num_goals": 26,
+    "matches_recorded_run": true
+  },
+  {
+    "task": "marker_whiteboard",
+    "num_goals": 30,
+    "matches_recorded_run": true
+  },
+  {
+    "task": "red_brush_sweep_block",
+    "num_goals": 36,
+    "matches_recorded_run": true
+  },
+  {
+    "task": "short_screwdriver_insert",
+    "num_goals": 23,
+    "matches_recorded_run": true
+  }
+]
