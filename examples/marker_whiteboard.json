@@ -1,0 +1,116 @@
+{
+  "task_id": "marker_whiteboard",
+  "instruction": "Use this marker to write the letter L on the whiteboard.",
+  "tool": {
+    "tool_id": "staples_marker",
+    "tool_prior_dir": "assets/tool_prior/staples_marker/tool_prior"
+  },
+  "execution": {
+    "simtoolreal_category": "marker",
+    "simtoolreal_table_asset": "urdf/scene/tabletop_polyhaven_wood_table/tabletop_polyhaven_wood_table.urdf",
+    "simtoolreal_tool_mesh": "simtoolreal/assets/urdf/dextoolbench/marker/staples_marker/staples_marker.obj",
+    "simtoolreal_start_pose": [
+      0.1,
+      0.095,
+      0.5502337025286513,
+      0.49365024769128735,
+      -0.009175904697824588,
+      -0.011065671444839017,
+      0.8695417106975272
+    ],
+    "state_bundle": {
+      "table_pose_xyzw": [
+        0.0,
+        0.0,
+        0.38,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "table_asset": "urdf/scene/tabletop_polyhaven_wood_table/tabletop_polyhaven_wood_table.urdf",
+      "table_z": 0.38,
+      "object_name": "staples_marker",
+      "object_category": "marker",
+      "scene_actors": [
+        {
+          "name": "marker_trace_whiteboard",
+          "asset_file": "urdf/scene/marker_trace_whiteboard/left_side_vertical_whiteboard_002x0475x101.urdf",
+          "pose_xyzw": [
+            0.49,
+            0.0,
+            0.505,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "color_rgb": [
+            0.96,
+            0.98,
+            0.96
+          ],
+          "disable_gravity": true,
+          "fix_base_link": true,
+          "friction": 0.8
+        }
+      ],
+      "min_tool_table_clearance_m": 0.0
+    }
+  },
+  "metadata": {
+    "public_support_surface_point_world": [
+      0.48,
+      0.0,
+      0.505
+    ],
+    "public_support_surface_normal_world": [
+      -1.0,
+      0.0,
+      0.0
+    ],
+    "public_whiteboard_surface_normal_world": [
+      -1.0,
+      0.0,
+      0.0
+    ],
+    "whiteboard_center_world": [
+      0.49,
+      0.0,
+      0.505
+    ]
+  },
+  "interaction_plane": {
+    "point_world": [
+      0.48,
+      0.0,
+      0.505
+    ],
+    "normal_world": [
+      -1.0,
+      0.0,
+      0.0
+    ],
+    "point_roles": [
+      "start",
+      "end",
+      "path"
+    ],
+    "source": "provided_scene_geometry"
+  },
+  "camera": {
+    "position_world": [
+      -0.1,
+      0.0,
+      0.8
+    ],
+    "look_at_world": [
+      0.48,
+      0.0,
+      0.8
+    ],
+    "width": 900,
+    "height": 700,
+    "horizontal_fov_deg": 52.0
+  }
+}

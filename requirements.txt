@@ -1,6 +1,7 @@
-# ToolFrame 6.4 core dependencies.
-#
-# This is the default paper-code install target. It is enough for source
-# checks, tool-prior generation, geometry compilation, evaluation utilities,
-# and CPU-side smoke tests.
--r parttoolgen/requirements-core-py38.txt
+# Core compiler, mesh processing and software tool-view rendering (Python 3.8).
+numpy==1.24.4
+scipy==1.10.1
+Pillow==10.4.0
+trimesh==3.23.5
+networkx==2.8.8
+PyYAML==6.0.3

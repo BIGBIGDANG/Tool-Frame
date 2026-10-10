@@ -27,7 +27,6 @@ class RnnWithDones(nn.Module):
             return self.rnn(input, states)
 
         max_steps = input.size()[0]
-        batch_size = input.size()[1]
         out_batch = []
         not_dones = 1.0-done_masks
         has_zeros = ((not_dones.squeeze()[1:] == 0.0)
@@ -57,7 +56,6 @@ class RnnWithDones(nn.Module):
     """
     def forward(self, input, states, done_masks=None, bptt_len = 0):
         max_steps = input.size()[0]
-        batch_size = input.size()[1]
         out_batch = []
 
         for i in range(max_steps):

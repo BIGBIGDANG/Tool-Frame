@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<robot name="parttoolgen_screwdriver_insert_wide_guide_socket">
+  <link name="wide_guide_socket">
+    <!-- The visual guide sleeve has a 24 mm opening. -->
+    <visual>
+      <material name="guide_socket_gray">
+        <color rgba="0.50 0.50 0.50 1.0"/>
+      </material>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="wide_guide_socket_048x055.obj" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <visual>
+      <material name="guide_socket_dark_visible_bottom">
+        <color rgba="0.015 0.015 0.015 1.0"/>
+      </material>
+      <origin xyz="0 0 0.001" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.0105" length="0.001"/>
+      </geometry>
+    </visual>
+
+    <!-- Collision walls extend outward from the visual opening to reduce tunneling. -->
+    <collision>
+      <origin xyz="0.016 0 0.0275"/>
+      <geometry>
+        <box size="0.008 0.040 0.055"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="-0.016 0 0.0275"/>
+      <geometry>
+        <box size="0.008 0.040 0.055"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 0.016 0.0275"/>
+      <geometry>
+        <box size="0.040 0.008 0.055"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 -0.016 0.0275"/>
+      <geometry>
+        <box size="0.040 0.008 0.055"/>
+      </geometry>
+    </collision>
+
+    <inertial>
+      <mass value="0.08"/>
+      <inertia ixx="0.00003" ixy="0.0" ixz="0.0" iyy="0.00003" iyz="0.0" izz="0.00003"/>
+    </inertial>
+  </link>
+</robot>

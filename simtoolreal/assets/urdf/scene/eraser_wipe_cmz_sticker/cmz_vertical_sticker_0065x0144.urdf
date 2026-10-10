@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<robot name="cmz_vertical_sticker_0065x0144">
+  <link name="cmz_sticker_visual_link">
+    <visual name="cmz_sticker_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><mesh filename="cmz_vertical_sticker_0065x0144_front.obj" scale="1 1 1"/></geometry>
+      <material name="cmz_blue_sticker"><color rgba="0.02 0.08 0.95 1.0"/></material>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.0001"/>
+      <inertia ixx="1e-9" ixy="0" ixz="0" iyy="1e-9" iyz="0" izz="1e-9"/>
+    </inertial>
+  </link>
+</robot>

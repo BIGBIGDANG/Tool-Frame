@@ -1,5 +1,0 @@
-queued_after_pid=2930552
-run_id=paper_candidates_remaining_smoke_20260604_214523
-tasks=brush_sweep/left hammer_strike/down screwdriver_insert/wide_socket marker_trace/write_l marker_trace/write_c
-trials=1
-device=cuda:0

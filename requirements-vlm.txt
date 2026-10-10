@@ -1,6 +1,0 @@
-# Optional VLM planner dependencies for ToolFrame 6.4.
-#
-# Install in a separate planner environment/target, not into the Python 3.8
-# rollout env. API-only planners usually need credentials rather than these
-# model packages.
--r parttoolgen/requirements-planner-vlm.txt

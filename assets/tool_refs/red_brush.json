@@ -1,0 +1,39 @@
+{
+  "contact_point_ref": "tool.contact_point",
+  "contact_point_tool": [
+    0.18396509852230847,
+    -0.03683701301047563,
+    0.056813286543359966
+  ],
+  "motion_axis_ref": "tool.motion_axis",
+  "motion_axis_tool": [
+    0.0,
+    -1.0,
+    0.0
+  ],
+  "contact_point_face_marker": "F3",
+  "motion_axis_face_marker": "F3",
+  "contact_point_part_ref": "tool.parts.part_002",
+  "contact_point_source_ref": "candidate.points.part_002_y_negative_contact",
+  "contact_point_surface_ref": "candidate.surfaces.part_002_y_negative_contact",
+  "motion_axis_surface_ref": "candidate.surfaces.part_002_y_negative_contact",
+  "tool_id": "red_brush",
+  "surface_geometry_tool": {
+    "frame_source": "contact_point_bbox_face",
+    "patch_id": "y_negative_contact",
+    "surface_center": [
+      0.18396509852230847,
+      -0.03683701301047563,
+      0.056813286543359966
+    ],
+    "rectangle_corners": null,
+    "long_edge_m": null,
+    "short_edge_m": null,
+    "motion_axis_tool": [
+      0.0,
+      -1.0,
+      0.0
+    ],
+    "motion_axis_source": "bbox_axis_tool"
+  }
+}

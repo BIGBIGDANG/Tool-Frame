@@ -3,26 +3,21 @@ name: core-ci
 on:
   pull_request:
   push:
-    branches:
-      - main
-      - master
+    branches: [main]
 
 jobs:
   core:
     runs-on: ubuntu-22.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.8"
-
-      - name: Bootstrap core environment
-        run: bin/toolframe bootstrap-env
-        env:
-          PARTTOOLGEN_PYTHON_VERSION: "3.8"
-
-      - name: Run quick checks
-        run: bin/toolframe check --quick
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
+      - name: Install CPU dependencies
+        run: python -m pip install -r requirements-dev.txt
+      - name: Run software regression tests
+        run: PYTHONDONTWRITEBYTECODE=1 python -m pytest -q

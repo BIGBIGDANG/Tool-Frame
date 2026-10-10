@@ -1,0 +1,56 @@
+[
+  {
+    "task": "blue_brush_sweep_block",
+    "num_goals": 36,
+    "max_abs_goal_difference": 0.0,
+    "same_poses": true
+  },
+  {
+    "task": "claw_hammer_strike",
+    "num_goals": 25,
+    "max_abs_goal_difference": 0.0,
+    "same_poses": true
+  },
+  {
+    "task": "handle_eraser_tabletop",
+    "num_goals": 42,
+    "max_abs_goal_difference": 0.0,
+    "same_poses": true
+  },
+  {
+    "task": "handle_eraser_whiteboard",
+    "num_goals": 30,
+    "max_abs_goal_difference": 0.0,
+    "same_poses": true
+  },
+  {
+    "task": "long_screwdriver_insert",
+    "num_goals": 21,
+    "max_abs_goal_difference": 0.0,
+    "same_poses": true
+  },
+  {
+    "task": "mallet_hammer_strike",
+    "num_goals": 26,
+    "max_abs_goal_difference": 0.0,
+    "same_poses": true
+  },
+  {
+    "task": "marker_whiteboard",
+    "num_goals": 30,
+    "max_abs_goal_difference": 0.0,
+    "same_poses": true
+  },
+  {
+    "task": "red_brush_sweep_block",
+    "num_goals": 36,
+    "max_abs_goal_difference": 0.0,
+    "same_poses": true
+  },
+  {
+    "task": "short_screwdriver_insert",
+    "num_goals": 23,
+    "max_abs_goal_difference": 0.0,
+    "same_poses": true
+  }
+]

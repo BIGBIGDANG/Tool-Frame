@@ -1,224 +1,148 @@
-# ToolFrame 6.4
+# Tool-Frame / ToGo 6.13
 
-ToolFrame 6.4 is an image-grounded tool-use benchmark and compiler stack for
-turning public RGB-D scene evidence plus tool evidence into whole-tool SE(3)
-subgoals for SimToolReal execution.
+独立运行的工具操作代码，包含工具分割先验、VLM 工具引用选择、场景关键点 grounding、几何 lifting、分阶段位姿编译和固定目标策略执行。所有任务使用同一入口和同一组参数。
 
-The core pipeline is:
+目录可以整体移动。包含八种工具的几何输入和九份物理场景示例；代码结构与维护约定见 [HANDOFF.md](HANDOFF.md)。
 
-```text
-natural task language
-  + public RGB-D scene evidence
-  + public tool mesh / part evidence
-    -> VLM scene refs: start_point, optional waypoints, end_point, scene.direction
-    -> RGB-D lifting to 3D scene refs
-    -> VLM/P3SAM tool refs: tool.contact_point, tool.motion_axis, valid candidates
-    -> whole-tool SE(3) constraint compilation
-    -> SimToolReal fixed-goal rollout
-    -> task-level success checks and failure attribution
-```
+不调用 VLM 的复现命令、预训练策略来源和复制所需资源见 [NON_VLM_REPRO.md](NON_VLM_REPRO.md)。
 
-This branch focuses on public, image-grounded evidence. It deliberately avoids
-hidden evaluator target refs, oracle target axes, oracle trajectories,
-tool-family/task-family fallback, primitive fallback, repair-loop fallback, and
-seed-specific shortcuts.
+当前为研究预览版：全新 Python 3.8 环境中软件回归 107 项通过，整体复制后重新渲染与策略执行已跑通。九场景均能编译并启动原生预训练策略，本次七个控制序列完成，红刷子和短螺丝刀超时；完成控制序列不代表任务效果成功。在线 VLM 和新网格从零 P3SAM 分割尚未验收。证据见 [验收报告](docs/validation/REPORT.md)。根许可证尚未选择，部分模型资产的来源说明待补齐，见 [LICENSES.md](LICENSES.md) 和 [THIRD_PARTY.md](THIRD_PARTY.md)。
 
-## Repository layout
+## 安装
 
-```text
-docs/                         method, environment, handoff, and repo docs
-bin/toolframe                 thin public command wrapper
-parttoolgen/src/parttoolgen/   compiler/runtime Python package
-parttoolgen/src/parttoolgen/cli/ internal runner/stage/tool-prior CLIs
-parttoolgen/scripts/           small public handoff scripts only
-parttoolgen/schemas/           JSON schemas for tasks and ProgramIR
-parttoolgen/tests/             unit tests for maintained behavior
-configs/tool_refs/             reviewed public tool reference bindings
-artifacts/tool_use_benchmark/  benchmark contracts, configs, matrices, metrics
-artifacts/image_grounded/tool_ref_grounding/ reviewed tool-selection evidence
-artifacts/tool_prior/          compact P3SAM tool-prior packages
-simtoolreal/                   local SimToolReal backend copy
-test000/                       local scratch/review outputs; ignored
-```
-
-See `docs/repo_organization.md` for the commit and artifact boundaries.
-
-## Quick start
-
-From a fresh clone, build the project-local Python 3.8 environment first:
+核心编译、工具视图生成和软件测试使用 Python 3.8：
 
 ```bash
-cd <your clone>/ToolFrame_6.4
-bin/toolframe bootstrap-env
-bin/toolframe env-check
+git clone https://github.com/BIGBIGDANG/Tool-Frame.git
+cd Tool-Frame
+python -m pip install -r requirements-dev.txt
+PYTHONDONTWRITEBYTECODE=1 python -m pytest -q
+python run.py doctor
 ```
 
-The bootstrap creates `.venv_parttoolgen_py38` inside this repository. The
-environment wrapper uses that local venv unless `PARTTOOLGEN_CORE_VENV` is set
-explicitly. It may read optional local runtime paths from
-`.parttoolgen.local.env`, but those are workstation overrides only. Keep
-secrets, model endpoints, pretrained policy paths, and large runtime artifacts
-out of git.
+`doctor` 列出当前解释器中的依赖和外部资源配置，不执行 GPU 检查。
 
-Core compiler/tests are reproducible from the checked-in requirements. Full
-SimToolReal/IsaacGym rollouts additionally require IsaacGym binaries,
-pretrained policy weights, GPU-compatible torch packages, and VLM credentials;
-package those as explicit local artifacts or documented downloads, not hidden
-absolute paths.
-
-For manual installs, use the root requirements files:
+完整仿真需要 NVIDIA GPU、与 Python 3.8 匹配的 IsaacGym SDK，以及原 6.13 控制策略的 `config.yaml` 和 `model.pth`。本机交接目录已在被 Git 忽略的 `isaacgym/python/` 和 `pretrained_policy/` 放置独立副本；只获取 Git 源码时需要另行准备：
 
 ```bash
-python -m pip install -r requirements.txt
-python -m pip install -r requirements-rollout.txt  # optional
-python3.10 -m pip install --target .planner_vlm_py310_pkgs -r requirements-vlm.txt  # optional local VLM
+python -m pip install -r requirements-runtime.txt
+export TOGO_ISAACGYM=/absolute/path/to/isaacgym/python
+export TOGO_PRETRAINED_POLICY_ROOT=/absolute/path/to/pretrained_policy
 ```
 
-See `docs/quickstart.md` for the recommended first smoke commands and expected
-output locations.
+在线标注时，由运行环境设置 `VLM_MODEL` 和 `OPENAI_API_KEY`（也接受 `VLM_API_KEY`）；模型需要支持图像输入及 JSON 输出。兼容服务可通过 `VLM_API_BASE` 配置。交接目录不存放凭据或个人接口配置，也不保存原始模型回答。
 
-## Reproduce Results
+如核心代码与 IsaacGym 使用不同环境，设置 `TOGO_RUNTIME_PYTHON=/absolute/path/to/runtime/python`，或传入 `--runtime-python`。`doctor` 检查的是调用它的解释器。
 
-Use the public wrapper for all reproduction paths:
+## 统一运行入口
+
+下面所有命令的输出目录都应放在交接包之外，或放在被忽略的 `outputs/` 中。
+
+完整流程：读取场景配置，渲染一幅配对 RGB-D，选择工具引用并标注场景点，编译固定目标，再执行。
 
 ```bash
-bin/toolframe bootstrap-env
-bin/toolframe env-check --mode core
-bin/toolframe check --quick
+python run.py run \
+  --task examples/mallet_hammer_strike.json \
+  --output /tmp/togo_run \
+  --device cuda:0
 ```
 
-For artifact/config validation without rollout:
+只做规划：
 
 ```bash
-bin/toolframe env-check --mode rollout
-bin/toolframe preflight-current
-bin/toolframe benchmark --validate-registry
+python run.py plan \
+  --task examples/mallet_hammer_strike.json \
+  --output /tmp/togo_plan \
+  --device cuda:0
 ```
 
-For full SimToolReal rollout statistics, provide IsaacGym, policy weights, GPU
-runtime packages, and VLM credentials through `.parttoolgen.local.env`, then run
-the current full E2E suite:
+有自己的相机观测和关键点时，可以离线编译，不需要 VLM 或 GPU：
 
 ```bash
-bin/toolframe current-e2e \
-  --trials 10 \
-  --seed-start 0 \
-  --device cuda:0 \
-  --capture-video-every 1 \
-  --continue-on-task-error \
-  --tool-ref-model gpt-5.5 \
-  --tool-ref-base-url "$VLM_API_BASE" \
-  --output-prefix artifacts/test008/e2e_10seed_gpt55_20260607 \
-  --aggregate json,csv,md
+python run.py plan \
+  --task examples/mallet_hammer_strike.json \
+  --scene-evidence /absolute/path/to/scene_evidence.json \
+  --scene-keypoints /absolute/path/to/scene_keypoints.json \
+  --tool-refs assets/tool_refs/mallet_hammer.json \
+  --output /tmp/togo_plan
 ```
 
-Expected runtime outputs are regenerated under
-`artifacts/image_grounded/<task_family>/<split>_<run_id>/` unless an explicit
-`--output-prefix` is provided. Do not commit rollout videos, temporary test
-roots, local virtual environments, model checkpoints, or private credentials.
+缓存引用必须与当前工具及用途匹配。随包的 `assets/tool_refs/` 仅保存已选定的工具几何，不替代新场景的 grounding，也不保证与任意接触平面兼容。
 
-For new tools, use `bin/toolframe tool-ref` to produce reviewed
-`configs/tool_refs/<tool_id>/` bindings. For new scenes or task variants, start
-from a unified task spec and inspect it with:
+执行已经编译的目标：
 
 ```bash
-bin/toolframe run-spec --spec <task_spec.json> --preflight-only
+python run.py execute \
+  --task examples/mallet_hammer_strike.json \
+  --fixed-goals /tmp/togo_plan/fixed_goals.json \
+  --output /tmp/togo_execution \
+  --device cuda:0
 ```
 
-Current benchmark configs normalize into this same spec layer; the
-family-specific runners are compatibility backends, not the extension API.
-The current paper-development result is full E2E success plus manual failure
-attribution, not fixed/oracle-ref baselines or dense module-accuracy tables.
+规划输出为 `constraint_program.json`、`tool_pose_subgoals.json`、`fixed_goals.json`。执行输出 `execution_state.json`，其 `completed` 表示控制器完成目标序列，`timeout` 表示步数耗尽。
 
-## Current benchmark scope
+## 工具先验
 
-Current runnable benchmark suite:
-
-```text
-current_all_runnable
-```
-
-It contains brush sweep, eraser wipe, hammer strike, screwdriver insert, and
-marker trace variants. Legacy brush red-zone/directional splits, dense
-screwdriver stress variants, and unapproved side-board drafts are diagnostic
-only.
-
-Benchmark configs and contract drafts live under
-`artifacts/tool_use_benchmark/`. Generated RGB-D evidence, VLM outputs, rollout
-videos, and smoke artifacts belong under `artifacts/image_grounded/` or local
-`test000/`, not in benchmark config directories.
-
-## Important docs
-
-- `AGENTS.md`: collaboration rules for coding agents.
-- `docs/paper_pipeline_and_benchmark_6.4.md`: paper-facing pipeline,
-  benchmark-suite protocol, metrics, and result citation boundary.
-- `docs/current_pipeline.md`: current runnable pipeline and method boundary.
-- `docs/quickstart.md`: setup and first smoke-run guide.
-- `docs/architecture.md`: representation, compiler, and execution bridge.
-- `docs/environment.md`: local environment wrapper and runtime artifact policy.
-- `docs/repo_organization.md`: publish/commit boundaries and cleanup policy.
-- `docs/legacy_components.md`: legacy V0 modules that are retained for
-  debugging but are not the current image-grounded benchmark interface.
-- `TOOLFRAME_VENDORING.md`: vendored SimToolReal/runtime asset boundary.
-- `artifacts/tool_use_benchmark/README.md`: benchmark task/config status.
-- `artifacts/tool_use_benchmark/evaluation_metrics.md`: compact reporting
-  metrics and failure attribution policy.
-
-## Verification before publishing changes
-
-Use the project wrapper first:
+已有的八种工具可以直接使用 `assets/tool_prior/`。为新网格生成先验：
 
 ```bash
-bin/toolframe env-check --mode core
+python run.py prepare-tool \
+  --tool-id my_tool \
+  --mesh /absolute/path/to/my_tool.obj \
+  --p3sam-root /absolute/path/to/P3SAM \
+  --p3sam-python /absolute/path/to/p3sam/python \
+  --output outputs/my_tool_prior
 ```
 
-For normal handoff use, stay at the thin public wrapper:
+也可用 `--face-labels /path/to/labels.npy` 替代 P3SAM 调用。标签必须是一维整数数组，逐面对应原网格；网格以米为单位，坐标系必须与执行使用的工具模型一致。P3SAM 调用关闭网格清理，以保持面编号。
+
+结果在 `outputs/my_tool_prior/my_tool/`，包括 `tool_prior/`、分割标签、网格副本和工具视图。场景配置的 `tool.tool_prior_dir` 指向生成的 `tool_prior/`。先验放在包内时可随整个目录移动；包外生成的先验含绝对路径，单独移动后需重新生成。
+
+独立选择工具引用：
 
 ```bash
-bin/toolframe list
-bin/toolframe benchmark --suite current_all_runnable --preflight-only --skip-rollout
-bin/toolframe benchmark --task brush_sweep/off_table_red --trials 1 --device cuda:0
-bin/toolframe tool-ref --help
+python run.py tool-ref \
+  --task examples/mallet_hammer_strike.json \
+  --output /tmp/togo_tool_refs
 ```
 
-Recommended pre-commit checks for source/config changes:
+工具端统一采用“选择工作部件，再选择接触面与工具局部动作轴”的两阶段 VLM 流程。添加新工具做仿真执行时，还需要 URDF 和 `simtoolreal/dextoolbench/objects.py` 中的物理资源登记及策略握持尺寸；`prepare-tool` 只负责几何先验。
 
-```bash
-git diff --check
-bin/toolframe check --quick
+## 输入约定
+
+`examples/*.json` 给出完整场景配置。`task_id` 只用于标识；方法代码不按任务名分支。`instruction` 描述操作意图，`tool` 指定工具和先验，`execution` 指定工具初始位姿、物理资源及场景物体。位姿格式为 `[x,y,z,qx,qy,qz,qw]`，长度单位为米。
+
+`metadata.public_support_surface_point_world` 和 `metadata.public_support_surface_normal_world` 描述支持面几何。场景物体初始位置仅用于搭建仿真，不作为 VLM 目标点的替代来源。
+
+如果存在交互平面，通过 `interaction_plane` 指定：
+
+```json
+{
+  "point_world": [0, 0, 0.53],
+  "normal_world": [0, 0, 1],
+  "point_roles": ["start", "end", "path"],
+  "source": "provided_scene_geometry"
+}
 ```
 
-Use `bin/toolframe check --full` before larger releases; it adds
-the full pytest suite on top of the core-only quick checks.
+适用点通过相机射线与平面求交得到三维坐标。插入操作可设 `point_roles:["start"]`，入口落在平面上，深入终点保留 RGB-D 深度。`anchor_from_depth:"start"` 可替代显式 `point_world`，以起点深度确定平面锚点，并结合提供的法向估计局部平面。
 
-Use `bin/toolframe benchmark --list`, `--validate-registry`,
-`--describe <task>`, and `--preflight-only` to inspect registered benchmark
-tasks before launching rollouts. The family-specific experiment scripts are
-registered runners behind this launcher, not the preferred handoff interface.
+外部 `scene_evidence.json` 至少包含如下配对关系；文件路径相对于该 JSON，也可以使用绝对路径：
 
-The GitHub Actions workflow `.github/workflows/core-ci.yml` is intentionally
-core-only: it bootstraps Python 3.8, validates the benchmark registry, compiles
-maintained entrypoints, and runs lightweight tests. It does not require
-IsaacGym, policy weights, VLM credentials, or GPU access.
+```json
+{
+  "instruction": "Use this tool to act on the visible target.",
+  "items": [
+    {"id":"scene_rgb", "kind":"scene_rgb", "path":"rgb.png"},
+    {"id":"scene_depth", "kind":"scene_depth", "path":"depth.npy"},
+    {"id":"scene_camera", "kind":"camera", "path":"camera.json"}
+  ],
+  "metadata":{"prompt_images":["rgb.png"], "grounding_image_index":0}
+}
+```
 
-Run expensive Isaac/rollout smokes only when validating a specific benchmark
-contract or environment change.
+深度为正的相机 Z 深度，形状为 `[height,width]`，单位为米。`camera.json` 包含 `width,height,fx,fy,cx,cy,camera_to_world`；相机坐标约定为 X 向右、Y 向下、Z 向前。深度、相机和被标注 RGB 必须来自同一视图。
 
-## Artifact and asset policy
+`scene_keypoints.json` 使用 `start_point:{u,v}`、可选 `end_point:{u,v}` 和有序 `path_points:[{u,v},…]`。方向可由 `action_direction:{start:{u,v},end:{u,v}}` 给出，或由 `direction_decision.selected_default_axis_id` 选择 `support_surface_normal` / `opposite_support_surface_normal`。也可从非零路径段推导方向；单点操作必须给出方向或平面法向选择。
 
-- Commit source code, schemas, tests, lightweight benchmark configs, and small
-  reviewed benchmark assets.
-- Do not commit `test000/` scratch outputs.
-- Do not commit generated run evidence under `artifacts/image_grounded/**`
-  unless it is part of the reviewed `tool_ref_grounding` evidence set or a
-  specific manifest/evidence artifact is explicitly approved.
-- Imported external ToolUse bulk assets are intentionally outside the current
-  public release. Treat any future inclusion as a separate license, asset, and
-  benchmark-contract decision.
-
-## License note
-
-The repository includes a local SimToolReal backend copy under `simtoolreal/`
-with its own license file. Confirm project-level licensing before public
-release.
+共享参数在 `settings.json`，所有任务使用同一组默认值，也可通过 `--settings` 传入另一份全局配置。输入无效或原版路径检查失败时会报错；接触残差与求解警告保存在 `tool_pose_subgoals.json`，不另加接触误差门槛。

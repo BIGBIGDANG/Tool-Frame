@@ -1,0 +1,39 @@
+{
+  "contact_point_ref": "tool.contact_point",
+  "contact_point_tool": [
+    0.12246792391096023,
+    0.0017106484198899316,
+    0.00028018594593532255
+  ],
+  "motion_axis_ref": "tool.motion_axis",
+  "motion_axis_tool": [
+    1.0,
+    0.0,
+    0.0
+  ],
+  "contact_point_face_marker": "F2",
+  "motion_axis_face_marker": "F2",
+  "contact_point_part_ref": "tool.parts.part_000",
+  "contact_point_source_ref": "candidate.points.part_000_x_positive_endpoint",
+  "contact_point_surface_ref": "candidate.surfaces.part_000_x_positive_endpoint",
+  "motion_axis_surface_ref": "candidate.surfaces.part_000_x_positive_endpoint",
+  "tool_id": "short_screwdriver",
+  "surface_geometry_tool": {
+    "frame_source": "contact_point_bbox_face",
+    "patch_id": "x_positive_endpoint",
+    "surface_center": [
+      0.12246792391096023,
+      0.0017106484198899316,
+      0.00028018594593532255
+    ],
+    "rectangle_corners": null,
+    "long_edge_m": null,
+    "short_edge_m": null,
+    "motion_axis_tool": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "motion_axis_source": "bbox_axis_tool"
+  }
+}

@@ -25,17 +25,13 @@
 # CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-import os
 import time
-from datetime import datetime
-from os.path import join
-from typing import Dict, Any, Tuple, List, Set, Optional
+from typing import Dict, Any, Tuple, Optional
 
 import gym
 from gym import spaces
 
-from isaacgym import gymtorch, gymapi
-from isaacgymenvs.utils.torch_jit_utils import to_torch
+from isaacgym import gymapi
 from isaacgymenvs.utils.dr_utils import get_property_setter_map, get_property_getter_map, \
     get_default_setter_args, apply_random_samples, check_buckets, generate_random_samples
 
@@ -43,9 +39,6 @@ import torch
 import numpy as np
 import operator, random
 from copy import deepcopy
-from isaacgymenvs.utils.utils import nested_dict_get_attr, nested_dict_set_attr
-
-from collections import deque
 
 import sys
 
@@ -62,7 +55,6 @@ def _create_sim_once(gym, *args, **kwargs):
     else:
         EXISTING_SIM = gym.create_sim(*args, **kwargs)
         return EXISTING_SIM
-
 
 class Env(ABC):
     def __init__(self, config: Dict[str, Any], rl_device: str, sim_device: str, graphics_device_id: int, headless: bool): 
@@ -90,7 +82,6 @@ class Env(ABC):
         self.rl_device = rl_device
 
         # Rendering
-        # if training in a headless mode
         self.headless = headless
 
         self.enable_camera_sensors = config["env"].get("enableCameraSensors", False)
@@ -115,21 +106,11 @@ class Env(ABC):
         self.clip_obs = config["env"].get("clipObservations", np.Inf)
         self.clip_actions = config["env"].get("clipActions", np.Inf)
 
-        # Total number of training frames since the beginning of the experiment.
-        # We get this information from the learning algorithm rather than tracking ourselves.
-        # The learning algorithm tracks the total number of frames since the beginning of training and accounts for
-        # experiments restart/resumes. This means this number can be > 0 right after initialization if we resume the
-        # experiment.
-        self.total_train_env_frames: int = 0
-
         # number of control steps
         self.control_steps: int = 0
 
         self.render_fps: int = config["env"].get("renderFPS", -1)
         self.last_frame_time: float = 0.0
-
-        self.record_frames: bool = False
-        self.record_frames_dir = join("recorded_frames", datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
 
     @abc.abstractmethod 
     def allocate_buffers(self):
@@ -184,25 +165,10 @@ class Env(ABC):
         """Get the number of observations in the environment."""
         return self.num_observations
 
-    def set_train_info(self, env_frames, *args, **kwargs):
-        """
-        Send the information in the direction algo->environment.
-        Most common use case: tell the environment how far along we are in the training process. This is useful
-        for implementing curriculums and things such as that.
-        """
-        self.total_train_env_frames = env_frames
         # print(f'env_frames updated to {self.total_train_env_frames}')
-
-    def get_env_state(self):
-        """
-        Return serializable environment state to be saved to checkpoint.
-        Can be used for stateful training sessions, i.e. with adaptive curriculums.
-        """
-        return None
 
     def set_env_state(self, env_state):
         pass
-
 
 class VecTask(Env):
 
@@ -282,8 +248,6 @@ class VecTask(Env):
                 self.viewer, gymapi.KEY_ESCAPE, "QUIT")
             self.gym.subscribe_viewer_keyboard_event(
                 self.viewer, gymapi.KEY_V, "toggle_viewer_sync")
-            self.gym.subscribe_viewer_keyboard_event(
-                self.viewer, gymapi.KEY_R, "record_frames")
 
             ### ADDITIONAL KEYBOARD SHORTCUTS START ###
             if hasattr(self, "name_to_keyboard_shortcut_dict"):
@@ -360,7 +324,7 @@ class VecTask(Env):
         return sim
 
     def get_state(self):
-        """Returns the state buffer of the environment (the privileged observations for asymmetric training)."""
+        """Returns the state buffer of the environment (additional simulator observations)."""
         return torch.clamp(self.states_buf, -self.clip_obs, self.clip_obs).to(self.rl_device)
 
     @abc.abstractmethod
@@ -485,8 +449,7 @@ class VecTask(Env):
                     sys.exit()
                 elif evt.action == "toggle_viewer_sync" and evt.value > 0:
                     self.enable_viewer_sync = not self.enable_viewer_sync
-                elif evt.action == "record_frames" and evt.value > 0:
-                    self.record_frames = not self.record_frames
+
                 ### ADDITIONAL KEYBOARD SHORTCUTS START ###
                 elif (
                     hasattr(self, "name_to_keyboard_shortcut_dict")
@@ -527,12 +490,6 @@ class VecTask(Env):
 
             else:
                 self.gym.poll_viewer_events(self.viewer)
-
-            if self.record_frames:
-                if not os.path.isdir(self.record_frames_dir):
-                    os.makedirs(self.record_frames_dir, exist_ok=True)
-
-                self.gym.write_viewer_image_to_file(self.viewer, join(self.record_frames_dir, f"frame_{self.control_steps}.png"))
 
             if self.virtual_display and mode == "rgb_array":
                 img = self.virtual_display.grab()

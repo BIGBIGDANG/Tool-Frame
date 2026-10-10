@@ -1,9 +1,0 @@
-{
-  "generated_by": "parttoolgen.providers.tool_prior.sampart3d_tool_prior_provider",
-  "outputs": {
-    "tool_part_graph": "artifacts/tool_prior/p3sam/long_screwdriver/tool_prior/tool_part_graph.json",
-    "functional_tool_parts": "artifacts/tool_prior/p3sam/long_screwdriver/tool_prior/functional_tool_parts.json",
-    "grounding_candidates": "artifacts/tool_prior/p3sam/long_screwdriver/tool_prior/grounding_candidates.json",
-    "provider_contract": "artifacts/tool_prior/p3sam/long_screwdriver/tool_prior/provider_contract.json"
-  }
-}

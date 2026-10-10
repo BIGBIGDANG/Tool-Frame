@@ -1,0 +1,18 @@
+--- official_config.yaml
++++ ToGo6.13/pretrained_policy/config.yaml
+@@ -106,6 +106,7 @@
+     init_tyler_curriculum_scale: 0.0
+     VISUALIZE_PD_TARGET_AS_BLUE_ROBOT: false
+     withTableForceSensor: false
++    resetWhenTableForceTooHigh: true
+     curriculumSuccessRatio: 0.6
+     resetWhenDropped: true
+     timeToUpdateTylerCurriculum: 5
+@@ -175,6 +176,7 @@
+     forceNoReset: false
+     objectStartPose: ${eval:"None"}
+     goalObjectPose: ${eval:"None"}
++    parttoolgenBenchmarkExtraActors: []
+     handleHeadTypes:
+     - hammer
+     - screwdriver

@@ -1,0 +1,50 @@
+[
+  {
+    "tool": "blue_brush",
+    "num_parts": 3,
+    "stored_num_parts": 3,
+    "status": "rebuilt"
+  },
+  {
+    "tool": "claw_hammer",
+    "num_parts": 2,
+    "stored_num_parts": 2,
+    "status": "rebuilt"
+  },
+  {
+    "tool": "handle_eraser",
+    "num_parts": 2,
+    "stored_num_parts": 2,
+    "status": "rebuilt"
+  },
+  {
+    "tool": "long_screwdriver",
+    "num_parts": 5,
+    "stored_num_parts": 5,
+    "status": "rebuilt"
+  },
+  {
+    "tool": "mallet_hammer",
+    "num_parts": 5,
+    "stored_num_parts": 5,
+    "status": "rebuilt"
+  },
+  {
+    "tool": "red_brush",
+    "num_parts": 3,
+    "stored_num_parts": 3,
+    "status": "rebuilt"
+  },
+  {
+    "tool": "short_screwdriver",
+    "num_parts": 6,
+    "stored_num_parts": 6,
+    "status": "rebuilt"
+  },
+  {
+    "tool": "staples_marker",
+    "num_parts": 5,
+    "stored_num_parts": 5,
+    "status": "rebuilt"
+  }
+]

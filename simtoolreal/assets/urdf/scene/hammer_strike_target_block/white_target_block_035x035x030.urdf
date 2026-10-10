@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<robot name="parttoolgen_hammer_white_target_block_035x035x030">
+  <link name="white_target_block">
+    <visual>
+      <material name="matte_white_target_block">
+        <color rgba="0.96 0.98 0.96 1.0"/>
+      </material>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <box size="0.035 0.035 0.030"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <box size="0.035 0.035 0.030"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.20"/>
+      <inertia ixx="0.000020" ixy="0.0" ixz="0.0" iyy="0.000020" iyz="0.0" izz="0.000020"/>
+    </inertial>
+  </link>
+</robot>

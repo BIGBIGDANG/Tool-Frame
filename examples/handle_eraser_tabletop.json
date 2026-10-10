@@ -1,0 +1,77 @@
+{
+  "task_id": "handle_eraser_tabletop",
+  "instruction": "Use this eraser to erase the whole HDU pattern on the table.",
+  "tool": {
+    "tool_id": "handle_eraser",
+    "tool_prior_dir": "assets/tool_prior/handle_eraser/tool_prior"
+  },
+  "execution": {
+    "simtoolreal_category": "eraser",
+    "simtoolreal_table_asset": "urdf/scene/tabletop_polyhaven_wood_table/tabletop_polyhaven_wood_table.urdf",
+    "simtoolreal_tool_mesh": "simtoolreal/assets/urdf/dextoolbench/eraser/handle_eraser/handle_eraser.obj",
+    "simtoolreal_start_pose": [
+      -0.004443606473423917,
+      0.04448811162971284,
+      0.6087667100000002,
+      0.0,
+      0.0,
+      0.9996009721876431,
+      0.02824706005089171
+    ],
+    "state_bundle": {
+      "table_pose_xyzw": [
+        0.0,
+        0.0,
+        0.38,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "table_asset": "urdf/scene/tabletop_polyhaven_wood_table/tabletop_polyhaven_wood_table.urdf",
+      "table_z": 0.38,
+      "object_name": "handle_eraser",
+      "object_category": "eraser",
+      "scene_actors": [
+        {
+          "name": "tabletop_hdu_sticker",
+          "asset_file": "urdf/scene/eraser_wipe_tabletop_hdu_sticker/tabletop_hdu_sticker_018x011x0007.urdf",
+          "pose_xyzw": [
+            -0.14055578148474954,
+            -0.13742045597059696,
+            0.53,
+            0.0,
+            0.0,
+            -0.04143970018133933,
+            0.9991410066896868
+          ],
+          "disable_gravity": true,
+          "fix_base_link": true,
+          "friction": 0.8,
+          "semantic_role": "visual_hdu_pattern_on_table_surface_to_erase",
+          "collision_policy": "visual_only_no_collision; eraser contact should be with table support surface"
+        }
+      ],
+      "min_tool_table_clearance_m": 0.0
+    }
+  },
+  "metadata": {},
+  "interaction_plane": {
+    "point_world": [
+      0,
+      0,
+      0.53
+    ],
+    "normal_world": [
+      0,
+      0,
+      1
+    ],
+    "point_roles": [
+      "start",
+      "end",
+      "path"
+    ],
+    "source": "provided_scene_geometry"
+  }
+}

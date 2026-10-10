@@ -1,16 +1,15 @@
 # License and third-party components
 
-A project-level open-source license has not yet been selected for ToolFrame
-6.4. Do not publish a release archive until the project owner chooses the root
-license and confirms third-party redistribution terms.
+Tool-Frame / ToGo 6.13 is published as a research preview. A project-level
+open-source license has not been selected; publication alone does not grant
+an open-source license to project-owned code or assets.
 
-Known third-party/runtime boundaries:
+Third-party code retains its original notices and licenses. See
+[THIRD_PARTY.md](THIRD_PARTY.md) for the included components, asset attribution
+gaps, and external runtime resources. In particular, the code licenses do not
+automatically cover every robot or tool mesh.
 
-- `simtoolreal/` includes its own license file at `simtoolreal/LICENSE`.
-- IsaacGym, pretrained policies, VLM/API credentials, SAMPart3D/P3SAM weights,
-  and large generated artifacts are not redistributed through this repository.
-- External ToolUse imported assets are intentionally omitted from the current
-  public release unless a separate asset-release decision is made.
-
-When the root license is chosen, replace this note with the actual `LICENSE`
-file or keep this document as a companion third-party notice.
+IsaacGym SDK, pretrained policies, P3SAM/Sonata weights, credentials, and run
+outputs are not committed. The complete local handoff includes SDK and policy
+copies; a Git clone requires the external setup in
+[NON_VLM_REPRO.md](NON_VLM_REPRO.md).

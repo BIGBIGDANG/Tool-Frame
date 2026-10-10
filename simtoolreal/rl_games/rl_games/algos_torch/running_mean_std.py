@@ -1,8 +1,6 @@
 import os
-from rl_games.algos_torch import torch_ext
 import torch
 import torch.nn as nn
-import numpy as np
 import torch.distributed as dist
 '''
 updates statistic from a full data
@@ -56,14 +54,6 @@ class RunningMeanStd(nn.Module):
         return new_mean, new_var, new_count
 
     def forward(self, input, denorm=False, mask=None):
-        if self.training:
-            if mask is not None:
-                mean, var = torch_ext.get_mean_std_with_masks(input, mask)
-            else:
-                mean = input.mean(self.axis) # along channel axis
-                var = input.var(self.axis)
-            self.running_mean, self.running_var, self.count = self._update_mean_var_count_from_moments(self.running_mean, self.running_var, self.count, 
-                                                    mean, var, input.size()[0] )
 
         # change shape
         if self.per_channel:

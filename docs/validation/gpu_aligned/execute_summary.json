@@ -1,0 +1,200 @@
+[
+  {
+    "task": "blue_brush_sweep_block",
+    "stage": "execute",
+    "device": "cuda:1",
+    "returncode": 0,
+    "elapsed_s": 47.82,
+    "execution_state": {
+      "status": "completed",
+      "steps": 971,
+      "goal_index": 36,
+      "num_goals": 36,
+      "final_tool_pose_xyzw": [
+        0.08973395824432373,
+        0.14203965663909912,
+        0.7878183722496033,
+        0.5174780488014221,
+        0.49572277069091797,
+        -0.5057947039604187,
+        0.48025739192962646
+      ]
+    }
+  },
+  {
+    "task": "handle_eraser_tabletop",
+    "stage": "execute",
+    "device": "cuda:1",
+    "returncode": 0,
+    "elapsed_s": 32.01,
+    "execution_state": {
+      "status": "completed",
+      "steps": 543,
+      "goal_index": 42,
+      "num_goals": 42,
+      "final_tool_pose_xyzw": [
+        -0.09155446290969849,
+        -0.16614273190498352,
+        0.6067118048667908,
+        -0.0037000193260610104,
+        0.02710016630589962,
+        0.9996207356452942,
+        0.0032174980733543634
+      ]
+    }
+  },
+  {
+    "task": "long_screwdriver_insert",
+    "stage": "execute",
+    "device": "cuda:1",
+    "returncode": 0,
+    "elapsed_s": 27.65,
+    "execution_state": {
+      "status": "completed",
+      "steps": 299,
+      "goal_index": 21,
+      "num_goals": 21,
+      "final_tool_pose_xyzw": [
+        0.056749604642391205,
+        0.010568363592028618,
+        0.7484405040740967,
+        0.040291644632816315,
+        0.7021756172180176,
+        -0.05326637625694275,
+        0.7088642716407776
+      ]
+    }
+  },
+  {
+    "task": "marker_whiteboard",
+    "stage": "execute",
+    "device": "cuda:1",
+    "returncode": 0,
+    "elapsed_s": 46.1,
+    "execution_state": {
+      "status": "completed",
+      "steps": 745,
+      "goal_index": 30,
+      "num_goals": 30,
+      "final_tool_pose_xyzw": [
+        0.35525184869766235,
+        -0.009781399741768837,
+        0.7427668571472168,
+        0.664655864238739,
+        -0.025288645178079605,
+        -0.036618709564208984,
+        0.745823085308075
+      ]
+    }
+  },
+  {
+    "task": "short_screwdriver_insert",
+    "stage": "execute",
+    "device": "cuda:1",
+    "returncode": 1,
+    "elapsed_s": 66.7,
+    "execution_state": {
+      "status": "timeout",
+      "steps": 1500,
+      "goal_index": 21,
+      "num_goals": 23,
+      "final_tool_pose_xyzw": [
+        0.04905647784471512,
+        0.3078194260597229,
+        0.016529880464076996,
+        -0.5496765971183777,
+        -0.40700763463974,
+        0.46446493268013,
+        0.5625591278076172
+      ]
+    }
+  },
+  {
+    "task": "claw_hammer_strike",
+    "stage": "execute",
+    "device": "cuda:3",
+    "returncode": 0,
+    "elapsed_s": 23.59,
+    "execution_state": {
+      "status": "completed",
+      "steps": 358,
+      "goal_index": 25,
+      "num_goals": 25,
+      "final_tool_pose_xyzw": [
+        -0.21959570050239563,
+        -0.16277819871902466,
+        0.6117637157440186,
+        0.7119468450546265,
+        0.029110323637723923,
+        0.014364470727741718,
+        0.7014826536178589
+      ]
+    }
+  },
+  {
+    "task": "handle_eraser_whiteboard",
+    "stage": "execute",
+    "device": "cuda:3",
+    "returncode": 0,
+    "elapsed_s": 38.24,
+    "execution_state": {
+      "status": "completed",
+      "steps": 730,
+      "goal_index": 30,
+      "num_goals": 30,
+      "final_tool_pose_xyzw": [
+        0.40134501457214355,
+        0.08219875395298004,
+        0.7846103310585022,
+        0.09664599597454071,
+        -0.6858981251716614,
+        0.11670080572366714,
+        0.7117472887039185
+      ]
+    }
+  },
+  {
+    "task": "mallet_hammer_strike",
+    "stage": "execute",
+    "device": "cuda:3",
+    "returncode": 0,
+    "elapsed_s": 26.89,
+    "execution_state": {
+      "status": "completed",
+      "steps": 396,
+      "goal_index": 26,
+      "num_goals": 26,
+      "final_tool_pose_xyzw": [
+        -0.2986142039299011,
+        -0.1719459593296051,
+        0.61639404296875,
+        0.7135231494903564,
+        0.05817396938800812,
+        0.025803428143262863,
+        0.6977353096008301
+      ]
+    }
+  },
+  {
+    "task": "red_brush_sweep_block",
+    "stage": "execute",
+    "device": "cuda:3",
+    "returncode": 1,
+    "elapsed_s": 64.76,
+    "execution_state": {
+      "status": "timeout",
+      "steps": 1500,
+      "goal_index": 33,
+      "num_goals": 36,
+      "final_tool_pose_xyzw": [
+        -0.09595340490341187,
+        0.04599339887499809,
+        0.6089960932731628,
+        0.9890272617340088,
+        -0.061534758657217026,
+        0.09441521763801575,
+        -0.09552060067653656
+      ]
+    }
+  }
+]

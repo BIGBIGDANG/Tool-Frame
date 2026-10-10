@@ -1,0 +1,609 @@
+{
+  "schema_version": "v0.1",
+  "tool_id": "red_brush",
+  "tool_frame": "tool",
+  "parts": {
+    "part_000": {
+      "label": "sampart3d_segment_0",
+      "role_candidates": [
+        "tool_part_candidate",
+        "functional_candidate",
+        "grasp_candidate",
+        "contact_patch"
+      ],
+      "mask_ref": "sampart3d:face_label:0",
+      "point_count": 830,
+      "face_count": 865,
+      "original_face_count": 865,
+      "connected_component_count": 62,
+      "removed_disconnected_face_count": 0,
+      "centroid_xyz_tool": [
+        0.15365424732530134,
+        0.005384820650602407,
+        0.0034784330120481927
+      ],
+      "obb": {
+        "center_xyz_tool": [
+          0.137189865,
+          0.0028102149999999996,
+          0.006587945
+        ],
+        "extent_xyz": [
+          0.18700199,
+          0.05816607,
+          0.02956395
+        ],
+        "axes_tool": {
+          "x": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "y": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "z": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        }
+      },
+      "surface_patches": {
+        "x_negative_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            0.06931730656948237,
+            0.0014520604075497897,
+            0.007948156740625061
+          ],
+          "normal_tool": [
+            -0.36980488770701564,
+            0.11892455468470281,
+            -0.9214669257879237
+          ],
+          "support_faces": 47,
+          "confidence": 0.5738204742634558,
+          "source": "sampart3d_tool_prior",
+          "provenance": {
+            "observation_id": "red_brush",
+            "method": "sampart3d_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/red_brush/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "x_positive_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            0.21711207677919445,
+            0.004888029135903651,
+            -0.0022308244128372203
+          ],
+          "normal_tool": [
+            0.9929662111895585,
+            -0.06864911185617048,
+            -0.09646451615600428
+          ],
+          "support_faces": 175,
+          "confidence": 0.5738204742634558,
+          "source": "sampart3d_tool_prior",
+          "provenance": {
+            "observation_id": "red_brush",
+            "method": "sampart3d_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/red_brush/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.16525143893311486,
+            -0.023140106811599163,
+            0.0012980062348957621
+          ],
+          "normal_tool": [
+            0.002747089274000538,
+            -0.9938806514702551,
+            -0.11042510644587145
+          ],
+          "support_faces": 126,
+          "confidence": 0.5738204742634558,
+          "source": "sampart3d_tool_prior",
+          "provenance": {
+            "observation_id": "red_brush",
+            "method": "sampart3d_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/red_brush/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.16523349025612444,
+            0.028891017045918527,
+            0.0009715481514925609
+          ],
+          "normal_tool": [
+            0.018842588257975582,
+            0.9966634772686555,
+            -0.0794158041355295
+          ],
+          "support_faces": 150,
+          "confidence": 0.5738204742634558,
+          "source": "sampart3d_tool_prior",
+          "provenance": {
+            "observation_id": "red_brush",
+            "method": "sampart3d_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/red_brush/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.18263865923899317,
+            0.0037567932366122164,
+            -0.005881706457384727
+          ],
+          "normal_tool": [
+            -0.023033901860003845,
+            -0.010034068687279503,
+            -0.9996843285911222
+          ],
+          "support_faces": 88,
+          "confidence": 0.5738204742634558,
+          "source": "sampart3d_tool_prior",
+          "provenance": {
+            "observation_id": "red_brush",
+            "method": "sampart3d_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/red_brush/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.05248825575467473,
+            -2.943945256214361e-06,
+            0.017945262727826566
+          ],
+          "normal_tool": [
+            0.313705858698733,
+            -0.004546887665971794,
+            0.9495093259313695
+          ],
+          "support_faces": 16,
+          "confidence": 0.5738204742634558,
+          "source": "sampart3d_tool_prior",
+          "provenance": {
+            "observation_id": "red_brush",
+            "method": "sampart3d_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/red_brush/face_labels/p3sam_face_labels.npy"
+          }
+        }
+      },
+      "confidence": 0.5738204742634558,
+      "source": "sampart3d_tool_prior",
+      "provenance": {
+        "observation_id": "red_brush",
+        "method": "sampart3d_face_label_adapter",
+        "source_artifact": "assets/tool_prior/red_brush/face_labels/p3sam_face_labels.npy",
+        "part_label": 0,
+        "connected_component_index": 0,
+        "connected_component_count": 62,
+        "original_face_count": 865,
+        "kept_face_count": 865,
+        "removed_disconnected_face_count": 0,
+        "component_filter": "keep_dominant_spatial_cluster_per_sampart3d_label"
+      }
+    },
+    "part_001": {
+      "label": "sampart3d_segment_13",
+      "role_candidates": [
+        "tool_part_candidate",
+        "functional_candidate",
+        "grasp_candidate",
+        "fine_feature_candidate",
+        "contact_patch"
+      ],
+      "mask_ref": "sampart3d:face_label:13",
+      "point_count": 384,
+      "face_count": 535,
+      "original_face_count": 535,
+      "connected_component_count": 12,
+      "removed_disconnected_face_count": 0,
+      "centroid_xyz_tool": [
+        -0.016058278515625,
+        -0.0005805784895833338,
+        0.0034924719270833346
+      ],
+      "obb": {
+        "center_xyz_tool": [
+          -0.00878182,
+          -0.00022374000000000005,
+          0.00428775
+        ],
+        "extent_xyz": [
+          0.11788728000000001,
+          0.03326992,
+          0.03617186
+        ],
+        "axes_tool": {
+          "x": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "y": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "z": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        }
+      },
+      "surface_patches": {
+        "x_negative_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            -0.05703872959823233,
+            -0.0010112982844283716,
+            0.00019074505876187224
+          ],
+          "normal_tool": [
+            -0.9804759539911598,
+            0.01805706622408273,
+            -0.19580818676578432
+          ],
+          "support_faces": 118,
+          "confidence": 0.5473781008725292,
+          "source": "sampart3d_tool_prior",
+          "provenance": {
+            "observation_id": "red_brush",
+            "method": "sampart3d_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/red_brush/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "x_positive_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            0.04324442111165542,
+            -6.135815716106082e-05,
+            0.004486519165615018
+          ],
+          "normal_tool": [
+            0.8697578180284437,
+            -0.008557814753314396,
+            -0.4934046025170909
+          ],
+          "support_faces": 58,
+          "confidence": 0.5473781008725292,
+          "source": "sampart3d_tool_prior",
+          "provenance": {
+            "observation_id": "red_brush",
+            "method": "sampart3d_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/red_brush/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            -0.015184103076955972,
+            -0.013986352691128528,
+            0.003233180011596405
+          ],
+          "normal_tool": [
+            0.007984643525410185,
+            -0.9998095629985312,
+            -0.017806830275434286
+          ],
+          "support_faces": 90,
+          "confidence": 0.5473781008725292,
+          "source": "sampart3d_tool_prior",
+          "provenance": {
+            "observation_id": "red_brush",
+            "method": "sampart3d_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/red_brush/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            -0.010935020987396628,
+            0.013156647386291668,
+            0.002670880062738344
+          ],
+          "normal_tool": [
+            -0.009112449625054034,
+            0.9999343563155371,
+            -0.006945957217226105
+          ],
+          "support_faces": 97,
+          "confidence": 0.5473781008725292,
+          "source": "sampart3d_tool_prior",
+          "provenance": {
+            "observation_id": "red_brush",
+            "method": "sampart3d_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/red_brush/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            -0.021576157918507116,
+            0.00022216697857515967,
+            -0.010611504078004368
+          ],
+          "normal_tool": [
+            0.01418849167051701,
+            0.006674741620951981,
+            -0.9998770597070468
+          ],
+          "support_faces": 73,
+          "confidence": 0.5473781008725292,
+          "source": "sampart3d_tool_prior",
+          "provenance": {
+            "observation_id": "red_brush",
+            "method": "sampart3d_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/red_brush/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.012849635250720819,
+            -0.0010542397103936064,
+            0.01718617730565528
+          ],
+          "normal_tool": [
+            -0.07662246195400205,
+            0.005227009374798569,
+            0.9970464766986058
+          ],
+          "support_faces": 61,
+          "confidence": 0.5473781008725292,
+          "source": "sampart3d_tool_prior",
+          "provenance": {
+            "observation_id": "red_brush",
+            "method": "sampart3d_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/red_brush/face_labels/p3sam_face_labels.npy"
+          }
+        }
+      },
+      "confidence": 0.5473781008725292,
+      "source": "sampart3d_tool_prior",
+      "provenance": {
+        "observation_id": "red_brush",
+        "method": "sampart3d_face_label_adapter",
+        "source_artifact": "assets/tool_prior/red_brush/face_labels/p3sam_face_labels.npy",
+        "part_label": 13,
+        "connected_component_index": 0,
+        "connected_component_count": 12,
+        "original_face_count": 535,
+        "kept_face_count": 535,
+        "removed_disconnected_face_count": 0,
+        "component_filter": "keep_dominant_spatial_cluster_per_sampart3d_label"
+      }
+    },
+    "part_002": {
+      "label": "sampart3d_segment_58",
+      "role_candidates": [
+        "tool_part_candidate",
+        "functional_candidate",
+        "contact_patch"
+      ],
+      "mask_ref": "sampart3d:face_label:58",
+      "point_count": 10909,
+      "face_count": 11425,
+      "original_face_count": 11425,
+      "connected_component_count": 832,
+      "removed_disconnected_face_count": 0,
+      "centroid_xyz_tool": [
+        0.170665711657347,
+        -0.0005441718700155886,
+        0.04819184896874129
+      ],
+      "obb": {
+        "center_xyz_tool": [
+          0.16407305,
+          -0.0017538850000000002,
+          0.03739414
+        ],
+        "extent_xyz": [
+          0.17469572,
+          0.09498775000000001,
+          0.08273106000000001
+        ],
+        "axes_tool": {
+          "x": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "y": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "z": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        }
+      },
+      "surface_patches": {
+        "x_negative_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            0.09761214808856829,
+            0.003980343821371873,
+            0.04539587160629104
+          ],
+          "normal_tool": [
+            -0.9994859831628831,
+            -0.03144979641129438,
+            0.0062193059591467165
+          ],
+          "support_faces": 934,
+          "confidence": 0.9,
+          "source": "sampart3d_tool_prior",
+          "provenance": {
+            "observation_id": "red_brush",
+            "method": "sampart3d_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/red_brush/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "x_positive_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            0.23487746898379114,
+            -0.002225867230594092,
+            0.044599751963206306
+          ],
+          "normal_tool": [
+            0.9552304055222522,
+            0.0037821463626831007,
+            -0.2958387529291667
+          ],
+          "support_faces": 1387,
+          "confidence": 0.9,
+          "source": "sampart3d_tool_prior",
+          "provenance": {
+            "observation_id": "red_brush",
+            "method": "sampart3d_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/red_brush/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.18396509852230847,
+            -0.03683701301047563,
+            0.056813286543359966
+          ],
+          "normal_tool": [
+            -0.0611034292580865,
+            -0.9430036352991981,
+            -0.32712461653840624
+          ],
+          "support_faces": 714,
+          "confidence": 0.9,
+          "source": "sampart3d_tool_prior",
+          "provenance": {
+            "observation_id": "red_brush",
+            "method": "sampart3d_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/red_brush/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.16621045182151986,
+            0.03317043655672021,
+            0.05116884335349644
+          ],
+          "normal_tool": [
+            0.11062908535097059,
+            0.9704888965341569,
+            -0.21427204012264855
+          ],
+          "support_faces": 807,
+          "confidence": 0.9,
+          "source": "sampart3d_tool_prior",
+          "provenance": {
+            "observation_id": "red_brush",
+            "method": "sampart3d_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/red_brush/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.17681989147358415,
+            0.0004928822050259705,
+            0.0086199545535174
+          ],
+          "normal_tool": [
+            0.31686870004791184,
+            -0.0037874483124207,
+            -0.9484618506641302
+          ],
+          "support_faces": 298,
+          "confidence": 0.9,
+          "source": "sampart3d_tool_prior",
+          "provenance": {
+            "observation_id": "red_brush",
+            "method": "sampart3d_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/red_brush/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.16040898392582548,
+            -0.004487901547216519,
+            0.06693168205510448
+          ],
+          "normal_tool": [
+            -0.06080726519325559,
+            0.249500373527809,
+            0.9664636775943527
+          ],
+          "support_faces": 1598,
+          "confidence": 0.9,
+          "source": "sampart3d_tool_prior",
+          "provenance": {
+            "observation_id": "red_brush",
+            "method": "sampart3d_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/red_brush/face_labels/p3sam_face_labels.npy"
+          }
+        }
+      },
+      "confidence": 0.9,
+      "source": "sampart3d_tool_prior",
+      "provenance": {
+        "observation_id": "red_brush",
+        "method": "sampart3d_face_label_adapter",
+        "source_artifact": "assets/tool_prior/red_brush/face_labels/p3sam_face_labels.npy",
+        "part_label": 58,
+        "connected_component_index": 0,
+        "connected_component_count": 832,
+        "original_face_count": 11425,
+        "kept_face_count": 11425,
+        "removed_disconnected_face_count": 0,
+        "component_filter": "keep_dominant_spatial_cluster_per_sampart3d_label"
+      }
+    }
+  },
+  "relations": [
+    {
+      "type": "part_of",
+      "subject": "tool.parts.part_000",
+      "object": "tool.red_brush",
+      "confidence": 0.5738204742634558,
+      "source": "sampart3d_tool_prior"
+    },
+    {
+      "type": "part_of",
+      "subject": "tool.parts.part_001",
+      "object": "tool.red_brush",
+      "confidence": 0.5473781008725292,
+      "source": "sampart3d_tool_prior"
+    },
+    {
+      "type": "part_of",
+      "subject": "tool.parts.part_002",
+      "object": "tool.red_brush",
+      "confidence": 0.9,
+      "source": "sampart3d_tool_prior"
+    }
+  ],
+  "metadata": {
+    "created_by": "parttoolgen.providers.tool_prior.sampart3d_mesh_candidates",
+    "geometry_mode": "prior",
+    "segmentation_mode": "sampart3d",
+    "notes": "SAMPart3D face labels are converted in the stable SimToolReal tool/asset frame."
+  }
+}

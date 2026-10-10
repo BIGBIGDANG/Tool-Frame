@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<robot name="parttoolgen_brush_sweep_block_072_light_lowfriction">
+  <link name="sweep_block">
+    <visual>
+      <material name="sweep_block_blue">
+        <color rgba="0.05 0.20 0.95 1.0"/>
+      </material>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <box size="0.072 0.072 0.072"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <box size="0.072 0.072 0.072"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.00000864" ixy="0.0" ixz="0.0" iyy="0.00000864" iyz="0.0" izz="0.00000864"/>
+    </inertial>
+  </link>
+</robot>

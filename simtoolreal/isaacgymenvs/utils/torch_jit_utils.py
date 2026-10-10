@@ -28,6 +28,8 @@
 
 
 import torch
+from torch import Tensor
+from typing import Tuple
 import torch.nn.functional as F
 import numpy as np
 
@@ -423,7 +425,7 @@ def quat_to_angle_axis(q):
     # computes axis-angle representation from quaternion q
     # q must be normalized
     min_theta = 1e-5
-    qx, _qy, _qz, qw = 0, 1, 2, 3
+    qx, qw = 0, 3
 
     sin_theta = torch.sqrt(1 - q[..., qw] * q[..., qw])
     angle = 2 * torch.acos(q[..., qw])
@@ -665,3 +667,29 @@ def calc_heading_quat_inv(q):
 
 
 # EOF
+
+
+def axis_angle_to_matrix(axis_angle: torch.Tensor) -> torch.Tensor:
+    angle = torch.linalg.norm(axis_angle, dim=-1, keepdim=True)
+    axis = axis_angle / torch.clamp(angle, min=1e-12)
+    x, y, z = axis.unbind(-1)
+    zeros = torch.zeros_like(x)
+    k = torch.stack(
+        (
+            zeros,
+            -z,
+            y,
+            z,
+            zeros,
+            -x,
+            -y,
+            x,
+            zeros,
+        ),
+        dim=-1,
+    ).reshape(axis_angle.shape[:-1] + (3, 3))
+    eye = torch.eye(3, dtype=axis_angle.dtype, device=axis_angle.device)
+    eye = eye.expand(axis_angle.shape[:-1] + (3, 3))
+    sin = torch.sin(angle)[..., None]
+    cos = torch.cos(angle)[..., None]
+    return eye + sin * k + (1.0 - cos) * (k @ k)

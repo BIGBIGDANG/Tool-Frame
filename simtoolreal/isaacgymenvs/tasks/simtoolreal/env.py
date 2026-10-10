@@ -26,15 +26,8 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import datetime
-import io
-import math
 import os
-import random
-import tempfile
-import time
 from copy import copy
-from os.path import join
 from pathlib import Path
 from typing import List, Optional, Tuple
 
@@ -49,7 +42,7 @@ from torch import Tensor
 
 import json
 
-from pytorch3d.transforms import (
+from isaacgymenvs.utils.torch_jit_utils import (
     axis_angle_to_matrix,
     matrix_to_quaternion,
     quaternion_to_matrix,
@@ -59,14 +52,6 @@ from dextoolbench.objects import NAME_TO_OBJECT
 from isaacgymenvs.tasks.base.vec_task import VecTask
 from isaacgymenvs.tasks.simtoolreal.utils import (
     populate_dof_properties,
-    tolerance_curriculum,
-    tolerance_successes_objective,
-)
-from isaacgymenvs.utils.observation_action_utils_sharpa import (
-    OBS_NAMES,
-    compute_joint_pos_targets,
-    compute_observation,
-    create_urdf_object,
 )
 from isaacgymenvs.utils.torch_jit_utils import (
     get_axis_params,
@@ -79,12 +64,8 @@ from isaacgymenvs.utils.torch_jit_utils import (
     unscale,
 )
 
-DATETIME_STR = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-
-
 def assert_equals(a, b):
     assert a == b, f"a: {a}, b: {b}"
-
 
 class SimToolReal(VecTask):
     def __init__(
@@ -102,12 +83,12 @@ class SimToolReal(VecTask):
         # Goal related variables
         self.goal_object_indices = []
         self.goal_assets = []
-        self.parttoolgen_benchmark_extra_actor_specs = list(
-            cfg["env"].get("parttoolgenBenchmarkExtraActors", []) or []
+        self.scene_actor_specs = list(
+            cfg["env"].get("sceneActors", []) or []
         )
-        self.parttoolgen_benchmark_extra_assets = []
-        self.parttoolgen_benchmark_extra_actor_indices = []
-        self.parttoolgen_benchmark_extra_actor_init_states = []
+        self.scene_assets = []
+        self.scene_actor_indices = []
+        self.scene_actor_init_states = []
         self.hide_goal_object_visual = bool(
             cfg["env"].get("hideGoalObjectVisual", False)
         )
@@ -176,22 +157,8 @@ class SimToolReal(VecTask):
         )
 
         self.initial_tolerance = self.cfg["env"]["successTolerance"]
-        self.target_tolerance = self.cfg["env"]["targetSuccessTolerance"]
-        self.success_tolerance = self.initial_tolerance
-        self.tolerance_curriculum_increment = self.cfg["env"][
-            "toleranceCurriculumIncrement"
-        ]
-        self.tolerance_curriculum_interval = self.cfg["env"][
-            "toleranceCurriculumInterval"
-        ]
 
-        self.save_states = self.cfg["env"]["saveStates"]
-        self.save_states_filename = self.cfg["env"]["saveStatesFile"]
-
-        self.should_load_initial_states = self.cfg["env"]["loadInitialStates"]
-        self.load_states_filename = self.cfg["env"]["loadStatesFile"]
-        self.initial_root_state_tensors = self.initial_dof_state_tensors = None
-        self.initial_state_idx = self.num_initial_states = 0
+        self.success_tolerance = float(self.cfg["env"].get("goalTolerance", self.initial_tolerance))
 
         self.reach_goal_bonus = self.cfg["env"]["reachGoalBonus"]
         self.fall_dist = self.cfg["env"]["fallDistance"]
@@ -403,14 +370,14 @@ class SimToolReal(VecTask):
         self.index_to_view = 0
 
         # Camera position and target for viewer
-        cam_target = gymapi.Vec3(0.0, 0.02, 0.50)
-        cam_pos = gymapi.Vec3(0.0, -0.42, 0.72)
+        cam_target = gymapi.Vec3(0.0, 0.0, 0.70)
+        cam_pos = gymapi.Vec3(0.0, -0.70, 0.80)
         if self.viewer is not None:
             self.gym.viewer_camera_look_at(
                 self.viewer, self.envs[self.index_to_view], cam_pos, cam_target
             )
 
-        # Init camera for wandb logging
+        # Initialize the RGB-D observation camera
         self._initialize_camera_sensor(cam_pos=cam_pos, cam_target=cam_target)
         self._modify_render_settings_if_headless()
 
@@ -566,16 +533,8 @@ class SimToolReal(VecTask):
         self.successes = torch.zeros(
             self.num_envs, dtype=torch.float, device=self.device
         )
-        self.prev_episode_successes = torch.zeros_like(self.successes)
 
         # true objective value for the whole episode, plus saving values for the previous episode
-        self.true_objective = torch.zeros(
-            self.num_envs, dtype=torch.float, device=self.device
-        )
-        self.prev_episode_true_objective = torch.zeros_like(self.true_objective)
-
-        self.total_successes = 0
-        self.total_resets = 0
 
         # object apply random forces parameters
         self.force_decay = to_torch(
@@ -675,15 +634,6 @@ class SimToolReal(VecTask):
         self.closest_keypoint_max_dist_fixed_size = -torch.ones(
             self.num_envs, dtype=torch.float, device=self.device
         )
-        self.prev_total_episode_closest_keypoint_max_dist = torch.zeros(
-            self.num_envs, dtype=torch.float, device=self.device
-        )
-        self.total_episode_closest_keypoint_max_dist = torch.zeros(
-            self.num_envs, dtype=torch.float, device=self.device
-        )
-        self.prev_episode_closest_keypoint_max_dist = 1000 * torch.ones(
-            self.num_envs, dtype=torch.float, device=self.device
-        )
 
         self.closest_fingertip_dist = -torch.ones(
             [self.num_envs, self.num_fingertips], dtype=torch.float, device=self.device
@@ -696,124 +646,6 @@ class SimToolReal(VecTask):
             [self.num_envs, self.num_fingertips], dtype=torch.float, device=self.device
         )
 
-        reward_keys = [
-            "raw_fingertip_delta_rew",
-            "raw_hand_delta_penalty",
-            "raw_lifting_rew",
-            "raw_keypoint_rew",
-            "raw_toolframe_orientation_rew",
-            "fingertip_delta_rew",
-            "hand_delta_penalty",
-            "lifting_rew",
-            "lift_bonus_rew",
-            "keypoint_rew",
-            "toolframe_orientation_rew",
-            "bonus_rew",
-            "kuka_actions_penalty",
-            "hand_actions_penalty",
-            "raw_object_lin_vel_penalty",
-            "raw_object_ang_vel_penalty",
-            "object_lin_vel_penalty",
-            "object_ang_vel_penalty",
-            "total_reward",
-        ]
-
-        self.rewards_episode = {
-            key: torch.zeros(self.num_envs, dtype=torch.float, device=self.device)
-            for key in reward_keys
-        }
-
-        self.last_curriculum_update = 0
-
-        self.episode_root_state_tensors = [[] for _ in range(self.num_envs)]
-        self.episode_dof_states = [[] for _ in range(self.num_envs)]
-
-        self.eval_stats: bool = self.cfg["env"]["evalStats"]
-
-        self.good_reset_boundary = self.cfg["env"].get(
-            "goodResetBoundary", 0
-        )  # Max number of envs that can be reset with good states
-
-        if self.good_reset_boundary > 0:
-            self.max_buffer_size = self.cfg["env"].get(
-                "maxBufferSize",
-                self.max_episode_length
-                * self.num_envs
-                * 2
-                // max(self.max_consecutive_successes, 20),
-            )  # Max number of states that can be stored in the buffer
-            self.max_temp_buffer_size = (
-                self.max_episode_length
-            )  # Max number of states that can be stored in the buffer
-            self.temp_root_states_buf = torch.empty(
-                (
-                    self.num_envs,
-                    self.max_temp_buffer_size,
-                    self.root_state_tensor.shape[0] // self.num_envs,
-                    *self.root_state_tensor.shape[1:],
-                ),
-                dtype=self.root_state_tensor.dtype,
-                device="cpu",
-            )
-            self.temp_dof_states_buf = torch.empty(
-                (
-                    self.num_envs,
-                    self.max_temp_buffer_size,
-                    self.dof_state.shape[0] // self.num_envs,
-                    *self.dof_state.shape[1:],
-                ),
-                dtype=self.dof_state.dtype,
-                device="cpu",
-            )
-            self.temp_buffer_index = torch.zeros(
-                self.num_envs, dtype=torch.int, device="cpu"
-            )
-            self.root_state_resets = torch.empty(
-                (
-                    self.max_buffer_size,
-                    self.root_state_tensor.shape[0] // self.num_envs,
-                    *self.root_state_tensor.shape[1:],
-                ),
-                dtype=self.root_state_tensor.dtype,
-                device="cpu",
-            )
-            self.dof_resets = torch.empty(
-                (
-                    self.max_buffer_size,
-                    self.dof_state.shape[0] // self.num_envs,
-                    *self.dof_state.shape[1:],
-                ),
-                dtype=self.dof_state.dtype,
-                device="cpu",
-            )
-            self.buffer_index = 0
-            self.buffer_length = 0
-
-        if self.eval_stats:
-            self.last_success_step = torch.zeros(
-                self.num_envs, dtype=torch.float, device=self.device
-            )
-            self.success_time = torch.zeros(
-                self.num_envs, dtype=torch.float, device=self.device
-            )
-            self.total_num_resets = torch.zeros(
-                self.num_envs, dtype=torch.float, device=self.device
-            )
-            self.successes_count = torch.zeros(
-                self.max_consecutive_successes + 1,
-                dtype=torch.float,
-                device=self.device,
-            )
-            from tensorboardX import SummaryWriter
-
-            self.eval_summary_dir = "./eval_summaries"
-            # remove the old directory if it exists
-            if os.path.exists(self.eval_summary_dir):
-                import shutil
-
-                shutil.rmtree(self.eval_summary_dir)
-            self.eval_summaries = SummaryWriter(self.eval_summary_dir, flush_secs=3)
-
         if self.with_table_force_sensor:
             self.table_sensor_forces_raw = torch.zeros(
                 (self.num_envs, 6), dtype=torch.float, device=self.device
@@ -824,8 +656,6 @@ class SimToolReal(VecTask):
             self.max_table_sensor_force_norm_smoothed = torch.zeros(
                 (self.num_envs), dtype=torch.float, device=self.device
             )
-
-        self._init_tyler_curriculum()
 
         self._init_obs_action_queue()
 
@@ -866,11 +696,7 @@ class SimToolReal(VecTask):
             function: Callable
 
         keyboard_shortcuts = [
-            KeyboardShortcut(
-                name="breakpoint",
-                key=gymapi.KEY_B,
-                function=self._breakpoint_callback,
-            ),
+
             KeyboardShortcut(
                 name="reset",
                 key=gymapi.KEY_E,
@@ -965,10 +791,6 @@ class SimToolReal(VecTask):
         self.vel_impulse_from_keyboard = np.array([0.0] * 6)
 
         self.need_teleport_object_from_keyboard = False
-
-    def _breakpoint_callback(self) -> None:
-        print("Breakpoint")
-        breakpoint()
 
     def _reset_callback(self) -> None:
         print("Resetting...")
@@ -1151,51 +973,6 @@ class SimToolReal(VecTask):
     ##### KEYBOARD END #####
 
     # SimToolReal abstract interface - to be overriden in derived classes
-    def change_on_restart(self, cfg):
-        self.frame_since_restart = 0
-        self.last_curriculum_update = 0
-
-        self.cfg["env"]["distanceDeltaRewScale"] = cfg["env"]["distanceDeltaRewScale"]
-        self.cfg["env"]["liftingRewScale"] = cfg["env"]["liftingRewScale"]
-        self.cfg["env"]["liftingBonus"] = cfg["env"]["liftingBonus"]
-        self.cfg["env"]["liftingBonusThreshold"] = cfg["env"]["liftingBonusThreshold"]
-        self.cfg["env"]["keypointRewScale"] = cfg["env"]["keypointRewScale"]
-        self.cfg["env"]["kukaActionsPenaltyScale"] = cfg["env"][
-            "kukaActionsPenaltyScale"
-        ]
-        self.cfg["env"]["handActionsPenaltyScale"] = cfg["env"][
-            "handActionsPenaltyScale"
-        ]
-        self.cfg["env"]["reachGoalBonus"] = cfg["env"]["reachGoalBonus"]
-        self.cfg["env"]["fallDistance"] = cfg["env"]["fallDistance"]
-        self.cfg["env"]["fallPenalty"] = cfg["env"]["fallPenalty"]
-
-        self.distance_delta_rew_scale = self.cfg["env"]["distanceDeltaRewScale"]
-        self.lifting_rew_scale = self.cfg["env"]["liftingRewScale"]
-        self.lifting_bonus = self.cfg["env"]["liftingBonus"]
-        self.lifting_bonus_threshold = self.cfg["env"]["liftingBonusThreshold"]
-        self.keypoint_rew_scale = self.cfg["env"]["keypointRewScale"]
-        self.kuka_actions_penalty_scale = self.cfg["env"]["kukaActionsPenaltyScale"]
-        self.hand_actions_penalty_scale = self.cfg["env"]["handActionsPenaltyScale"]
-        self.toolframe_orientation_rew_scale = float(
-            self.cfg["env"].get("toolFrameOrientationRewScale", 0.0)
-        )
-        self.toolframe_orientation_rew_sharpness = float(
-            self.cfg["env"].get("toolFrameOrientationRewSharpness", 2.0)
-        )
-        self.use_toolframe_orientation_success = bool(
-            self.cfg["env"].get("useToolFrameOrientationSuccess", False)
-        )
-        self.toolframe_orientation_success_stage_families = list(
-            self.cfg["env"].get("toolFrameOrientationSuccessStageFamilies", []) or []
-        )
-        self.toolframe_orientation_success_tolerance_rad = float(
-            self.cfg["env"].get("toolFrameOrientationSuccessToleranceRad", 0.30)
-        )
-
-        self.reach_goal_bonus = self.cfg["env"]["reachGoalBonus"]
-        self.fall_dist = self.cfg["env"]["fallDistance"]
-        self.fall_penalty = self.cfg["env"]["fallPenalty"]
 
     def _object_keypoint_offsets(self):
         return [
@@ -1231,7 +1008,7 @@ class SimToolReal(VecTask):
 
         return object_start_pose
 
-    def _main_object_assets_and_scales(self, object_asset_root, tmp_assets_dir):
+    def _main_object_assets_and_scales(self):
         object_name = self.cfg["env"]["objectName"]
         known_object_names = set(NAME_TO_OBJECT.keys())
         if object_name in known_object_names:
@@ -1240,13 +1017,6 @@ class SimToolReal(VecTask):
             object_asset_files = [obj.urdf_path]
             object_asset_scales = [obj.scale]
             need_vhacds = [obj.need_vhacd]
-
-        elif object_name == "handle_head_primitives":
-            object_asset_files, object_asset_scales, need_vhacds = (
-                self._handle_head_primitives(
-                    str(Path(tmp_assets_dir) / "handle_head_primitives"),
-                )
-            )
 
         else:
             raise ValueError(f"Unknown object name: {object_name}")
@@ -1367,16 +1137,16 @@ class SimToolReal(VecTask):
 
         extra_rb_count = 0
         extra_shapes_count = 0
-        self.parttoolgen_benchmark_extra_assets = []
-        for spec in self.parttoolgen_benchmark_extra_actor_specs:
+        self.scene_assets = []
+        for spec in self.scene_actor_specs:
             if not hasattr(spec, "get"):
                 raise ValueError(
-                    "parttoolgenBenchmarkExtraActors entries must be mappings"
+                    "sceneActors entries must be mappings"
                 )
             asset_file = spec.get("asset_file") or spec.get("asset")
             if not asset_file:
                 raise ValueError(
-                    "parttoolgenBenchmarkExtraActors entries require asset_file"
+                    "sceneActors entries require asset_file"
                 )
             asset_path = Path(str(asset_file))
             if not asset_path.is_absolute():
@@ -1395,7 +1165,7 @@ class SimToolReal(VecTask):
                 asset_path.name,
                 extra_asset_options,
             )
-            self.parttoolgen_benchmark_extra_assets.append(extra_asset)
+            self.scene_assets.append(extra_asset)
             extra_rb_count += self.gym.get_asset_rigid_body_count(extra_asset)
             extra_shapes_count += self.gym.get_asset_rigid_shape_count(extra_asset)
 
@@ -1445,11 +1215,11 @@ class SimToolReal(VecTask):
         else:
             self._set_actor_color(env_ptr, goal_handle, self.goal_object_visual_color)
 
-        for spec_idx, spec in enumerate(self.parttoolgen_benchmark_extra_actor_specs):
+        for spec_idx, spec in enumerate(self.scene_actor_specs):
             pose_values = spec.get("pose_xyzw") or [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
             if not hasattr(pose_values, "__len__") or len(pose_values) != 7:
                 raise ValueError(
-                    "parttoolgenBenchmarkExtraActors pose_xyzw must be a 7-element list"
+                    "sceneActors pose_xyzw must be a 7-element list"
                 )
             pose_values = [float(value) for value in pose_values]
             extra_pose = gymapi.Transform()
@@ -1467,7 +1237,7 @@ class SimToolReal(VecTask):
             actor_name = str(spec.get("name") or f"parttoolgen_extra_actor_{spec_idx}")
             extra_handle = self.gym.create_actor(
                 env_ptr,
-                self.parttoolgen_benchmark_extra_assets[spec_idx],
+                self.scene_assets[spec_idx],
                 extra_pose,
                 actor_name,
                 env_idx,
@@ -1477,8 +1247,8 @@ class SimToolReal(VecTask):
             extra_idx = self.gym.get_actor_index(
                 env_ptr, extra_handle, gymapi.DOMAIN_SIM
             )
-            self.parttoolgen_benchmark_extra_actor_indices.append(extra_idx)
-            self.parttoolgen_benchmark_extra_actor_init_states.append(
+            self.scene_actor_indices.append(extra_idx)
+            self.scene_actor_init_states.append(
                 [
                     float(pose_values[0]),
                     float(pose_values[1]),
@@ -1513,15 +1283,15 @@ class SimToolReal(VecTask):
         self.goal_object_indices = to_torch(
             self.goal_object_indices, dtype=torch.long, device=self.device
         )
-        if self.parttoolgen_benchmark_extra_actor_indices:
-            num_extra = len(self.parttoolgen_benchmark_extra_actor_specs)
-            self.parttoolgen_benchmark_extra_actor_indices = to_torch(
-                self.parttoolgen_benchmark_extra_actor_indices,
+        if self.scene_actor_indices:
+            num_extra = len(self.scene_actor_specs)
+            self.scene_actor_indices = to_torch(
+                self.scene_actor_indices,
                 dtype=torch.long,
                 device=self.device,
             ).view(self.num_envs, num_extra)
-            self.parttoolgen_benchmark_extra_actor_init_states = to_torch(
-                self.parttoolgen_benchmark_extra_actor_init_states,
+            self.scene_actor_init_states = to_torch(
+                self.scene_actor_init_states,
                 dtype=torch.float,
                 device=self.device,
             ).view(self.num_envs, num_extra, 13)
@@ -1707,127 +1477,36 @@ class SimToolReal(VecTask):
     def _extra_object_indices(self, env_ids: Tensor) -> List[Tensor]:
         indices = [self.goal_object_indices[env_ids]]
         if (
-            isinstance(self.parttoolgen_benchmark_extra_actor_indices, torch.Tensor)
-            and self.parttoolgen_benchmark_extra_actor_indices.numel() > 0
+            isinstance(self.scene_actor_indices, torch.Tensor)
+            and self.scene_actor_indices.numel() > 0
         ):
             indices.append(
-                self.parttoolgen_benchmark_extra_actor_indices[env_ids].reshape(-1)
+                self.scene_actor_indices[env_ids].reshape(-1)
             )
         return indices
 
-    def _extra_curriculum(self):
-        self.success_tolerance, self.last_curriculum_update = tolerance_curriculum(
-            self.last_curriculum_update,
-            self.frame_since_restart,
-            self.tolerance_curriculum_interval,
-            self.prev_episode_successes,
-            self.success_tolerance,
-            self.initial_tolerance,
-            self.target_tolerance,
-            self.tolerance_curriculum_increment,
-        )
-
-        eval_success_tolerance = self.cfg["env"].get("evalSuccessTolerance", None)
-        if eval_success_tolerance is not None:
-            self.success_tolerance = eval_success_tolerance
-
     # SimToolReal implementation
-    def get_env_state(self):
-        """
-        Return serializable environment state to be saved to checkpoint.
-        Can be used for stateful training sessions, i.e. with adaptive curriculums.
-        """
-        return dict(
-            success_tolerance=self.success_tolerance,
-            prev_episode_successes=self.prev_episode_successes,
-            prev_episode_true_objective=self.prev_episode_true_objective,
-            dof_state=self.dof_state,
-            root_state_tensor=self.root_state_tensor,
-            rigid_body_states=self.rigid_body_states,
-            successes=self.successes,
-            true_objective=self.true_objective,
-            near_goal_steps=self.near_goal_steps,
-            lifted_object=self.lifted_object,
-            closest_keypoint_max_dist=self.closest_keypoint_max_dist,
-            closest_keypoint_max_dist_fixed_size=self.closest_keypoint_max_dist_fixed_size,
-            closest_fingertip_dist=self.closest_fingertip_dist,
-            furthest_hand_dist=self.furthest_hand_dist,
-            prev_targets=self.prev_targets,
-            cur_targets=self.cur_targets,
-            reset_buf=self.reset_buf,
-            progress_buf=self.progress_buf,
-            reset_goal_buf=self.reset_goal_buf,
-            obj_keypoint_pos=self.obj_keypoint_pos,
-            goal_keypoint_pos=self.goal_keypoint_pos,
-            obj_keypoint_pos_fixed_size=self.obj_keypoint_pos_fixed_size,
-            goal_keypoint_pos_fixed_size=self.goal_keypoint_pos_fixed_size,
-            rewards_episode=self.rewards_episode,
-            last_curriculum_update=self.last_curriculum_update,
-            rb_forces=self.rb_forces,
-            rb_torques=self.rb_torques,
-            random_force_prob=self.random_force_prob,
-            random_torque_prob=self.random_torque_prob,
-            random_lin_vel_impulse_prob=self.random_lin_vel_impulse_prob,
-            random_ang_vel_impulse_prob=self.random_ang_vel_impulse_prob,
-            goal_states=self.goal_states,
-            goal_init_state=self.goal_init_state,
-            object_init_state=self.object_init_state,
-            prev_total_episode_closest_keypoint_max_dist=self.prev_total_episode_closest_keypoint_max_dist,
-            total_episode_closest_keypoint_max_dist=self.total_episode_closest_keypoint_max_dist,
-            prev_episode_closest_keypoint_max_dist=self.prev_episode_closest_keypoint_max_dist,
-            frame_since_restart=self.frame_since_restart,
-        )
 
     def set_env_state(self, env_state):
-        if env_state is None:
+        """Restore compatible physical tensors from the supplied policy checkpoint."""
+        if not env_state:
             return
-
-        rewards_episode = env_state.get("rewards_episode", None)
-        if rewards_episode is not None:
-            for key in rewards_episode.keys():
-                if (
-                    key in self.rewards_episode
-                    and self.rewards_episode[key].shape == rewards_episode[key].shape
-                ):
-                    self.rewards_episode[key].copy_(rewards_episode[key])
-        del env_state["rewards_episode"]
-
-        for key in self.get_env_state().keys():
-            value = env_state.get(key, None)
-            if value is None:
+        fields = ('dof_state', 'root_state_tensor', 'rigid_body_states', 'successes', 'near_goal_steps', 'lifted_object', 'closest_keypoint_max_dist', 'closest_keypoint_max_dist_fixed_size', 'closest_fingertip_dist', 'furthest_hand_dist', 'prev_targets', 'cur_targets', 'reset_buf', 'progress_buf', 'reset_goal_buf', 'obj_keypoint_pos', 'goal_keypoint_pos', 'obj_keypoint_pos_fixed_size', 'goal_keypoint_pos_fixed_size', 'rb_forces', 'rb_torques', 'random_force_prob', 'random_torque_prob', 'random_lin_vel_impulse_prob', 'random_ang_vel_impulse_prob', 'goal_states', 'goal_init_state', 'object_init_state')
+        for key in fields:
+            value = env_state.get(key)
+            current = getattr(self, key, None)
+            if value is None or current is None:
                 continue
-
-            if isinstance(value, torch.Tensor):
-                value = value.to(self.device)
-            if (
-                isinstance(value, torch.Tensor)
-                and self.__dict__[key].shape != value.shape
-            ):
-                print(
-                    "Skipping loading env state value", key, "because of shape mismatch"
-                )
-                continue
-
-            if isinstance(value, torch.Tensor):
-                self.__dict__[key].copy_(value)
+            if isinstance(current, torch.Tensor):
+                if isinstance(value, torch.Tensor) and current.shape == value.shape:
+                    current.copy_(value.to(self.device))
             else:
-                self.__dict__[key] = value
-            print(f"Loaded env state value {key}:{value}")
-
-        self.arm_hand_dof_state = self.dof_state.view(self.num_envs, -1, 2)[
-            :, : self.num_hand_arm_dofs
-        ]
+                setattr(self, key, value)
+        self.arm_hand_dof_state = self.dof_state.view(self.num_envs, -1, 2)[:, :self.num_hand_arm_dofs]
         self.arm_hand_dof_pos = self.arm_hand_dof_state[..., 0]
         self.arm_hand_dof_vel = self.arm_hand_dof_state[..., 1]
-
-        self.reset_idx(
-            torch.arange(self.num_envs, dtype=torch.long, device=self.device),
-            tensor_reset=False,
-        )
+        self.reset_idx(torch.arange(self.num_envs, dtype=torch.long, device=self.device), tensor_reset=False)
         self.set_actor_root_state_tensor_indexed()
-        print(
-            f"Success tolerance value after loading from checkpoint: {self.success_tolerance}"
-        )
 
     def create_sim(self):
         self.dt = self.sim_params.dt
@@ -1857,145 +1536,9 @@ class SimToolReal(VecTask):
         plane_params.normal = gymapi.Vec3(0.0, 0.0, 1.0)
         self.gym.add_ground(self.sim, plane_params)
 
-    def _handle_head_primitives(self, generated_assets_dir):
-        if not os.path.exists(generated_assets_dir):
-            os.makedirs(generated_assets_dir)
-
-        try:
-            filenames = os.listdir(generated_assets_dir)
-            for fname in filenames:
-                if fname.endswith(".urdf"):
-                    os.remove(join(generated_assets_dir, fname))
-        except Exception as exc:
-            print(
-                f"Exception {exc} while removing older procedurally-generated urdf assets"
-            )
-
-        # We are generating "handle_head" objects, which consist of a handle and a head
-        # The handle and head are either a cuboid or a cylinder
-        # The origin of the object is at the center of the handle
-        # To have different densities, we would need to have 2 links each with a different density, but this breaks the current code
-        # An alternative could be to manually compute the mass and inertia rather than using the density field alone
-        # We implement this variable density approach now
-
-        # The x-direction is along the handle
-        # The head is at +x from the handle
-        # There is no relative rotation between the handle and head
-
-        NUM_OBJECTS_PER_TYPE = 100
-        np.random.seed(42)
-
-        from isaacgymenvs.tasks.simtoolreal.generate_objects import (
-            generate_handle_head_urdf,
-        )
-        from isaacgymenvs.tasks.simtoolreal.object_size_distributions import (
-            OBJECT_SIZE_DISTRIBUTIONS,
-        )
-
-        handle_head_types = set(self.cfg["env"]["handleHeadTypes"])
-        object_size_distributions = [
-            obj for obj in OBJECT_SIZE_DISTRIBUTIONS if obj.type in handle_head_types
-        ]
-
-        files_list = []
-        scales_list = []
-        for object_size_distribution in object_size_distributions:
-            handle_head_type = object_size_distribution.type
-
-            # Sample densities
-            handle_densities = object_size_distribution.sample_handle_densities(
-                NUM_OBJECTS_PER_TYPE
-            )
-            head_densities = object_size_distribution.sample_head_densities(
-                NUM_OBJECTS_PER_TYPE
-            )
-
-            # Sample scales
-            # Currently different for each object
-            handle_scales = object_size_distribution.sample_handle_scales(
-                NUM_OBJECTS_PER_TYPE
-            )
-            head_scales = object_size_distribution.sample_head_scales(
-                NUM_OBJECTS_PER_TYPE
-            )
-            assert handle_scales.shape in [
-                (NUM_OBJECTS_PER_TYPE, 2),
-                (NUM_OBJECTS_PER_TYPE, 3),
-            ], (
-                f"handle_scales shape: {handle_scales.shape}, expected ({NUM_OBJECTS_PER_TYPE}, 2) or ({NUM_OBJECTS_PER_TYPE}, 3)"
-            )
-            files_list.append(
-                [
-                    generate_handle_head_urdf(
-                        filepath=Path(generated_assets_dir)
-                        / (
-                            f"{idx:03d}_{handle_head_type}_handle_head_{handle_scales[idx]}_{head_scales[idx] if head_scales is not None else 'None'}_{handle_densities[idx]}_{head_densities[idx] if head_densities is not None else 'None'}".replace(
-                                ".", "-"
-                            )
-                            + ".urdf"
-                        ),
-                        handle_scale=handle_scales[idx],
-                        head_scale=head_scales[idx]
-                        if head_scales is not None
-                        else None,
-                        handle_density=handle_densities[idx],
-                        head_density=head_densities[idx]
-                        if head_scales is not None
-                        else None,
-                    )
-                    for idx in range(NUM_OBJECTS_PER_TYPE)
-                ]
-            )
-            scales_list.append(handle_scales)
-
-        all_files = [file for sublist in files_list for file in sublist]
-        all_scales = [scale for sublist in scales_list for scale in sublist]
-
-        def convert_scale_to_three_elements(scale):
-            # Object scales must have 3 elements
-            # Cylinders currently have 2 elements, so we make the third element the same as the second element
-            if len(scale) == 3:
-                return scale
-            elif len(scale) == 2:
-                return (scale[0], scale[1], scale[1])
-            else:
-                raise ValueError(f"Invalid scale: {scale}")
-
-        all_scales = [convert_scale_to_three_elements(scale) for scale in all_scales]
-        need_vhacds = [False] * len(all_files)
-
-        # Note, we need to make sure all_scales is rescaled by the base size
-        all_scales = [
-            (
-                x / self.object_base_size,
-                y / self.object_base_size,
-                z / self.object_base_size,
-            )
-            for (x, y, z) in all_scales
-        ]
-
-        # Randomize order
-        RANDOMIZE_ORDER = True
-        if RANDOMIZE_ORDER:
-            indices = list(range(len(all_files)))
-            np.random.shuffle(indices)
-            all_files = [all_files[i] for i in indices]
-            all_scales = [all_scales[i] for i in indices]
-            need_vhacds = [need_vhacds[i] for i in indices]
-
-        DEBUG_PRINT = False
-        if DEBUG_PRINT:
-            print(f"all_files[0]: {all_files[0]}")
-            print(f"all_scales[0]: {all_scales[0]}")
-            print(f"need_vhacds[0]: {need_vhacds[0]}")
-            # print(f"All files: {all_files}")
-            # print(f"All scales: {all_scales}")
-
-        return all_files, all_scales, need_vhacds
 
     def _create_envs(self, num_envs, spacing, num_per_row):
-        if self.should_load_initial_states:
-            self.load_initial_states()
+        pass
 
         lower = gymapi.Vec3(-spacing, -spacing, 0.0)
         upper = gymapi.Vec3(spacing, spacing, spacing)
@@ -2005,9 +1548,8 @@ class SimToolReal(VecTask):
         )
 
         object_asset_root = asset_root
-        tmp_assets_dir = tempfile.TemporaryDirectory()
         self.object_asset_files, self.object_asset_scales, self.object_need_vhacds = (
-            self._main_object_assets_and_scales(object_asset_root, tmp_assets_dir.name)
+            self._main_object_assets_and_scales()
         )
 
         asset_options = gymapi.AssetOptions()
@@ -2203,9 +1745,9 @@ class SimToolReal(VecTask):
                     friction=self.cfg["env"]["objectFriction"],
                 )
             for extra_asset_idx, extra_asset in enumerate(
-                self.parttoolgen_benchmark_extra_assets
+                self.scene_assets
             ):
-                spec = self.parttoolgen_benchmark_extra_actor_specs[extra_asset_idx]
+                spec = self.scene_actor_specs[extra_asset_idx]
                 self.set_object_asset_rigid_shape_properties(
                     object_asset=extra_asset,
                     friction=float(spec.get("friction", self.cfg["env"]["objectFriction"])),
@@ -2390,33 +1932,10 @@ class SimToolReal(VecTask):
             self.objects.append(object_handle)
 
         # Default false because this is slow
-        DEBUG_PRINT_OBJECT_MASS_AND_INERTIA_AND_COM = False
+
         # Get mass and inertia of object
-        if DEBUG_PRINT_OBJECT_MASS_AND_INERTIA_AND_COM:
-            original_masses, original_inertias, original_coms = (
-                self._get_original_object_masses_and_inertias_and_coms()
-            )
-            print(f"Original masses: {original_masses[0]}")
-            print(f"Original inertias: {original_inertias[0]}")
-            print(f"Original coms: {original_coms[0]}")
-            breakpoint()
 
         # Set mass and inertia of object
-        MODIFY_OBJECT_MASS_AND_INERTIA = False
-        if MODIFY_OBJECT_MASS_AND_INERTIA:
-            # Get mass and inertia of object
-            original_masses, original_inertias, original_coms = (
-                self._get_original_object_masses_and_inertias_and_coms()
-            )
-            print(f"Original masses: {original_masses[0]}")
-            print(f"Original inertias: {original_inertias[0]}")
-
-            self.set_object_masses_and_inertias(
-                envs=self.envs,
-                objects=self.objects,
-                masses=[0.2] * len(self.objects),
-                inertias=[(0.001, 0.001, 0.001)] * len(self.objects),
-            )
 
         # we are not using new mass values after DR when calculating random forces applied to an object,
         # which should be ok as long as the randomization range is not too big
@@ -2478,11 +1997,6 @@ class SimToolReal(VecTask):
 
         self._after_envs_created()
 
-        try:
-            # by this point we don't need the temporary folder for procedurally generated assets
-            tmp_assets_dir.cleanup()
-        except Exception:
-            pass
 
     def _get_original_object_masses_and_inertias_and_coms(
         self,
@@ -2716,107 +2230,7 @@ class SimToolReal(VecTask):
         )
         resets = self._extra_reset_rules(resets)
 
-        # Print resets when there is only one environment
-        PRINT_RESET_REASONS = False
-        if self.num_envs == 1 and resets.item() and PRINT_RESET_REASONS:
-            print("=" * 100)
-            print("REASON FOR RESET:")
-            print(f"object_z_low: {object_z_low.item()}")
-            print(
-                f"max_consecutive_successes_reached: {max_consecutive_successes_reached.item()}"
-            )
-            print(f"max_episode_length_reached: {max_episode_length_reached.item()}")
-            print(f"table_force_too_high: {table_force_too_high.item()}")
-            print(f"hand_far_from_object: {hand_far_from_object.item()}")
-            print(f"dropped: {dropped.item()}")
-            print(f"resets: {resets.item()}")
-            print("=" * 100)
-            print(f"self.successes: {self.successes.item()}")
-            print()
-
-        # Keep track of reasons for reset
-        from collections import Counter, deque
-
-        if not hasattr(self, "recent_reset_reason_history"):
-            MAX_HISTORY_LENGTH = 4096
-            self.recent_reset_reason_history = deque(maxlen=MAX_HISTORY_LENGTH)
-            self.cumulative_reset_reason_counts = {
-                "object_z_low": 0,
-                "max_consecutive_successes_reached": 0,
-                "max_episode_length_reached": 0,
-                "table_force_too_high": 0,
-                "hand_far_from_object": 0,
-                "dropped": 0,
-            }
-        # Current means this recent step (across all environments)
-        # Recent means the last MAX_HISTORY_LENGTH resets
-        # Cumulative means across all time
-        # Use a deque to keep track of recent (FIFO) and use Counter on it to get the counts
-        # Use a dict to keep track of cumulative counts so that memory is not a problem indefinitely
-
-        # Get current counts
-        current_reset_reason_counts = {
-            "object_z_low": object_z_low.sum().item(),
-            "max_consecutive_successes_reached": max_consecutive_successes_reached.sum().item(),
-            "max_episode_length_reached": max_episode_length_reached.sum().item(),
-            "table_force_too_high": table_force_too_high.sum().item(),
-            "hand_far_from_object": hand_far_from_object.sum().item(),
-            "dropped": dropped.sum().item(),
-        }
-
-        # Update counts
-        for reason, count in current_reset_reason_counts.items():
-            self.cumulative_reset_reason_counts[reason] += count
-        for reason, count in current_reset_reason_counts.items():
-            self.recent_reset_reason_history.extend([reason] * count)
-        recent_reset_reason_counts = Counter(self.recent_reset_reason_history)
-
-        # We log the recent counts (fractions of all recent resets)
-        # We don't want cumulative because it is affected too much by the past (we want to see how well the policy is doing now)
-        recent_total = sum(recent_reset_reason_counts.values())
-        for reason, count in recent_reset_reason_counts.items():
-            self.extras[f"reset/{reason}"] = (
-                count / recent_total if recent_total > 0 else 0
-            )
-
-        PRINT = False
-        if PRINT:
-            current_total = sum(current_reset_reason_counts.values())
-            if current_total > 0:
-                print(f"{current_total} resets in the last step!")
-                print()
-
-                cumulative_total = sum(self.cumulative_reset_reason_counts.values())
-                print("Across all time:")
-                print("-" * 100)
-                for reason, count in self.cumulative_reset_reason_counts.items():
-                    if count > 0:
-                        print(
-                            f"Reset reason: {reason} {count}/{cumulative_total} ({count / cumulative_total:.1%})"
-                        )
-                print()
-
-                recent_total = sum(recent_reset_reason_counts.values())
-                print("Recent:")
-                print("-" * 100)
-                for reason, count in recent_reset_reason_counts.items():
-                    if count > 0:
-                        print(
-                            f"Reset reason: {reason} {count}/{recent_total} ({count / recent_total:.1%})"
-                        )
-                print()
-                print()
-
         return resets
-
-    def _true_objective(self) -> Tensor:
-        true_objective = tolerance_successes_objective(
-            self.success_tolerance,
-            self.initial_tolerance,
-            self.target_tolerance,
-            self.successes,
-        )
-        return true_objective
 
     def compute_kuka_reward(self) -> Tuple[Tensor, Tensor]:
         lifting_rew, lift_bonus_rew, lifted_object = self._lifting_reward()
@@ -2869,31 +2283,15 @@ class SimToolReal(VecTask):
         goal_resets = is_success
         self.successes += is_success
 
-        # Print successes when there is only one environment
-        # if self.num_envs == 1 and is_success.item():
-        #     print("~" * 100)
-        #     print("IS SUCCESS:")
-        #     print(f"self.successes: {self.successes.item()}")
-        #     print("~" * 100)
-
         self.reset_goal_buf[:] = goal_resets
 
         object_lin_vel_penalty = -torch.sum(torch.square(self.object_linvel), dim=-1)
         object_ang_vel_penalty = -torch.sum(torch.square(self.object_angvel), dim=-1)
 
-        self.rewards_episode["raw_fingertip_delta_rew"] += fingertip_delta_rew
-        self.rewards_episode["raw_hand_delta_penalty"] += hand_delta_penalty
-        self.rewards_episode["raw_lifting_rew"] += lifting_rew
-        self.rewards_episode["raw_keypoint_rew"] += keypoint_rew
         toolframe_orientation_rew = torch.exp(
             -self.toolframe_orientation_rew_sharpness
             * torch.square(toolframe_orientation_error)
         ) * lifted_object
-        self.rewards_episode["raw_toolframe_orientation_rew"] += (
-            toolframe_orientation_rew
-        )
-        self.rewards_episode["raw_object_lin_vel_penalty"] += object_lin_vel_penalty
-        self.rewards_episode["raw_object_ang_vel_penalty"] += object_ang_vel_penalty
 
         fingertip_delta_rew *= self.distance_delta_rew_scale
         hand_delta_penalty *= self.distance_delta_rew_scale * 0  # currently disabled
@@ -2930,149 +2328,11 @@ class SimToolReal(VecTask):
         resets = self._compute_resets(is_success)
         self.reset_buf[:] = resets
 
-        # HACK: Force no reset for isaac_env_ros type testing
+        # Keep the current fixed-goal episode active
         if self.cfg["env"]["forceNoReset"]:
             self.reset_buf[:] = False
 
-        self.extras["successes"] = self.prev_episode_successes
-        self.extras["success_ratio"] = (
-            self.prev_episode_successes.mean().item() / self.max_consecutive_successes
-        )
-        self.extras["closest_keypoint_max_dist"] = (
-            self.prev_episode_closest_keypoint_max_dist
-        )
-        self.extras["toolframe_orientation_error_rad"] = toolframe_orientation_error
-        self.true_objective = self._true_objective()
-        self.extras["true_objective"] = self.true_objective
-
-        # scalars for logging
-        # self.extras["true_objective_mean"] = self.true_objective.mean()
-        # self.extras["true_objective_min"] = self.true_objective.min()
-        # self.extras["true_objective_max"] = self.true_objective.max()
-
-        rewards = [
-            (fingertip_delta_rew, "fingertip_delta_rew"),
-            (hand_delta_penalty, "hand_delta_penalty"),
-            (lifting_rew, "lifting_rew"),
-            (lift_bonus_rew, "lift_bonus_rew"),
-            (keypoint_rew, "keypoint_rew"),
-            (toolframe_orientation_rew, "toolframe_orientation_rew"),
-            (kuka_actions_penalty, "kuka_actions_penalty"),
-            (hand_actions_penalty, "hand_actions_penalty"),
-            (bonus_rew, "bonus_rew"),
-            (object_lin_vel_penalty, "object_lin_vel_penalty"),
-            (object_ang_vel_penalty, "object_ang_vel_penalty"),
-            (reward, "total_reward"),
-        ]
-
-        episode_cumulative = dict()
-        for rew_value, rew_name in rewards:
-            self.rewards_episode[rew_name] += rew_value
-            episode_cumulative[rew_name] = rew_value
-        self.extras["rewards_episode"] = self.rewards_episode
-        self.extras["episode_cumulative"] = episode_cumulative
-
         return self.rew_buf, is_success
-
-    def _eval_stats(self, is_success: Tensor) -> None:
-        if self.eval_stats:
-            frame: int = self.frame_since_restart
-            n_frames = torch.empty_like(self.last_success_step).fill_(frame)
-            self.success_time = torch.where(
-                is_success, n_frames - self.last_success_step, self.success_time
-            )
-            self.last_success_step = torch.where(
-                is_success, n_frames, self.last_success_step
-            )
-            mask_ = self.success_time > 0
-            if any(mask_):
-                avg_time_mean = (
-                    (self.success_time * mask_).sum(dim=0) / mask_.sum(dim=0)
-                ).item()
-            else:
-                avg_time_mean = math.nan
-
-            self.total_resets = self.total_resets + self.reset_buf.sum()
-            self.total_successes = (
-                self.total_successes + (self.successes * self.reset_buf).sum()
-            )
-            self.total_num_resets += self.reset_buf
-
-            reset_ids = self.reset_buf.nonzero().squeeze()
-            last_successes = self.successes[reset_ids].long()
-            self.successes_count[last_successes] += 1
-
-            if frame % 100 == 0:
-                # The direct average shows the overall result more quickly, but slightly undershoots long term
-                # policy performance.
-                print(f"Max num successes: {self.successes.max().item()}")
-                print(
-                    f"Average consecutive successes: {self.prev_episode_successes.mean().item():.2f}"
-                )
-                print(
-                    f"Total num resets: {self.total_num_resets.sum().item()} --> {self.total_num_resets}"
-                )
-                print(
-                    f"Reset percentage: {(self.total_num_resets > 0).sum() / self.num_envs:.2%}"
-                )
-                print(
-                    f"Last ep successes: {self.prev_episode_successes.mean().item():.2f}"
-                )
-                print(
-                    f"Last ep true objective: {self.prev_episode_true_objective.mean().item():.2f}"
-                )
-
-                self.eval_summaries.add_scalar(
-                    "last_ep_successes",
-                    self.prev_episode_successes.mean().item(),
-                    frame,
-                )
-                self.eval_summaries.add_scalar(
-                    "last_ep_true_objective",
-                    self.prev_episode_true_objective.mean().item(),
-                    frame,
-                )
-                self.eval_summaries.add_scalar(
-                    "reset_stats/reset_percentage",
-                    (self.total_num_resets > 0).sum() / self.num_envs,
-                    frame,
-                )
-                self.eval_summaries.add_scalar(
-                    "reset_stats/min_num_resets",
-                    self.total_num_resets.min().item(),
-                    frame,
-                )
-
-                self.eval_summaries.add_scalar(
-                    "policy_speed/avg_success_time_frames", avg_time_mean, frame
-                )
-                frame_time = self.control_freq_inv * self.dt
-                self.eval_summaries.add_scalar(
-                    "policy_speed/avg_success_time_seconds",
-                    avg_time_mean * frame_time,
-                    frame,
-                )
-                self.eval_summaries.add_scalar(
-                    "policy_speed/avg_success_per_minute",
-                    60.0 / (avg_time_mean * frame_time),
-                    frame,
-                )
-                print(
-                    f"Policy speed (successes per minute): {60.0 / (avg_time_mean * frame_time):.2f}"
-                )
-
-                # create a matplotlib bar chart of the self.successes_count
-                import matplotlib.pyplot as plt
-
-                plt.bar(
-                    list(range(self.max_consecutive_successes + 1)),
-                    self.successes_count.cpu().numpy(),
-                )
-                plt.title("Successes histogram")
-                plt.xlabel("Successes")
-                plt.ylabel("Frequency")
-                plt.savefig(f"{self.eval_summary_dir}/successes_histogram.png")
-                plt.clf()
 
     def populate_sim_buffers(self) -> Tuple[Tensor, int]:
         self.gym.refresh_dof_state_tensor(self.sim)
@@ -3484,121 +2744,17 @@ class SimToolReal(VecTask):
                 torch.arange(self.num_envs), delay_index
             ].clone()
 
-        # HACK: For testing delay, force a fixed full delay
-        FORCE_FULL_DELAY = False
-        if FORCE_FULL_DELAY:
-            self.obs_buf[:] = self.obs_queue[:, -1].clone()
-
-        # Default CHECK_WITH_COMPUTED_OBS = False
-        # Set to True to check if the observations are computed correctly
-        CHECK_WITH_COMPUTED_OBS = False
-        if CHECK_WITH_COMPUTED_OBS:
-            # Create urdf object
-            if not hasattr(self, "urdf_object"):
-                self.urdf_object = create_urdf_object(
-                    robot_name="iiwa14_left_sharpa_adjusted_restricted"
-                )
-
-            computed_obs = compute_observation(
-                q=self.arm_hand_dof_pos.cpu().numpy(),
-                qd=self.arm_hand_dof_vel.cpu().numpy(),
-                prev_action_targets=self.prev_targets.cpu().numpy(),
-                object_pose=self.object_pose.cpu().numpy(),
-                goal_object_pose=self.goal_pose.cpu().numpy(),
-                object_scales=self.object_scales.cpu().numpy(),
-                urdf=self.urdf_object,
-                obs_list=self.obs_list,
-            )
-            computed_obs = torch.from_numpy(computed_obs).float().to(self.device)
-
-            # Validate
-            assert computed_obs.shape == (self.num_envs, len(OBS_NAMES)), (
-                f"computed_obs.shape: {computed_obs.shape}, expected: ({self.num_envs}, {len(OBS_NAMES)})"
-            )
-            assert self.obs_buf.shape == computed_obs.shape, (
-                f"self.obs_buf.shape: {self.obs_buf.shape}, expected: {computed_obs.shape}"
-            )
-            num_errors = 0
-            for i, name in enumerate(OBS_NAMES):
-                val_orig = self.obs_buf[0, i].item()
-                val_computed = computed_obs[0, i].item()
-                print(
-                    f"{name}: original: {val_orig}, computed: {val_computed}, diff: {val_orig - val_computed}"
-                )
-                # Note that there are some reasonably large 2e-3 differences in the palm vel computation
-                # Maybe from Jacobian computation being different from the maximal sim computation
-                if abs(val_orig - val_computed) > 1e-2:
-                    num_errors += 1
-                    print("--------------------------------")
-                    print(
-                        f"Error: {name}: original: {val_orig}, computed: {val_computed}, diff: {val_orig - val_computed}"
-                    )
-                    print("--------------------------------")
-            print("=" * 100)
-            print(f"num_errors: {num_errors}")
-            print("=" * 100)
-            breakpoint()
-
     @property
     def turn_off_palm_vel_obs_scale(self) -> float:
-        # 1 means not turned off
-        # 0.5 means half turned off
-        # 0 means turned off
-        if self.cfg["env"]["turn_off_palm_vel_obs"]:
-            scale = 0.0
-        elif self.cfg["env"]["turn_off_palm_vel_obs_slowly"]:
-            if self.cfg["env"]["use_obs_dropout"]:
-                prob_of_turn_off = self._tyler_curriculum_scale
-                scale = 0.0 if random.random() < prob_of_turn_off else 1.0
-            else:
-                scale = 1.0 - self._tyler_curriculum_scale
-        else:
-            scale = 1.0
-        self.extras["turn_off_palm_vel_obs_scale"] = scale
-        return scale
+        return 0.0 if self.cfg["env"].get("turn_off_palm_vel_obs", False) else 1.0
 
     @property
     def turn_off_object_vel_obs_scale(self) -> float:
-        # 1 means not turned off
-        # 0.5 means half turned off
-        # 0 means turned off
-        if self.cfg["env"]["turn_off_object_vel_obs"]:
-            scale = 0.0
-        elif self.cfg["env"]["turn_off_object_vel_obs_slowly"]:
-            if self.cfg["env"]["use_obs_dropout"]:
-                prob_of_turn_off = self._tyler_curriculum_scale
-                scale = 0.0 if random.random() < prob_of_turn_off else 1.0
-            else:
-                scale = 1.0 - self._tyler_curriculum_scale
-        else:
-            scale = 1.0
-        self.extras["turn_off_object_vel_obs_scale"] = scale
-        return scale
+        return 0.0 if self.cfg["env"].get("turn_off_object_vel_obs", False) else 1.0
 
     @property
     def turn_off_extra_obs_scale(self) -> float:
-        # 1 means not turned off
-        # 0.5 means half turned off
-        # 0 means turned off
-        if self.cfg["env"]["turn_off_extra_obs"]:
-            scale = 0.0
-        elif self.cfg["env"]["turn_off_extra_obs_slowly"]:
-            if self.cfg["env"]["use_obs_dropout"]:
-                # When curriculum_scale is 0.0, turn_off_extra_obs_scale is 1.0, which means no extra obs are turned off
-                # When curriculum_scale is 1.0, turn_off_extra_obs_scale is 0.0, which means all extra obs are turned off
-                # Smoothly transition between 1.0 and 0.0
-                prob_of_turn_off = self._tyler_curriculum_scale
-                scale = 0.0 if random.random() < prob_of_turn_off else 1.0
-            else:
-                # When curriculum_scale is 0.0, turn_off_extra_obs_scale is 1.0, which means no extra obs are turned off
-                # When curriculum_scale is 1.0, turn_off_extra_obs_scale is 0.0, which means all extra obs are turned off
-                # Smoothly transition between 1.0 and 0.0
-                scale = 1.0 - self._tyler_curriculum_scale
-        else:
-            scale = 1.0
-
-        self.extras["turn_off_extra_obs_scale"] = scale
-        return scale
+        return 0.0 if self.cfg["env"].get("turn_off_extra_obs", False) else 1.0
 
     def clamp_obs(self) -> None:
         if self.clamp_abs_observations > 0:
@@ -3647,14 +2803,7 @@ class SimToolReal(VecTask):
         if tensor_reset:
             self.reset_goal_buf[env_ids] = 0
             self.near_goal_steps[env_ids] = 0
-            self.prev_total_episode_closest_keypoint_max_dist[env_ids] = (
-                self.total_episode_closest_keypoint_max_dist[env_ids]
-            )
-            self.total_episode_closest_keypoint_max_dist[env_ids] += torch.where(
-                self.closest_keypoint_max_dist[env_ids] > 0,
-                self.closest_keypoint_max_dist[env_ids],
-                torch.zeros_like(self.closest_keypoint_max_dist[env_ids]),
-            )
+
             self.closest_keypoint_max_dist[env_ids] = -1
             self.closest_keypoint_max_dist_fixed_size[env_ids] = -1
 
@@ -3732,13 +2881,13 @@ class SimToolReal(VecTask):
                 self.root_state_tensor[obj_indices, 7:13]
             )
             if (
-                isinstance(self.parttoolgen_benchmark_extra_actor_indices, torch.Tensor)
-                and self.parttoolgen_benchmark_extra_actor_indices.numel() > 0
+                isinstance(self.scene_actor_indices, torch.Tensor)
+                and self.scene_actor_indices.numel() > 0
             ):
-                extra_indices = self.parttoolgen_benchmark_extra_actor_indices[
+                extra_indices = self.scene_actor_indices[
                     env_ids
                 ].reshape(-1)
-                extra_states = self.parttoolgen_benchmark_extra_actor_init_states[
+                extra_states = self.scene_actor_init_states[
                     env_ids
                 ].reshape(-1, 13)
                 self.root_state_tensor[extra_indices, :] = extra_states.clone()
@@ -3827,34 +2976,9 @@ class SimToolReal(VecTask):
             self.progress_buf[env_ids] = 0
             self.reset_buf[env_ids] = 0
 
-            self.prev_episode_successes[env_ids] = self.successes[env_ids]
             self.successes[env_ids] = 0
 
-            self.prev_episode_true_objective[env_ids] = self.true_objective[env_ids]
-            self.true_objective[env_ids] = 0
-
-            self.prev_episode_closest_keypoint_max_dist[env_ids] = torch.where(
-                self.prev_episode_successes[env_ids] > 0,
-                self.prev_total_episode_closest_keypoint_max_dist[env_ids]
-                / self.prev_episode_successes[env_ids],
-                self.total_episode_closest_keypoint_max_dist[env_ids],
-            )
-            self.total_episode_closest_keypoint_max_dist[env_ids] = 0
-            self.prev_total_episode_closest_keypoint_max_dist[env_ids] = 0
-
-            for key in self.rewards_episode.keys():
-                self.rewards_episode[key][env_ids] = 0
-
-            if self.save_states:
-                self.dump_env_states(env_ids)
-
-            self.extras["scalars"] = dict()
-            self.extras["scalars"]["success_tolerance"] = self.success_tolerance
-
             if self.with_table_force_sensor:
-                self.extras["max_table_sensor_force_norm_smoothed"] = (
-                    self.max_table_sensor_force_norm_smoothed.mean().item()
-                )
                 self.table_sensor_forces_raw[env_ids, :] = 0
                 self.table_sensor_forces_smoothed[env_ids, :] = 0
                 self.max_table_sensor_force_norm_smoothed[env_ids] = 0
@@ -3953,32 +3077,7 @@ class SimToolReal(VecTask):
             self.prev_targets[env_ids, : self.num_hand_arm_dofs] = robot_pos
             self.cur_targets[env_ids, : self.num_hand_arm_dofs] = robot_pos
 
-        if self.should_load_initial_states:
-            if len(env_ids) > self.num_initial_states:
-                print(
-                    f"Not enough initial states to load {len(env_ids)}/{self.num_initial_states}..."
-                )
-            else:
-                if self.initial_state_idx + len(env_ids) > self.num_initial_states:
-                    self.initial_state_idx = 0
-
-                dof_states_to_load = self.initial_dof_state_tensors[
-                    self.initial_state_idx : self.initial_state_idx + len(env_ids)
-                ]
-                self.dof_state.reshape([self.num_envs, -1, *self.dof_state.shape[1:]])[
-                    env_ids
-                ] = dof_states_to_load.clone()
-                root_state_tensors_to_load = self.initial_root_state_tensors[
-                    self.initial_state_idx : self.initial_state_idx + len(env_ids)
-                ]
-                cube_object_idx = self.object_indices[0]
-                self.root_state_tensor.reshape(
-                    [self.num_envs, -1, *self.root_state_tensor.shape[1:]]
-                )[env_ids, cube_object_idx] = root_state_tensors_to_load[
-                    :, cube_object_idx
-                ].clone()
-
-                self.initial_state_idx += len(env_ids)
+        pass
 
         self.gym.set_dof_position_target_tensor_indexed(
             self.sim,
@@ -4023,14 +3122,6 @@ class SimToolReal(VecTask):
     def pre_physics_step(
         self, actions, joint_pos_targets: Optional[torch.Tensor] = None
     ):
-        PRINT_TIME_SINCE_LAST_STEP = False
-        if PRINT_TIME_SINCE_LAST_STEP:
-            if not hasattr(self, "last_time"):
-                self.last_time = time.time()
-            print(
-                f"Time since last step: {time.time() - self.last_time:.3f} s, {1.0 / (time.time() - self.last_time):.1f} Hz"
-            )
-            self.last_time = time.time()
 
         actions = actions.to(self.device)
 
@@ -4116,55 +3207,9 @@ class SimToolReal(VecTask):
 
         # Default CHECK_WITH_COMPUTED_JOINT_POS_TARGETS = False
         # Set to True to check if the computed joint pos targets are correct
-        CHECK_WITH_COMPUTED_JOINT_POS_TARGETS = False
-        if CHECK_WITH_COMPUTED_JOINT_POS_TARGETS:
-            computed_joint_pos_targets = compute_joint_pos_targets(
-                actions=self.actions.cpu().numpy(),
-                prev_targets=self.prev_targets.cpu().numpy(),
-                hand_moving_average=self.hand_moving_average,
-                arm_moving_average=self.arm_moving_average,
-                hand_dof_speed_scale=self.hand_dof_speed_scale,
-                dt=self.dt,
-            )
-            computed_joint_pos_targets = (
-                torch.from_numpy(computed_joint_pos_targets).float().to(self.device)
-            )
-            assert computed_joint_pos_targets.shape == (
-                self.num_envs,
-                self.num_hand_arm_dofs,
-            ), (
-                f"computed_joint_pos_targets.shape: {computed_joint_pos_targets.shape}, expected: ({self.num_envs}, {self.num_hand_arm_dofs})"
-            )
-            assert self.cur_targets.shape == computed_joint_pos_targets.shape, (
-                f"self.cur_targets.shape: {self.cur_targets.shape}, expected: {computed_joint_pos_targets.shape}"
-            )
-
-            num_errors = 0
-            for i, name in enumerate(self.joint_names):
-                val_orig = self.cur_targets[0, i].item()
-                val_computed = computed_joint_pos_targets[0, i].item()
-                print(
-                    f"{name} (idx {i}): original: {val_orig}, computed: {val_computed}, diff: {val_orig - val_computed}"
-                )
-                if abs(val_orig - val_computed) > 1e-2:
-                    num_errors += 1
-                    print("--------------------------------")
-                    print(
-                        f"Error: {name} (idx {i}): original: {val_orig}, computed: {val_computed}, diff: {val_orig - val_computed}"
-                    )
-                    print("--------------------------------")
-            print("=" * 100)
-            print(f"num_errors: {num_errors}")
-            print("=" * 100)
-            breakpoint()
 
         if joint_pos_targets is not None:
-            HACK_OVERWRITE = False
-            if HACK_OVERWRITE:
-                # SUPER HACK
-                joint_pos_targets[:, 7:] = 0.0
-                joint_pos_targets[:, 7 + 0] = 1.85
-                joint_pos_targets[:, 7 + 1] = 0.2
+
             self.cur_targets[:, : self.num_hand_arm_dofs] = joint_pos_targets.clone()
 
         # print(f"self.cur_targets: {self.cur_targets[0, 7:]}")
@@ -4346,19 +3391,6 @@ class SimToolReal(VecTask):
 
         self.set_actor_root_state_tensor_indexed()
 
-        if self.good_reset_boundary > 0:
-            self.temp_root_states_buf[:, self.temp_buffer_index] = (
-                self.root_state_tensor.reshape(
-                    self.num_envs, -1, self.root_state_tensor.shape[1:]
-                ).cpu()
-            )
-            self.temp_dof_states_buf[:, self.temp_buffer_index] = (
-                self.dof_state.reshape(
-                    self.num_envs, -1, self.dof_state.shape[1:]
-                ).cpu()
-            )
-            self.temp_buffer_index += 1
-
         # apply torques
         if self.privileged_actions:
             torque_actions = torque_actions.unsqueeze(1)
@@ -4372,357 +3404,7 @@ class SimToolReal(VecTask):
                 gymapi.ENV_SPACE,
             )
 
-        USE_LIVE_PLOTTER = False
-        if USE_LIVE_PLOTTER:
-            self._use_live_plotter()
-
-        RECORD_DATA = self.cfg["env"]["record_data"]
-        if RECORD_DATA:
-            self._record_data()
-
-    def _use_live_plotter(self):
-        if not hasattr(self, "live_plotter"):
-            from live_plotter import FastLivePlotter
-
-            # Plot table force raw and smoothed
-            # self.live_plotter = FastLivePlotter(
-            #     n_plots=1,
-            #     titles=["Table Force"],
-            #     xlabels=["idx"],
-            #     ylabels=["force"],
-            #     # ylims=[(self.joint_lower_limits[0], self.joint_upper_limits[0])],
-            #     legends=[["raw", "smoothed", "max smoothed"]],
-            # )
-            # self.table_force_raw_history = []
-            # self.table_force_smoothed_history = []
-            # self.max_table_sensor_force_norm_smoothed_history = []
-
-            # Plot joint pos and target
-            # self.live_plotter = FastLivePlotter(
-            #     n_plots=len(self.joint_names),
-            #     titles=self.joint_names,
-            #     xlabels=["idx"] * len(self.joint_names),
-            #     ylabels=["joint pos"] * len(self.joint_names),
-            #     ylims=[(self.joint_lower_limits[i], self.joint_upper_limits[i]) for i in range(len(self.joint_names))],
-            #     legends=[["pos", "target"]] * len(self.joint_names),
-            # )
-            # self.joint_pos_history = []
-            # self.joint_target_history = []
-
-            # Plot the object velocity penalty
-            self.live_plotter = FastLivePlotter(
-                n_plots=5,
-                titles=[
-                    "Linear Velocity Penalty",
-                    "Angular Velocity Penalty",
-                    "Cumulative Linear Velocity Penalty",
-                    "Cumulative Angular Velocity Penalty",
-                    "Cumulative Total Reward",
-                ],
-            )
-            self.object_lin_vel_penalty_history = []
-            self.object_ang_vel_penalty_history = []
-            self.cumulative_object_lin_vel_penalty_history = []
-            self.cumulative_object_ang_vel_penalty_history = []
-            self.cumulative_total_reward_history = []
-
-        # # Plot table force raw and smoothed
-        # ENV_IDX = 0
-        # if self.with_table_force_sensor:
-        #     table_force = self.table_sensor_forces_raw[ENV_IDX, :3].norm(dim=-1).item()
-        #     table_force_smoothed = self.table_sensor_forces_smoothed[ENV_IDX, :3].norm(dim=-1).item()
-        #     max_table_sensor_force_norm_smoothed = self.max_table_sensor_force_norm_smoothed[ENV_IDX].item()
-        #     self.table_force_raw_history.append(table_force)
-        #     self.table_force_smoothed_history.append(table_force_smoothed)
-        #     self.max_table_sensor_force_norm_smoothed_history.append(max_table_sensor_force_norm_smoothed)
-        #     # Should be (N, 2)
-        #     self.live_plotter.plot(
-        #         y_data_list=[
-        #             np.stack([
-        #                 np.array(self.table_force_raw_history),
-        #                 np.array(self.table_force_smoothed_history),
-        #                 np.array(self.max_table_sensor_force_norm_smoothed_history),
-        #             ], axis=-1),
-        #         ]
-        #     )
-
-        # Plot joint pos and target
-        # ENV_IDX = 0
-        # joint_pos = self.arm_hand_dof_pos[ENV_IDX].cpu().numpy().copy()
-        # joint_target = self.cur_targets[ENV_IDX].cpu().numpy().copy()
-        # assert joint_pos.shape == joint_target.shape == (len(self.joint_names),), f"{joint_pos.shape} != {joint_target.shape} != {len(self.joint_names)}"
-        # self.joint_pos_history.append(joint_pos)
-        # self.joint_target_history.append(joint_target)
-        # joint_pos_history = np.stack(self.joint_pos_history, axis=0)
-        # joint_target_history = np.stack(self.joint_target_history, axis=0)
-        # joint_pos_and_target_history = np.stack([joint_pos_history, joint_target_history], axis=-1)
-        # assert joint_pos_and_target_history.shape == (len(self.joint_pos_history), len(self.joint_names), 2), f"{joint_pos_and_target_history.shape} != ({len(self.joint_pos_history)}, {len(self.joint_names)}, 2)"
-        # # Should be (N, 2)
-        # self.live_plotter.plot(
-        #     y_data_list=[
-        #         joint_pos_and_target_history[:, i, :] for i in range(len(self.joint_names))
-        #     ]
-        # )
-
-        # Plot object velocity penalty
-        ENV_IDX = 0
-        if "rewards_episode" in self.extras and "episode_cumulative" in self.extras:
-            # Note to self: these names probably got mixed up
-            # episode_cumulative should be rewards_episode and vice versa
-            #
-            # Should be:
-            # rewards_episode is the rewards for the current step
-            # episode_cumulative is the cumulative rewards over the current episode
-            #
-            # Right now:
-            # episode_cumulative is the rewards for the current step
-            # rewards_episode is the cumulative rewards over the current episode
-
-            rewards_episode = self.extras["rewards_episode"]
-            episode_cumulative = self.extras["episode_cumulative"]
-
-            # object_lin_vel_penalty = rewards_episode["object_lin_vel_penalty"].cpu().numpy()[ENV_IDX].item()
-            # object_ang_vel_penalty = rewards_episode["object_ang_vel_penalty"].cpu().numpy()[ENV_IDX].item()
-            # cumulative_object_lin_vel_penalty = episode_cumulative["object_lin_vel_penalty"].cpu().numpy()[ENV_IDX].item()
-            # cumulative_object_ang_vel_penalty = episode_cumulative["object_ang_vel_penalty"].cpu().numpy()[ENV_IDX].item()
-
-            cumulative_object_lin_vel_penalty = (
-                rewards_episode["object_lin_vel_penalty"].cpu().numpy()[ENV_IDX].item()
-            )
-            cumulative_object_ang_vel_penalty = (
-                rewards_episode["object_ang_vel_penalty"].cpu().numpy()[ENV_IDX].item()
-            )
-            object_lin_vel_penalty = (
-                episode_cumulative["object_lin_vel_penalty"]
-                .cpu()
-                .numpy()[ENV_IDX]
-                .item()
-            )
-            object_ang_vel_penalty = (
-                episode_cumulative["object_ang_vel_penalty"]
-                .cpu()
-                .numpy()[ENV_IDX]
-                .item()
-            )
-            cumulative_total_reward = (
-                rewards_episode["total_reward"].cpu().numpy()[ENV_IDX].item()
-            )
-
-            self.object_lin_vel_penalty_history.append(object_lin_vel_penalty)
-            self.object_ang_vel_penalty_history.append(object_ang_vel_penalty)
-            self.cumulative_object_lin_vel_penalty_history.append(
-                cumulative_object_lin_vel_penalty
-            )
-            self.cumulative_object_ang_vel_penalty_history.append(
-                cumulative_object_ang_vel_penalty
-            )
-            self.cumulative_total_reward_history.append(cumulative_total_reward)
-
-            self.live_plotter.plot(
-                y_data_list=[
-                    np.array(self.object_lin_vel_penalty_history),
-                    np.array(self.object_ang_vel_penalty_history),
-                    np.array(self.cumulative_object_lin_vel_penalty_history),
-                    np.array(self.cumulative_object_ang_vel_penalty_history),
-                    np.array(self.cumulative_total_reward_history),
-                ]
-            )
-        else:
-            print("No rewards_episode or episode_cumulative found in extras")
-
-    def _record_data(self):
-        from recorded_data import RecordedData
-
-        N_TIMESTEPS = self.cfg["env"]["record_data_num_steps"]
-
-        # Get data from sim
-        robot_root_state = self.root_state_tensor[self.robot_indices, :13].cpu().numpy()
-        object_root_state = (
-            self.root_state_tensor[self.object_indices, :13].cpu().numpy()
-        )
-        robot_joint_position = self.arm_hand_dof_pos.cpu().numpy()
-        table_root_state = self.root_state_tensor[self.table_indices, :13].cpu().numpy()
-        if hasattr(self, "goal_object_indices"):
-            goal_root_state = (
-                self.root_state_tensor[self.goal_object_indices, :13].cpu().numpy()
-            )
-        robot_joint_velocity = self.arm_hand_dof_vel.cpu().numpy()
-        robot_joint_pos_target = (
-            self.cur_targets[:, : self.num_hand_arm_dofs].cpu().numpy()
-        )
-        observations = self.obs_buf.cpu().numpy()
-        actions = self.actions.cpu().numpy()
-
-        # Initialize arrays if not already initialized
-        if not hasattr(self, "robot_root_states_array"):
-            self.robot_root_states_array = []
-            self.object_root_states_array = []
-            self.robot_joint_positions_array = []
-            self.robot_joint_names = self.joint_names
-
-            self.table_root_states_array = []
-            if hasattr(self, "goal_object_indices"):
-                self.goal_root_states_array = []
-            self.robot_joint_velocities_array = []
-            self.robot_joint_pos_targets_array = []
-
-            self.observations_array = []
-            self.actions_array = []
-
-        # Append data to arrays
-        self.robot_root_states_array.append(robot_root_state)
-        self.object_root_states_array.append(object_root_state)
-        self.robot_joint_positions_array.append(robot_joint_position)
-        self.table_root_states_array.append(table_root_state)
-        if hasattr(self, "goal_object_indices"):
-            self.goal_root_states_array.append(goal_root_state)
-        self.robot_joint_velocities_array.append(robot_joint_velocity)
-        self.robot_joint_pos_targets_array.append(robot_joint_pos_target)
-        self.observations_array.append(observations)
-        self.actions_array.append(actions)
-        print(f"Recorded {len(self.robot_root_states_array)} / {N_TIMESTEPS} steps")
-
-        # Save data to file
-        if len(self.robot_root_states_array) >= N_TIMESTEPS:
-            datetime_str = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-            this_dir = Path(__file__).parent
-            root_dir = this_dir.parent.parent.parent
-            recorded_data_path = root_dir / "recorded_data" / f"{datetime_str}.npz"
-            recorded_data_path.parent.mkdir(parents=True, exist_ok=True)
-
-            self.robot_root_states_array = np.stack(
-                self.robot_root_states_array, axis=0
-            )
-            self.object_root_states_array = np.stack(
-                self.object_root_states_array, axis=0
-            )
-            self.robot_joint_positions_array = np.stack(
-                self.robot_joint_positions_array, axis=0
-            )
-            self.table_root_states_array = np.stack(
-                self.table_root_states_array, axis=0
-            )
-            if hasattr(self, "goal_object_indices"):
-                self.goal_root_states_array = np.stack(
-                    self.goal_root_states_array, axis=0
-                )
-            self.robot_joint_velocities_array = np.stack(
-                self.robot_joint_velocities_array, axis=0
-            )
-            self.robot_joint_pos_targets_array = np.stack(
-                self.robot_joint_pos_targets_array, axis=0
-            )
-            self.observations_array = np.stack(self.observations_array, axis=0)
-            self.actions_array = np.stack(self.actions_array, axis=0)
-
-            assert self.robot_root_states_array.shape == (
-                N_TIMESTEPS,
-                self.num_envs,
-                13,
-            ), (
-                f"{self.robot_root_states_array.shape} != ({N_TIMESTEPS}, {self.num_envs}, 13)"
-            )
-            assert self.object_root_states_array.shape == (
-                N_TIMESTEPS,
-                self.num_envs,
-                13,
-            ), (
-                f"{self.object_root_states_array.shape} != ({N_TIMESTEPS}, {self.num_envs}, 13)"
-            )
-            assert self.robot_joint_positions_array.shape == (
-                N_TIMESTEPS,
-                self.num_envs,
-                len(self.robot_joint_names),
-            ), (
-                f"{self.robot_joint_positions_array.shape} != ({N_TIMESTEPS}, {self.num_envs}, {len(self.robot_joint_names)})"
-            )
-            assert self.table_root_states_array.shape == (
-                N_TIMESTEPS,
-                self.num_envs,
-                13,
-            ), (
-                f"{self.table_root_states_array.shape} != ({N_TIMESTEPS}, {self.num_envs}, 13)"
-            )
-            if hasattr(self, "goal_object_indices"):
-                assert self.goal_root_states_array.shape == (
-                    N_TIMESTEPS,
-                    self.num_envs,
-                    13,
-                ), (
-                    f"{self.goal_root_states_array.shape} != ({N_TIMESTEPS}, {self.num_envs}, 13)"
-                )
-            assert self.robot_joint_velocities_array.shape == (
-                N_TIMESTEPS,
-                self.num_envs,
-                len(self.robot_joint_names),
-            ), (
-                f"{self.robot_joint_velocities_array.shape} != ({N_TIMESTEPS}, {self.num_envs}, {len(self.robot_joint_names)})"
-            )
-            assert self.robot_joint_pos_targets_array.shape == (
-                N_TIMESTEPS,
-                self.num_envs,
-                len(self.robot_joint_names),
-            ), (
-                f"{self.robot_joint_pos_targets_array.shape} != ({N_TIMESTEPS}, {self.num_envs}, {len(self.robot_joint_names)})"
-            )
-            assert self.observations_array.shape == (
-                N_TIMESTEPS,
-                self.num_envs,
-                self.obs_buf.shape[1],
-            ), (
-                f"{self.observations_array.shape} != ({N_TIMESTEPS}, {self.num_envs}, {self.obs_buf.shape[1]})"
-            )
-            assert self.actions_array.shape == (
-                N_TIMESTEPS,
-                self.num_envs,
-                self.actions.shape[1],
-            ), (
-                f"{self.actions_array.shape} != ({N_TIMESTEPS}, {self.num_envs}, {self.actions.shape[1]})"
-            )
-
-            time_array = np.arange(N_TIMESTEPS) * self.dt
-
-            ENV_IDX = 0
-            recorded_data = RecordedData(
-                robot_root_states_array=self.robot_root_states_array[:, ENV_IDX],
-                object_root_states_array=self.object_root_states_array[:, ENV_IDX],
-                robot_joint_positions_array=self.robot_joint_positions_array[
-                    :, ENV_IDX
-                ],
-                time_array=time_array,
-                robot_joint_names=self.robot_joint_names,
-                table_root_states_array=self.table_root_states_array[:, ENV_IDX],
-                goal_root_states_array=self.goal_root_states_array[:, ENV_IDX]
-                if hasattr(self, "goal_object_indices")
-                else None,
-                robot_joint_velocities_array=self.robot_joint_velocities_array[
-                    :, ENV_IDX
-                ],
-                robot_joint_pos_targets_array=self.robot_joint_pos_targets_array[
-                    :, ENV_IDX
-                ],
-                observations_array=self.observations_array[:, ENV_IDX],
-                actions_array=self.actions_array[:, ENV_IDX],
-                object_name=self.cfg["env"]["objectName"],
-            )
-            recorded_data.to_file(recorded_data_path)
-            print(f"Saved recorded data to {recorded_data_path}")
-            breakpoint()
-
-            # Reset arrays
-            self.robot_root_states_array = []
-            self.object_root_states_array = []
-            self.robot_joint_positions_array = []
-            self.robot_joint_names = self.joint_names
-
-            self.table_root_states_array = []
-            if hasattr(self, "goal_object_indices"):
-                self.goal_root_states_array = []
-            self.robot_joint_velocities_array = []
-            self.robot_joint_pos_targets_array = []
-
-            self.observations_array = []
-            self.actions_array = []
+        pass
 
     @property
     def use_sharpa(self) -> bool:
@@ -4738,42 +3420,15 @@ class SimToolReal(VecTask):
 
     @property
     def hand_moving_average(self) -> float:
-        if self.cfg["env"]["handMovingAverageFinal"] is None or not hasattr(
-            self, "_tyler_curriculum_scale"
-        ):
-            return self.cfg["env"]["handMovingAverage"]
-        else:
-            return self.interpolate(
-                init=self.cfg["env"]["handMovingAverage"],
-                final=self.cfg["env"]["handMovingAverageFinal"],
-                alpha=self._tyler_curriculum_scale,
-            )
+        return self.cfg["env"]["handMovingAverage"]
 
     @property
     def arm_moving_average(self) -> float:
-        if self.cfg["env"]["armMovingAverageFinal"] is None or not hasattr(
-            self, "_tyler_curriculum_scale"
-        ):
-            return self.cfg["env"]["armMovingAverage"]
-        else:
-            return self.interpolate(
-                init=self.cfg["env"]["armMovingAverage"],
-                final=self.cfg["env"]["armMovingAverageFinal"],
-                alpha=self._tyler_curriculum_scale,
-            )
+        return self.cfg["env"]["armMovingAverage"]
 
     @property
     def hand_dof_speed_scale(self) -> float:
-        if self.cfg["env"]["dofSpeedScaleFinal"] is None or not hasattr(
-            self, "_tyler_curriculum_scale"
-        ):
-            return self.cfg["env"]["dofSpeedScale"]
-        else:
-            return self.interpolate(
-                init=self.cfg["env"]["dofSpeedScale"],
-                final=self.cfg["env"]["dofSpeedScaleFinal"],
-                alpha=self._tyler_curriculum_scale,
-            )
+        return self.cfg["env"]["dofSpeedScale"]
 
     @staticmethod
     def interpolate(init, final, alpha: float) -> float:
@@ -4786,87 +3441,17 @@ class SimToolReal(VecTask):
         self.progress_buf += 1
         self.randomize_buf += 1
 
-        self._extra_curriculum()
-
-        self._update_tyler_curriculum()
-
         self.populate_sim_buffers()
         rewards, is_success = self.compute_kuka_reward()
         self.populate_obs_and_states_buffers()
 
-        if self.good_reset_boundary > 0:
-            add_indices = torch.where(is_success)[0]
-            add_indices = add_indices[add_indices >= self.good_reset_boundary]
-            add_indices = add_indices[
-                self.temp_buffer_index[add_indices] > self.success_steps
-            ]
-
-            if len(add_indices) > 0:
-                rs_to_add = torch.stack(
-                    [
-                        self.temp_root_states_buf[
-                            idx,
-                            torch.arange(
-                                self.temp_buffer_index[idx] - self.success_steps
-                            ),
-                        ]
-                        for idx in add_indices
-                    ]
-                )
-                dof_to_add = torch.stack(
-                    [
-                        self.temp_dof_states_buf[
-                            idx,
-                            torch.arange(
-                                self.temp_buffer_index[idx] - self.success_steps
-                            ),
-                        ]
-                        for idx in add_indices
-                    ]
-                )
-
-                num_to_add = len(rs_to_add)
-
-                next_index = self.buffer_index + num_to_add
-                self.buffer_length = min(
-                    self.buffer_length + num_to_add, self.max_buffer_size
-                )
-
-                if next_index >= self.max_buffer_size:
-                    num_to_add -= self.max_buffer_size - self.buffer_index
-                    self.root_state_resets[self.buffer_index :] = rs_to_add[
-                        : self.max_buffer_size - self.buffer_index
-                    ]
-                    self.root_state_resets[:num_to_add] = rs_to_add[
-                        self.max_buffer_size - self.buffer_index :
-                    ]
-                    self.dof_resets[self.buffer_index :] = dof_to_add[
-                        : self.max_buffer_size - self.buffer_index
-                    ]
-                    self.dof_resets[:num_to_add] = dof_to_add[
-                        self.max_buffer_size - self.buffer_index :
-                    ]
-                else:
-                    self.root_state_resets[self.buffer_index : next_index] = rs_to_add
-                    self.dof_resets[self.buffer_index : next_index] = dof_to_add
-
-                self.buffer_index = next_index % self.max_buffer_size
-
-                print(
-                    f"Added {len(rs_to_add)} states, lifted {self.lifted_object[add_indices].sum().item()}/{len(add_indices)} objects"
-                )
-
-            self.temp_buffer_index[torch.where(is_success)[0]] = 0
-            self.temp_buffer_index[torch.where(self.reset_buf)[0]] = 0
-
         self.clamp_obs()
 
-        self._eval_stats(is_success)
+        pass
 
-        if self.save_states:
-            self.accumulate_env_states()
+        pass
 
-        self._capture_video_if_needed()
+        pass
 
         if self.viewer and self.debug_viz:
             # draw axes on target object
@@ -5086,75 +3671,23 @@ class SimToolReal(VecTask):
             device=self.device,
         )
 
-    def _init_tyler_curriculum(self):
-        self._tyler_curriculum_scale = 0.0
-        self._last_tyler_curriculum_update = time.time()
-        if "init_tyler_curriculum_scale" in self.cfg["env"]:
-            print(
-                f"Initializing _tyler_curriculum_scale to {self.cfg['env']['init_tyler_curriculum_scale']}"
-            )
-            self._tyler_curriculum_scale = self.cfg["env"][
-                "init_tyler_curriculum_scale"
-            ]
-
-    def _update_tyler_curriculum(self):
-        # Vary _tyler_curriculum_scale from 0.0 to 1.0 over time
-        # 0.0 means easy and 1.0 means hard
-
-        # If gets at least 50% of max consecutive successes and been at least 5 minutes since last update, turn off extra obs more
-        mean_successes = self.prev_episode_successes.mean().item()
-        minutes_elapsed_since_last_update = (
-            time.time() - self._last_tyler_curriculum_update
-        ) / 60
-        success_ratio = mean_successes / self.max_consecutive_successes
-        curriculum_success_ratio = self.cfg["env"]["curriculumSuccessRatio"]
-        doing_well = success_ratio > curriculum_success_ratio
-
-        time_to_update = self.cfg["env"]["timeToUpdateTylerCurriculum"]
-        update_step_size = self.cfg["env"]["updateStepSizeTylerCurriculum"]
-
-        enough_time_since_last_update = (
-            minutes_elapsed_since_last_update > time_to_update
-        )
-        if doing_well and enough_time_since_last_update:
-            self._tyler_curriculum_scale += update_step_size
-            if self._tyler_curriculum_scale > 1.0:
-                self._tyler_curriculum_scale = 1.0
-            self._last_tyler_curriculum_update = time.time()
-
-        self.extras["tyler_curriculum_scale"] = self._tyler_curriculum_scale
-        self.extras["mean_successes"] = mean_successes
-        self.extras["mean_success_ratio"] = (
-            mean_successes / self.max_consecutive_successes
-        )
-        self.extras["minutes_elapsed_since_last_update"] = (
-            minutes_elapsed_since_last_update
-        )
-
     def _initialize_camera_sensor(self, cam_pos, cam_target) -> None:
         self.camera_properties = gymapi.CameraProperties()
-        RESOLUTION_REDUCTION_FACTOR_TO_SAVE_SPACE = 4
+        resolution_reduction_factor_to_save_space = max(
+            1,
+            int(self.cfg["env"].get("cameraResolutionReductionFactor", 4)),
+        )
         self.camera_properties.width = int(
-            self.camera_properties.width / RESOLUTION_REDUCTION_FACTOR_TO_SAVE_SPACE
+            self.camera_properties.width / resolution_reduction_factor_to_save_space
         )
         self.camera_properties.height = int(
-            self.camera_properties.height / RESOLUTION_REDUCTION_FACTOR_TO_SAVE_SPACE
+            self.camera_properties.height / resolution_reduction_factor_to_save_space
         )
         self.camera_handle = self.gym.create_camera_sensor(
             self.envs[self.index_to_view],
             self.camera_properties,
         )
 
-        # self.video_frames is important for understanding the state of video recording
-        #   Case 1: self.video_frames is None:
-        #     * This means that we are not recording video
-        #   Case 2: self.video_frames = []
-        #     * This means that we should start recording video
-        #     * BUT, we want our videos to start at the first frame of an episode
-        #     * So, we are waiting for this
-        #   Case 3: self.video_frames = [np.array(frame) for frame in ...]
-        #     * These are image frames that will be assembled into a video when enough frames are capture
-        self.video_frames: Optional[List[np.ndarray]] = None
         self.gym.set_camera_location(
             self.camera_handle, self.envs[self.index_to_view], cam_pos, cam_target
         )
@@ -5166,113 +3699,6 @@ class SimToolReal(VecTask):
 
         # If headless, we should default to having self.enable_viewer_sync=False to speed up env stepping
         self.enable_viewer_sync = False
-
-    def _capture_video_if_needed(self) -> None:
-        # If capture_video is False, we don't need to capture video
-        if not self.cfg["env"]["capture_video"]:
-            return
-
-        # If enableCameraSensors is False, we can't capture video
-        assert self.cfg["env"]["enableCameraSensors"], (
-            "capture_video is only supported if enableCameraSensors is True"
-        )
-
-        should_start_video_capture_at_start_of_next_episode = (
-            self.video_frames is None
-            and self.control_steps % self.cfg["env"]["capture_video_freq"] == 0
-            # and (self.control_steps > 0)  # Don't record video on first step
-        )
-        if should_start_video_capture_at_start_of_next_episode:
-            print("-" * 80)
-            print(
-                f"At self.control_steps = {self.control_steps}, should start video capture at start of next episode"
-            )
-            print("-" * 80)
-            self.video_frames = []
-            return
-
-        should_start_video_capture_now = (
-            self.video_frames is not None
-            and len(self.video_frames) == 0
-            # and self.progress_buf[self.index_to_view].item() <= 1  # Only start video capture on first step of episode so that videos don't start in the middle of an episode
-            # Actually doesn't work because progress_buf gets reset to 0 not only at start of episode but on success
-            and self.reset_buf[self.index_to_view].item()
-            == 1  # Only start video capture after reset of an env
-        )
-        video_capture_in_progress = (
-            self.video_frames is not None and len(self.video_frames) > 0
-        )
-        if should_start_video_capture_now or video_capture_in_progress:
-            self._capture_video(video_capture_in_progress)
-
-    def _capture_video(self, video_capture_in_progress: bool) -> None:
-        assert self.video_frames is not None
-        if not video_capture_in_progress:
-            print("-" * 80)
-            print("Starting to capture video frames...")
-            print("-" * 80)
-            # Video capture requires that self.enable_viewer_sync=True
-            # If there is a viewer, we need to save the previous value of self.enable_viewer_sync so we can restore it later
-            if self.viewer is not None:
-                self.enable_viewer_sync_before = self.enable_viewer_sync
-            # If there is no viewer, we always want self.enable_viewer_sync=False to speed up env stepping
-            else:
-                self.enable_viewer_sync_before = False
-
-        # Store image
-        self.enable_viewer_sync = True
-        self.gym.render_all_camera_sensors(self.sim)
-        color_image = self.gym.get_camera_image(
-            self.sim,
-            self.envs[self.index_to_view],
-            self.camera_handle,
-            gymapi.IMAGE_COLOR,
-        )
-        if color_image.size == 0:
-            print(
-                f"Warning: color_image is empty on {self.control_steps}th step, make sure you have this change to vec_task.py"
-            )
-            print(
-                "https://github.com/tylerlum/human2sim2robot/blob/a5fd55baf83fbd04c585e2d596967ba08a38d540/human2sim2robot/sim_training/tasks/base/vec_task.py#L544"
-            )
-            return
-        NUM_RGBA = 4
-        color_image = color_image.reshape(
-            self.camera_properties.height, self.camera_properties.width, NUM_RGBA
-        )
-        self.video_frames.append(color_image)
-
-        if len(self.video_frames) == self.cfg["env"]["capture_video_len"]:
-            video_filename = f"{DATETIME_STR}_video_{self.control_steps}.mp4"
-            videos_dir = Path("videos")
-            videos_dir.mkdir(parents=True, exist_ok=True)
-            video_path = videos_dir / video_filename
-            print("-" * 80)
-            print(f"Saving video to {video_path} ...")
-
-            if not self.enable_viewer_sync_before:
-                self.video_frames.pop(0)  # Remove first frame because it was not synced
-
-            import imageio
-            import wandb
-
-            imageio.mimsave(
-                video_path, self.video_frames, fps=int(1.0 / self.control_dt)
-            )
-            if wandb.run is not None:
-                wandb_video = wandb.Video(
-                    str(video_path), fps=int(1.0 / self.control_dt)
-                )
-                wandb.log({"video": wandb_video})
-                # self.wandb_dict["video"] = wandb.Video(
-                #     str(video_path), fps=int(1.0 / self.control_dt)
-                # )
-            print("DONE")
-            print("-" * 80)
-
-            # Reset variables
-            self.video_frames = None
-            self.enable_viewer_sync = self.enable_viewer_sync_before
 
     def _draw_transform(
         self, transform: gymapi.Transform, line_length: float = 0.2, env_idx: int = 0
@@ -5337,118 +3763,6 @@ class SimToolReal(VecTask):
         )
         gymutil.draw_lines(
             sphere_geom, self.gym, self.viewer, env, gymapi.Transform(p=position)
-        )
-
-    def accumulate_env_states(self):
-        root_state_tensor = self.root_state_tensor.reshape(
-            [self.num_envs, -1, *self.root_state_tensor.shape[1:]]
-        ).clone()
-        dof_state = self.dof_state.reshape(
-            [self.num_envs, -1, *self.dof_state.shape[1:]]
-        ).clone()
-
-        for env_idx in range(self.num_envs):
-            env_root_state_tensor = root_state_tensor[env_idx]
-            self.episode_root_state_tensors[env_idx].append(env_root_state_tensor)
-
-            env_dof_state = dof_state[env_idx]
-            self.episode_dof_states[env_idx].append(env_dof_state)
-
-    def dump_env_states(self, env_ids):
-        def write_tensor_to_bin_stream(tensor, stream):
-            bin_buff = io.BytesIO()
-            torch.save(tensor, bin_buff)
-            bin_buff = bin_buff.getbuffer()
-            stream.write(int(len(bin_buff)).to_bytes(4, "big"))
-            stream.write(bin_buff)
-
-        with open(self.save_states_filename, "ab") as save_states_file:
-            bin_stream = io.BytesIO()
-
-            for env_idx in env_ids:
-                ep_len = len(self.episode_root_state_tensors[env_idx])
-                if ep_len <= 20:
-                    continue
-
-                states_to_save = min(ep_len // 10, 50)
-                state_indices = random.sample(range(ep_len), states_to_save)
-
-                print(f"Adding {states_to_save} states {state_indices}")
-                bin_stream.write(int(states_to_save).to_bytes(4, "big"))
-
-                root_states = [
-                    self.episode_root_state_tensors[env_idx][si] for si in state_indices
-                ]
-                dof_states = [
-                    self.episode_dof_states[env_idx][si] for si in state_indices
-                ]
-
-                root_states = torch.stack(root_states)
-                dof_states = torch.stack(dof_states)
-
-                write_tensor_to_bin_stream(root_states, bin_stream)
-                write_tensor_to_bin_stream(dof_states, bin_stream)
-
-                self.episode_root_state_tensors[env_idx] = []
-                self.episode_dof_states[env_idx] = []
-
-            bin_data = bin_stream.getbuffer()
-            if bin_data.nbytes > 0:
-                print(f"Writing {len(bin_data)} to file {self.save_states_filename}")
-                save_states_file.write(bin_data)
-
-    def load_initial_states(self):
-        loaded_root_states = []
-        loaded_dof_states = []
-
-        with open(self.load_states_filename, "rb") as states_file:
-
-            def read_nbytes(n_):
-                res = states_file.read(n_)
-                if len(res) < n_:
-                    raise RuntimeError(
-                        f"Could not read {n_} bytes from the binary file. Perhaps reached the end of file"
-                    )
-                return res
-
-            while True:
-                try:
-                    num_states = int.from_bytes(read_nbytes(4), byteorder="big")
-                    print(f"num_states_chunk {num_states}")
-
-                    root_states_len = int.from_bytes(read_nbytes(4), byteorder="big")
-                    print(f"root tensors len {root_states_len}")
-                    root_states_bytes = read_nbytes(root_states_len)
-
-                    dof_states_len = int.from_bytes(read_nbytes(4), byteorder="big")
-                    print(f"dof_states_len {dof_states_len}")
-                    dof_states_bytes = read_nbytes(dof_states_len)
-
-                except Exception as exc:
-                    print(exc)
-                    break
-                finally:
-                    # parse binary buffers
-                    def parse_tensors(bin_data):
-                        with io.BytesIO(bin_data) as buffer:
-                            tensors = torch.load(buffer)
-                            return tensors
-
-                    root_state_tensors = parse_tensors(root_states_bytes)
-                    dof_state_tensors = parse_tensors(dof_states_bytes)
-                    loaded_root_states.append(root_state_tensors)
-                    loaded_dof_states.append(dof_state_tensors)
-
-        self.initial_root_state_tensors = torch.cat(loaded_root_states)
-        self.initial_dof_state_tensors = torch.cat(loaded_dof_states)
-        assert (
-            self.initial_dof_state_tensors.shape[0]
-            == self.initial_root_state_tensors.shape[0]
-        )
-        self.num_initial_states = len(self.initial_root_state_tensors)
-
-        print(
-            f"{self.num_initial_states} states loaded from file {self.load_states_filename}!"
         )
 
     def set_robot_asset_rigid_shape_properties(

@@ -58,7 +58,6 @@ class OneHotDist(distr.one_hot_categorical.OneHotCategoricalStraightThrough):
     return _mode.detach() + super().logits - super().logits.detach()
 
 
-
 class TwoHotDist(distr.one_hot_categorical.OneHotCategorical):
 
   def __init__(self, logits=None, probs=None, min_space=-20.0, max_space=20.0, unimix_ratio=0.0):
@@ -92,5 +91,4 @@ class TwoHotDist(distr.one_hot_categorical.OneHotCategorical):
 
     return lower_weight * lower_log_prob + upper_weight * upper_log_prob
   
-
 

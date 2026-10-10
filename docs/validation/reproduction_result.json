@@ -1,0 +1,28 @@
+{
+  "python": "3.8.20",
+  "vlm_calls": 0,
+  "fresh_install": true,
+  "fresh_test_result": "107 passed in 1.95s",
+  "fresh_render_exit_code": 0,
+  "fresh_prepare_tool_exit_code": 0,
+  "fresh_execute": {
+    "status": "completed",
+    "steps": 445,
+    "goal_index": 26,
+    "num_goals": 26,
+    "final_tool_pose_xyzw": [
+      -0.3002551794052124,
+      -0.1682431697845459,
+      0.6166715621948242,
+      0.7125514149665833,
+      0.06141951307654381,
+      0.028218114748597145,
+      0.6983565092086792
+    ]
+  },
+  "original_model_equals_official": true,
+  "policy_config_changes": [
+    "resetWhenTableForceTooHigh: true",
+    "parttoolgenBenchmarkExtraActors: []"
+  ]
+}

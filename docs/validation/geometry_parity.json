@@ -1,0 +1,58 @@
+[
+  {
+    "tool": "blue_brush",
+    "same_part_geometry": true,
+    "same_labels": true,
+    "same_selected_contact": true,
+    "same_selected_axis": true
+  },
+  {
+    "tool": "claw_hammer",
+    "same_part_geometry": true,
+    "same_labels": true,
+    "same_selected_contact": true,
+    "same_selected_axis": true
+  },
+  {
+    "tool": "handle_eraser",
+    "same_part_geometry": true,
+    "same_labels": true,
+    "same_selected_contact": true,
+    "same_selected_axis": true
+  },
+  {
+    "tool": "long_screwdriver",
+    "same_part_geometry": true,
+    "same_labels": true,
+    "same_selected_contact": true,
+    "same_selected_axis": true
+  },
+  {
+    "tool": "mallet_hammer",
+    "same_part_geometry": true,
+    "same_labels": true,
+    "same_selected_contact": true,
+    "same_selected_axis": true
+  },
+  {
+    "tool": "red_brush",
+    "same_part_geometry": true,
+    "same_labels": true,
+    "same_selected_contact": true,
+    "same_selected_axis": true
+  },
+  {
+    "tool": "short_screwdriver",
+    "same_part_geometry": true,
+    "same_labels": true,
+    "same_selected_contact": true,
+    "same_selected_axis": true
+  },
+  {
+    "tool": "staples_marker",
+    "same_part_geometry": true,
+    "same_labels": true,
+    "same_selected_contact": true,
+    "same_selected_axis": true
+  }
+]

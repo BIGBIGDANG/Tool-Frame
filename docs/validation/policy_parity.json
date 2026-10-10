@@ -1,0 +1,22 @@
+{
+  "actions": {
+    "shape": [
+      128,
+      1,
+      29
+    ],
+    "max_abs_error": 0.0,
+    "allclose_1e_6": true
+  },
+  "states": {
+    "shape": [
+      128,
+      2,
+      1,
+      1,
+      1024
+    ],
+    "max_abs_error": 0.0,
+    "allclose_1e_6": true
+  }
+}

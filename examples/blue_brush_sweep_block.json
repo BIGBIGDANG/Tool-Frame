@@ -1,0 +1,82 @@
+{
+  "task_id": "blue_brush_sweep_block",
+  "instruction": "Use this brush to sweep the blue block forward off the table.",
+  "tool": {
+    "tool_id": "blue_brush",
+    "tool_prior_dir": "assets/tool_prior/blue_brush/tool_prior"
+  },
+  "execution": {
+    "simtoolreal_category": "brush",
+    "simtoolreal_table_asset": "urdf/scene/tabletop_polyhaven_wood_table/tabletop_polyhaven_wood_table.urdf",
+    "simtoolreal_tool_mesh": "simtoolreal/assets/urdf/dextoolbench/brush/blue_brush/blue_brush.obj",
+    "simtoolreal_start_pose": [
+      -0.1989275191429623,
+      0.019195365939936523,
+      0.5458146320013112,
+      0.9990617992850402,
+      0.0025438715583110945,
+      0.03884015208176431,
+      0.018986640384705825
+    ],
+    "state_bundle": {
+      "table_pose_xyzw": [
+        0.0,
+        0.0,
+        0.38,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "table_asset": "urdf/scene/tabletop_polyhaven_wood_table/tabletop_polyhaven_wood_table.urdf",
+      "table_z": 0.38,
+      "object_name": "blue_brush",
+      "object_category": "brush",
+      "scene_actors": [
+        {
+          "name": "sweep_block",
+          "asset_file": "urdf/scene/brush_sweep_block/sweep_block_072_light_lowfriction.urdf",
+          "pose_xyzw": [
+            0.08266124436601155,
+            -0.12,
+            0.5660000000000001,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "color_rgb": [
+            0.05,
+            0.2,
+            0.95
+          ],
+          "disable_gravity": false,
+          "fix_base_link": false,
+          "friction": 0.2
+        }
+      ],
+      "min_tool_table_clearance_m": 0.0
+    }
+  },
+  "metadata": {
+    "public_support_surface_normal_world": [
+      0.0,
+      0.0,
+      1.0
+    ]
+  },
+  "interaction_plane": {
+    "normal_world": [
+      0,
+      0,
+      1
+    ],
+    "anchor_from_depth": "start",
+    "point_roles": [
+      "start",
+      "end",
+      "path"
+    ],
+    "source": "rgbd_start_and_provided_surface_normal"
+  }
+}

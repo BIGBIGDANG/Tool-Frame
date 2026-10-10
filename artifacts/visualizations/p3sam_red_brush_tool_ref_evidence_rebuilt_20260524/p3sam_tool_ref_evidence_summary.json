@@ -1,8 +1,0 @@
-{
-  "tool_id": "red_brush",
-  "tool_prior_dir": "artifacts/tool_prior/p3sam/red_brush_rebuilt_20260524/tool_prior",
-  "visual_evidence": "artifacts/visualizations/p3sam_red_brush_tool_ref_evidence_rebuilt_20260524/visual_evidence.json",
-  "part_candidate_count": 3,
-  "contact_candidate_count": 18,
-  "image_count": 22
-}

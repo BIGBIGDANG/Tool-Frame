@@ -1,0 +1,1002 @@
+{
+  "schema_version": "v0.1",
+  "tool_id": "long_screwdriver",
+  "tool_frame": "tool",
+  "parts": {
+    "part_000": {
+      "label": "p3sam_segment_0",
+      "role_candidates": [
+        "tool_part_candidate",
+        "functional_candidate",
+        "grasp_candidate",
+        "contact_patch"
+      ],
+      "mask_ref": "p3sam:face_label:0",
+      "point_count": 876,
+      "face_count": 1237,
+      "original_face_count": 1237,
+      "connected_component_count": 5,
+      "removed_disconnected_face_count": 0,
+      "centroid_xyz_tool": [
+        0.13954664353881283,
+        -0.0009031915753424677,
+        -0.0019248539497716895
+      ],
+      "obb": {
+        "center_xyz_tool": [
+          0.139062495,
+          -0.0015806899999999998,
+          -0.0010721900000000002
+        ],
+        "extent_xyz": [
+          0.11623805,
+          0.00998082,
+          0.00738202
+        ],
+        "axes_tool": {
+          "x": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "y": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "z": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        }
+      },
+      "surface_patches": {
+        "x_negative_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            0.0953997761786542,
+            -0.0012671309203636909,
+            -0.002188380049328195
+          ],
+          "normal_tool": [
+            -0.07012999579437453,
+            -0.051159626387810866,
+            -0.9962251132739731
+          ],
+          "support_faces": 139,
+          "confidence": 0.6925462336019182,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "long_screwdriver",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "x_positive_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            0.18845729600560382,
+            -0.0007001980142122606,
+            -0.0023690881448253623
+          ],
+          "normal_tool": [
+            0.9528034191085312,
+            -0.3032982257787093,
+            0.013260119704576518
+          ],
+          "support_faces": 193,
+          "confidence": 0.6925462336019182,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "long_screwdriver",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.1365271562012627,
+            -0.0031280831080425617,
+            -0.002017948727938744
+          ],
+          "normal_tool": [
+            0.03444445807644855,
+            -0.9965937769495574,
+            0.07492945384316838
+          ],
+          "support_faces": 450,
+          "confidence": 0.6925462336019182,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "long_screwdriver",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.13933070607255107,
+            0.0010609474024566112,
+            -0.001970441533042691
+          ],
+          "normal_tool": [
+            0.023465440859723297,
+            0.9969248059636872,
+            0.0747683378143682
+          ],
+          "support_faces": 614,
+          "confidence": 0.6925462336019182,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "long_screwdriver",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.1394083913764672,
+            -0.0009205839540991354,
+            -0.003968488493858816
+          ],
+          "normal_tool": [
+            0.016136408921313065,
+            -0.008730491797120016,
+            -0.9998316832447872
+          ],
+          "support_faces": 547,
+          "confidence": 0.6925462336019182,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "long_screwdriver",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.1394259627743926,
+            -0.0009007134609618714,
+            -0.00018121131190136788
+          ],
+          "normal_tool": [
+            0.04053522265058945,
+            -0.015413323702090077,
+            0.9990592200551084
+          ],
+          "support_faces": 589,
+          "confidence": 0.6925462336019182,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "long_screwdriver",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy"
+          }
+        }
+      },
+      "confidence": 0.6925462336019182,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "long_screwdriver",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy",
+        "part_label": 0,
+        "connected_component_index": 0,
+        "connected_component_count": 5,
+        "original_face_count": 1237,
+        "kept_face_count": 1237,
+        "removed_disconnected_face_count": 0,
+        "component_filter": "keep_dominant_spatial_cluster_per_p3sam_label"
+      }
+    },
+    "part_001": {
+      "label": "p3sam_segment_9",
+      "role_candidates": [
+        "tool_part_candidate",
+        "functional_candidate",
+        "grasp_candidate",
+        "contact_patch"
+      ],
+      "mask_ref": "p3sam:face_label:9",
+      "point_count": 2552,
+      "face_count": 4258,
+      "original_face_count": 4434,
+      "connected_component_count": 42,
+      "removed_disconnected_face_count": 176,
+      "centroid_xyz_tool": [
+        -0.013018296402821324,
+        -0.002292036798589344,
+        -0.003086580579937304
+      ],
+      "obb": {
+        "center_xyz_tool": [
+          -0.01455898,
+          -0.0018751950000000005,
+          -0.0017672749999999996
+        ],
+        "extent_xyz": [
+          0.09162188,
+          0.03013769,
+          0.03394433
+        ],
+        "axes_tool": {
+          "x": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "y": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "z": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        }
+      },
+      "surface_patches": {
+        "x_negative_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            -0.04765247224561855,
+            -0.00470397008808101,
+            -0.002526603254150138
+          ],
+          "normal_tool": [
+            -0.7633034099426983,
+            -0.6301360767121775,
+            -0.1424655368699176
+          ],
+          "support_faces": 390,
+          "confidence": 0.9,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "long_screwdriver",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "x_positive_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            0.019632735966564636,
+            -0.0006225149082961876,
+            -0.001170357071393944
+          ],
+          "normal_tool": [
+            0.8498645565842744,
+            0.35218128240929547,
+            0.3920441043841349
+          ],
+          "support_faces": 572,
+          "confidence": 0.9,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "long_screwdriver",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            -0.01624876871700619,
+            -0.014468746782619255,
+            -0.0019763448350311004
+          ],
+          "normal_tool": [
+            -0.005258387821966959,
+            -0.9999212121260767,
+            0.011398197130744319
+          ],
+          "support_faces": 1266,
+          "confidence": 0.9,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "long_screwdriver",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            -0.012668989231828052,
+            0.010932202347288984,
+            -0.0026058496693378255
+          ],
+          "normal_tool": [
+            -0.00654868975606437,
+            0.9998979907719878,
+            0.012693412174061305
+          ],
+          "support_faces": 1194,
+          "confidence": 0.9,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "long_screwdriver",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            -0.010846401203923986,
+            -0.0015731519866778866,
+            -0.01657071817175883
+          ],
+          "normal_tool": [
+            -0.01123540637801568,
+            0.0029420632559142078,
+            -0.999932552679089
+          ],
+          "support_faces": 1162,
+          "confidence": 0.9,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "long_screwdriver",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            -0.01122569428386535,
+            -0.002284403190475656,
+            0.012623442381179479
+          ],
+          "normal_tool": [
+            0.0053379993135257734,
+            -0.0008892687184786282,
+            0.9999853573750344
+          ],
+          "support_faces": 1063,
+          "confidence": 0.9,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "long_screwdriver",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy"
+          }
+        }
+      },
+      "confidence": 0.9,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "long_screwdriver",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy",
+        "part_label": 9,
+        "connected_component_index": 0,
+        "connected_component_count": 42,
+        "original_face_count": 4434,
+        "kept_face_count": 4258,
+        "removed_disconnected_face_count": 176,
+        "component_filter": "keep_dominant_spatial_cluster_per_p3sam_label"
+      }
+    },
+    "part_002": {
+      "label": "p3sam_segment_232",
+      "role_candidates": [
+        "tool_part_candidate",
+        "functional_candidate",
+        "contact_patch"
+      ],
+      "mask_ref": "p3sam:face_label:232",
+      "point_count": 496,
+      "face_count": 701,
+      "original_face_count": 701,
+      "connected_component_count": 17,
+      "removed_disconnected_face_count": 0,
+      "centroid_xyz_tool": [
+        0.07370634247983869,
+        -0.0025236123588709665,
+        -0.0025822930645161284
+      ],
+      "obb": {
+        "center_xyz_tool": [
+          0.07431627,
+          -0.0020808100000000006,
+          -0.0018090849999999993
+        ],
+        "extent_xyz": [
+          0.02156442,
+          0.02037568,
+          0.02019233
+        ],
+        "axes_tool": {
+          "x": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "y": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "z": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        }
+      },
+      "surface_patches": {
+        "x_negative_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            0.06733341219345297,
+            -0.007019825192396717,
+            -0.004554448984083847
+          ],
+          "normal_tool": [
+            -0.29037471324422565,
+            -0.8640488679078311,
+            -0.41122023269232405
+          ],
+          "support_faces": 60,
+          "confidence": 0.6325865128210777,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "long_screwdriver",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "x_positive_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            0.08216545211902977,
+            -0.004305302829777145,
+            -0.00018413992009961872
+          ],
+          "normal_tool": [
+            0.9521709883629814,
+            -0.16992053742933774,
+            0.253963422326106
+          ],
+          "support_faces": 84,
+          "confidence": 0.6325865128210777,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "long_screwdriver",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.07307092398488449,
+            -0.010512625478803899,
+            -0.0017189364769809592
+          ],
+          "normal_tool": [
+            0.07093499399049304,
+            -0.9974807515865625,
+            -0.0006138744782997626
+          ],
+          "support_faces": 180,
+          "confidence": 0.6325865128210777,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "long_screwdriver",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.07150938358282902,
+            0.005754057773985951,
+            -0.0022989772967426823
+          ],
+          "normal_tool": [
+            0.21098468826697678,
+            0.9774796832460748,
+            -0.004350880145420483
+          ],
+          "support_faces": 157,
+          "confidence": 0.6325865128210777,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "long_screwdriver",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.07154854207503439,
+            -0.0019555585487331046,
+            -0.010111620639260301
+          ],
+          "normal_tool": [
+            0.18719582205988117,
+            -0.009377480477218536,
+            -0.9822778563437256
+          ],
+          "support_faces": 150,
+          "confidence": 0.6325865128210777,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "long_screwdriver",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.07209972382720412,
+            -0.0024784217272875667,
+            0.005742003394968728
+          ],
+          "normal_tool": [
+            0.19983599914666134,
+            0.010288626936591933,
+            0.9797753403718708
+          ],
+          "support_faces": 158,
+          "confidence": 0.6325865128210777,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "long_screwdriver",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy"
+          }
+        }
+      },
+      "confidence": 0.6325865128210777,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "long_screwdriver",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy",
+        "part_label": 232,
+        "connected_component_index": 0,
+        "connected_component_count": 17,
+        "original_face_count": 701,
+        "kept_face_count": 701,
+        "removed_disconnected_face_count": 0,
+        "component_filter": "keep_dominant_spatial_cluster_per_p3sam_label"
+      }
+    },
+    "part_003": {
+      "label": "p3sam_segment_293",
+      "role_candidates": [
+        "tool_part_candidate",
+        "functional_candidate",
+        "contact_patch"
+      ],
+      "mask_ref": "p3sam:face_label:293",
+      "point_count": 1137,
+      "face_count": 1790,
+      "original_face_count": 1790,
+      "connected_component_count": 26,
+      "removed_disconnected_face_count": 0,
+      "centroid_xyz_tool": [
+        0.0436159933861038,
+        -0.0017816802638522373,
+        -0.0038972758575197878
+      ],
+      "obb": {
+        "center_xyz_tool": [
+          0.042592645,
+          -0.0010471550000000001,
+          -0.002593159999999999
+        ],
+        "extent_xyz": [
+          0.04604495,
+          0.02561173,
+          0.02824382
+        ],
+        "axes_tool": {
+          "x": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "y": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "z": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        }
+      },
+      "surface_patches": {
+        "x_negative_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            0.025643976988157166,
+            -0.0020806808270746944,
+            -0.0035624129863367276
+          ],
+          "normal_tool": [
+            -0.669463158351582,
+            -0.6795555771369995,
+            0.30003882614075783
+          ],
+          "support_faces": 102,
+          "confidence": 0.7417670206921114,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "long_screwdriver",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "x_positive_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            0.059794953909162014,
+            -0.001284097432895302,
+            -0.0035495457898824362
+          ],
+          "normal_tool": [
+            0.9827272407429123,
+            -0.06890984646438744,
+            -0.17175157455486909
+          ],
+          "support_faces": 297,
+          "confidence": 0.7417670206921114,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "long_screwdriver",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.042580955941036135,
+            -0.012339463161460128,
+            -0.0030867457031397757
+          ],
+          "normal_tool": [
+            0.04000983326525448,
+            -0.9991850721675732,
+            -0.005329615330182612
+          ],
+          "support_faces": 550,
+          "confidence": 0.7417670206921114,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "long_screwdriver",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.04348887383928634,
+            0.009862472273493274,
+            -0.0038291121152302203
+          ],
+          "normal_tool": [
+            0.010097107487041124,
+            0.9999168492572402,
+            -0.00802140834696247
+          ],
+          "support_faces": 468,
+          "confidence": 0.7417670206921114,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "long_screwdriver",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.04331424000642614,
+            -0.0009945879707299414,
+            -0.014317384711934954
+          ],
+          "normal_tool": [
+            0.03766825252289487,
+            -0.007830411198754045,
+            -0.9992596196246147
+          ],
+          "support_faces": 522,
+          "confidence": 0.7417670206921114,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "long_screwdriver",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            0.04506118096865821,
+            -0.0018211066380587543,
+            0.00907061045594877
+          ],
+          "normal_tool": [
+            0.03298698844726779,
+            -0.02774400419995587,
+            0.9990706325501378
+          ],
+          "support_faces": 433,
+          "confidence": 0.7417670206921114,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "long_screwdriver",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy"
+          }
+        }
+      },
+      "confidence": 0.7417670206921114,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "long_screwdriver",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy",
+        "part_label": 293,
+        "connected_component_index": 0,
+        "connected_component_count": 26,
+        "original_face_count": 1790,
+        "kept_face_count": 1790,
+        "removed_disconnected_face_count": 0,
+        "component_filter": "keep_dominant_spatial_cluster_per_p3sam_label"
+      }
+    },
+    "part_004": {
+      "label": "p3sam_segment_354",
+      "role_candidates": [
+        "tool_part_candidate",
+        "functional_candidate",
+        "contact_patch"
+      ],
+      "mask_ref": "p3sam:face_label:354",
+      "point_count": 503,
+      "face_count": 706,
+      "original_face_count": 706,
+      "connected_component_count": 13,
+      "removed_disconnected_face_count": 0,
+      "centroid_xyz_tool": [
+        -0.05634483791252485,
+        -0.0007891493240556654,
+        -0.0026063898011928445
+      ],
+      "obb": {
+        "center_xyz_tool": [
+          -0.053790715,
+          -0.0013260500000000005,
+          -0.0018313000000000001
+        ],
+        "extent_xyz": [
+          0.018860970000000005,
+          0.02254542,
+          0.02602758
+        ],
+        "axes_tool": {
+          "x": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "y": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "z": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        }
+      },
+      "surface_patches": {
+        "x_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            -0.06183027224053273,
+            -0.001564122613512773,
+            -0.002037069089370567
+          ],
+          "normal_tool": [
+            -0.9996536170496495,
+            -0.026118250728849043,
+            0.0032377304424302204
+          ],
+          "support_faces": 265,
+          "confidence": 0.6332365202625135,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "long_screwdriver",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "x_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            -0.048160363472824166,
+            0.0005827382898801442,
+            0.005567624696315506
+          ],
+          "normal_tool": [
+            -0.03747688820282049,
+            0.35384011308211066,
+            0.9345547909163338
+          ],
+          "support_faces": 22,
+          "confidence": 0.6332365202625135,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "long_screwdriver",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_negative_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            -0.05733042859734701,
+            -0.010422780762522238,
+            -0.003025810618561318
+          ],
+          "normal_tool": [
+            -0.5046108371741627,
+            -0.8493743941437294,
+            -0.15469661140232904
+          ],
+          "support_faces": 112,
+          "confidence": 0.6332365202625135,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "long_screwdriver",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "y_positive_contact": {
+          "role_hint": "contact_patch",
+          "center_xyz_tool": [
+            -0.055385347074156877,
+            0.007897746831405076,
+            -0.0010908600149140103
+          ],
+          "normal_tool": [
+            -0.2642254345771495,
+            0.9599667261577561,
+            0.09299894834069987
+          ],
+          "support_faces": 166,
+          "confidence": 0.6332365202625135,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "long_screwdriver",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_negative_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            -0.05383753727484383,
+            -0.0015091216314102385,
+            -0.012388069590970842
+          ],
+          "normal_tool": [
+            -0.22175821315571503,
+            0.004885186424853132,
+            -0.9750894471029716
+          ],
+          "support_faces": 183,
+          "confidence": 0.6332365202625135,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "long_screwdriver",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy"
+          }
+        },
+        "z_positive_endpoint": {
+          "role_hint": "endpoint_contact",
+          "center_xyz_tool": [
+            -0.053313968812559426,
+            -0.0009076942641999399,
+            0.009251629404528354
+          ],
+          "normal_tool": [
+            -0.2790154330159773,
+            0.1126852742452847,
+            0.9536521468057269
+          ],
+          "support_faces": 175,
+          "confidence": 0.6332365202625135,
+          "source": "p3sam_tool_prior",
+          "provenance": {
+            "observation_id": "long_screwdriver",
+            "method": "p3sam_mesh_surface_center",
+            "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy"
+          }
+        }
+      },
+      "confidence": 0.6332365202625135,
+      "source": "p3sam_tool_prior",
+      "provenance": {
+        "observation_id": "long_screwdriver",
+        "method": "p3sam_face_label_adapter",
+        "source_artifact": "assets/tool_prior/long_screwdriver/face_labels/p3sam_face_labels.npy",
+        "part_label": 354,
+        "connected_component_index": 0,
+        "connected_component_count": 13,
+        "original_face_count": 706,
+        "kept_face_count": 706,
+        "removed_disconnected_face_count": 0,
+        "component_filter": "keep_dominant_spatial_cluster_per_p3sam_label"
+      }
+    }
+  },
+  "relations": [
+    {
+      "type": "part_of",
+      "subject": "tool.parts.part_000",
+      "object": "tool.long_screwdriver",
+      "confidence": 0.6925462336019182,
+      "source": "p3sam_tool_prior"
+    },
+    {
+      "type": "part_of",
+      "subject": "tool.parts.part_001",
+      "object": "tool.long_screwdriver",
+      "confidence": 0.9,
+      "source": "p3sam_tool_prior"
+    },
+    {
+      "type": "part_of",
+      "subject": "tool.parts.part_002",
+      "object": "tool.long_screwdriver",
+      "confidence": 0.6325865128210777,
+      "source": "p3sam_tool_prior"
+    },
+    {
+      "type": "part_of",
+      "subject": "tool.parts.part_003",
+      "object": "tool.long_screwdriver",
+      "confidence": 0.7417670206921114,
+      "source": "p3sam_tool_prior"
+    },
+    {
+      "type": "part_of",
+      "subject": "tool.parts.part_004",
+      "object": "tool.long_screwdriver",
+      "confidence": 0.6332365202625135,
+      "source": "p3sam_tool_prior"
+    }
+  ],
+  "metadata": {
+    "created_by": "parttoolgen.providers.tool_prior.sampart3d_mesh_candidates",
+    "geometry_mode": "prior",
+    "segmentation_mode": "p3sam",
+    "notes": "p3sam face labels are converted in the stable SimToolReal tool/asset frame."
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "task_id": "mallet_hammer_strike",
+  "instruction": "Use this hammer to strike the white target block downward.",
+  "tool": {
+    "tool_id": "mallet_hammer",
+    "tool_prior_dir": "assets/tool_prior/mallet_hammer/tool_prior"
+  },
+  "execution": {
+    "simtoolreal_category": "hammer",
+    "simtoolreal_table_asset": "urdf/scene/tabletop_polyhaven_wood_table/tabletop_polyhaven_wood_table.urdf",
+    "simtoolreal_tool_mesh": "simtoolreal/assets/urdf/dextoolbench/hammer/mallet_hammer/mallet_hammer.obj",
+    "simtoolreal_start_pose": [
+      0.01989746191707678,
+      -0.06860998141806302,
+      0.5542202331926311,
+      0.9978230733843577,
+      0.05734408407637038,
+      0.019343219193819504,
+      0.02620324625798626
+    ],
+    "state_bundle": {
+      "table_pose_xyzw": [
+        0.0,
+        0.0,
+        0.38,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "table_asset": "urdf/scene/tabletop_polyhaven_wood_table/tabletop_polyhaven_wood_table.urdf",
+      "object_name": "mallet_hammer",
+      "object_category": "hammer",
+      "scene_actors": [
+        {
+          "name": "white_target_block",
+          "asset_file": "urdf/scene/hammer_strike_target_block/white_target_block_035x035x030.urdf",
+          "pose_xyzw": [
+            -0.09948925037559925,
+            -0.16187272955295517,
+            0.545,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "color_rgb": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "disable_gravity": true,
+          "fix_base_link": true,
+          "friction": 0.9
+        }
+      ],
+      "min_tool_table_clearance_m": 0.0
+    }
+  },
+  "metadata": {
+    "public_support_surface_point_world": [
+      0.0,
+      0.0,
+      0.53
+    ],
+    "public_support_surface_normal_world": [
+      0.0,
+      0.0,
+      1.0
+    ]
+  },
+  "interaction_plane": {
+    "normal_world": [
+      0,
+      0,
+      1
+    ],
+    "anchor_from_depth": "start",
+    "point_roles": [
+      "start",
+      "end",
+      "path"
+    ],
+    "source": "rgbd_start_and_provided_surface_normal"
+  }
+}

@@ -1,24 +1,7 @@
-from dataclasses import dataclass
 from typing import Optional
-
 import yaml
-from gym import spaces
 from omegaconf import DictConfig, OmegaConf
-
-from isaacgymenvs.utils.reformat import omegaconf_to_dict, print_dict
-
-
-@dataclass
-class DummyEnv:
-    observation_space: spaces.Box
-    action_space: spaces.Box
-
-    def get_env_info(self) -> dict:
-        return {
-            "observation_space": self.observation_space,
-            "action_space": self.action_space,
-        }
-
+from isaacgymenvs.utils.reformat import omegaconf_to_dict
 
 def read_cfg(config_path: str, device: Optional[str] = None) -> dict:
     # Read in config
@@ -48,10 +31,6 @@ def read_cfg(config_path: str, device: Optional[str] = None) -> dict:
             cfg["rl_device"] = device
             cfg["sim_device"] = device
 
-    print("-" * 80)
-    print("CONFIGURATION")
-    print_dict(cfg)
-    print("-" * 80 + "\n")
 
     return cfg
 
@@ -83,9 +62,5 @@ def read_cfg_omegaconf(config_path: str, device: Optional[str] = None) -> DictCo
             omegaconf_cfg.rl_device = device
             omegaconf_cfg.sim_device = device
 
-    print("-" * 80)
-    print("CONFIGURATION")
-    print_dict(omegaconf_cfg)
-    print("-" * 80 + "\n")
 
     return omegaconf_cfg

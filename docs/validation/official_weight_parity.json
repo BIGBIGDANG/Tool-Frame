@@ -1,0 +1,12 @@
+[
+  {
+    "file": "pretrained_policy/config.yaml",
+    "official_sha256": "147717cfdf1d19c06d5d443e428d84f8c2adb0b00abc7c159f6a3fa1ea7becea",
+    "same_local_file": false
+  },
+  {
+    "file": "pretrained_policy/model.pth",
+    "official_sha256": "4cb0d09833326de6878ee5681c2b14521823fa616e01b135214a51ffe41c63b9",
+    "same_local_file": true
+  }
+]

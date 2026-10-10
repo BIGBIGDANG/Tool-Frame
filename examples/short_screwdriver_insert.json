@@ -1,0 +1,89 @@
+{
+  "task_id": "short_screwdriver_insert",
+  "instruction": "Use this screwdriver to insert its tip into the socket.",
+  "tool": {
+    "tool_id": "short_screwdriver",
+    "tool_prior_dir": "assets/tool_prior/short_screwdriver/tool_prior"
+  },
+  "execution": {
+    "simtoolreal_category": "screwdriver",
+    "simtoolreal_table_asset": "urdf/scene/tabletop_polyhaven_wood_table/tabletop_polyhaven_wood_table.urdf",
+    "simtoolreal_tool_mesh": "simtoolreal/assets/urdf/dextoolbench/screwdriver/short_screwdriver/short_screwdriver.obj",
+    "simtoolreal_start_pose": [
+      -0.11964201583290587,
+      0.013671405525009526,
+      0.5506443904732761,
+      -0.010939103737427812,
+      0.10405160133354438,
+      0.9927160706882903,
+      0.059736113587583274
+    ],
+    "state_bundle": {
+      "table_pose_xyzw": [
+        0.0,
+        0.0,
+        0.38,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "table_asset": "urdf/scene/tabletop_polyhaven_wood_table/tabletop_polyhaven_wood_table.urdf",
+      "table_z": 0.38,
+      "object_name": "short_screwdriver",
+      "object_category": "screwdriver",
+      "scene_actors": [
+        {
+          "name": "screwdriver_insert_socket",
+          "asset_file": "urdf/scene/screwdriver_insert_socket/deep_socket_wide_048x055.urdf",
+          "pose_xyzw": [
+            0.05746639555163391,
+            0.014762119501950294,
+            0.53,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "color_rgb": [
+            0.62,
+            0.64,
+            0.66
+          ],
+          "disable_gravity": true,
+          "fix_base_link": true,
+          "friction": 1.0
+        }
+      ],
+      "min_tool_table_clearance_m": 0.0
+    }
+  },
+  "metadata": {
+    "public_support_surface_point_world": [
+      0.0,
+      0.0,
+      0.53
+    ],
+    "public_support_surface_normal_world": [
+      0.0,
+      0.0,
+      1.0
+    ]
+  },
+  "interaction_plane": {
+    "point_world": [
+      0.05746639555163391,
+      0.014762119501950294,
+      0.5850000000000001
+    ],
+    "normal_world": [
+      0.0,
+      0.0,
+      1.0
+    ],
+    "point_roles": [
+      "start"
+    ],
+    "source": "provided_scene_geometry"
+  }
+}
