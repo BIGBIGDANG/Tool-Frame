@@ -1,6 +1,6 @@
 # License and third-party components
 
-Tool-Frame is published as a research preview. A project-level
+ToGo is published as a research preview. A project-level
 open-source license has not been selected; publication alone does not grant
 an open-source license to project-owned code or assets.
 

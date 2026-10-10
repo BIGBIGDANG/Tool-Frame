@@ -1,4 +1,4 @@
-"""Tool-side contact-point/motion-axis refs for ToolFrame image-grounded planning."""
+"""Tool-side contact-point/motion-axis refs for ToGo image-grounded planning."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ from ToGo.compiler.residuals import add, mul, norm, sub, unit
 
 
 class ToolRefMergeError(ValueError):
-    """Raised when tool-side evidence cannot be converted into ToolFrame refs."""
+    """Raised when tool-side evidence cannot be converted into ToGo refs."""
 
 
 def _mapping(value: Any, name: str) -> Mapping[str, Any]:
@@ -537,9 +537,9 @@ def build_tool_refs_from_axis_evidence(
     axis_binding_path: str | Path | None = None,
     axis_mesh_report_path: str | Path | None = None,
 ) -> dict[str, Any]:
-    """Convert contact-point/motion-axis evidence into canonical ToolFrame refs.
+    """Convert contact-point/motion-axis evidence into canonical ToGo refs.
 
-    The public ToolFrame boundary names are ``contact_point`` and
+    The public ToGo boundary names are ``contact_point`` and
     ``motion_axis``.  Surface normals are retained only as mesh geometry
     metadata for local frame construction; they are not public tool-axis refs.
     """

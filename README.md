@@ -1,6 +1,6 @@
-# Tool-Frame
+# ToGo
 
-Tool-Frame is a research implementation of image-grounded tool manipulation.
+ToGo is a research implementation of image-grounded tool manipulation.
 It connects a language instruction, a segmented tool mesh, and calibrated
 RGB-D observations to a sequence of whole-tool SE(3) goals, then executes
 those goals with a pretrained [SimToolReal](https://github.com/tylerlum/simtoolreal)
@@ -41,8 +41,8 @@ See [architecture](docs/architecture.md) for the implementation map and
 Use Python 3.8. This example needs neither a GPU nor a VLM API key.
 
 ```bash
-git clone https://github.com/BIGBIGDANG/Tool-Frame.git
-cd Tool-Frame
+git clone https://github.com/BIGBIGDANG/Tool-Frame.git ToGo
+cd ToGo
 python3.8 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
@@ -102,7 +102,7 @@ See [validation results and limitations](docs/validation/README.md).
 
 ## Acknowledgements and licensing
 
-Tool-Frame builds on SimToolReal, IsaacGymEnvs, rl_games, and P3SAM-derived
+ToGo builds on SimToolReal, IsaacGymEnvs, rl_games, and P3SAM-derived
 tool segmentation labels. See [third-party sources](THIRD_PARTY.md).
 A project-level open-source license has not yet been selected; third-party
 licenses and unresolved asset attribution are documented in [LICENSES.md](LICENSES.md).

@@ -150,7 +150,7 @@ def plan(args: argparse.Namespace, task: dict[str, Any], settings: dict[str, Any
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="ToGo 6.13: unified image-grounded tool-use code")
+    parser = argparse.ArgumentParser(description="ToGo: image-grounded tool manipulation")
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("doctor", help="check local runtime dependencies")
     prepare = commands.add_parser("prepare-tool", help="segment a mesh and prepare its geometric prior")

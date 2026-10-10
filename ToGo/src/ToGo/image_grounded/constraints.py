@@ -1,4 +1,4 @@
-"""Constraint-program data structures for ToolFrame."""
+"""Constraint-program data structures for ToGo."""
 
 from __future__ import annotations
 

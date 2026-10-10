@@ -9,4 +9,4 @@ Downloaded files:
 Poly Haven lists its assets under CC0/Public Domain:
 https://polyhaven.com/license
 
-The OBJ/MTL/URDF wrapper files in this folder were created for ToolFrame.
+The OBJ/MTL/URDF wrapper files in this folder were created for ToGo.

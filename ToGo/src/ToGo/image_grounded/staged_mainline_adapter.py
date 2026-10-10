@@ -1,4 +1,4 @@
-"""Bridge image-grounded ToolFrame programs to the staged mainline compiler.
+"""Bridge image-grounded ToGo programs to the staged mainline compiler.
 
 The image-grounded front end gives us tool refs and scene refs.  The existing
 mainline compiler already knows how to turn symbolic point/axis constraints
@@ -77,7 +77,7 @@ def _grounding(method: str, *, source: str = "image_grounded_vlm_rgbd") -> dict[
         "provenance": {
             "observation_id": "image_grounded_scene",
             "method": method,
-            "source_artifact": "ToolFrame image-grounded constraint program",
+            "source_artifact": "ToGo image-grounded constraint program",
         },
     }
 
@@ -504,7 +504,7 @@ def _contact_point_candidates_from_tool_refs(
 
 
 def build_functional_tool_parts_from_tool_refs(program: Mapping[str, Any]) -> dict[str, Any]:
-    """Build the old FunctionalToolParts artifact from ToolFrame tool refs."""
+    """Build the FunctionalToolParts artifact from ToGo tool refs."""
 
     tool_refs = _mapping(program.get("tool_refs", {}), "program.tool_refs")
     orientation_metric = _orientation_change_sample_points(tool_refs)

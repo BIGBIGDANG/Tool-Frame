@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Ask a VLM to mark image-space scene keypoints for ToolFrame."""
+"""Ask a VLM to mark image-space scene keypoints for ToGo."""
 
 from __future__ import annotations
 
